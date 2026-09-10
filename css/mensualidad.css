@@ -1,0 +1,286 @@
+/* css/mensualidad.css */
+
+.selection-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}
+
+.selection-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 42px 36px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.06), 0 3px 10px rgba(0,0,0,0.03);
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+
+.selection-icon {
+    font-size: 52px;
+    color: #ff6600;
+    margin-bottom: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    height: 84px;
+    border-radius: 20px;
+    background: rgba(255, 102, 0, 0.08);
+}
+
+.selection-card h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+}
+
+.selection-card p {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 28px;
+    line-height: 1.55;
+    font-weight: 400;
+}
+
+.btn-orange {
+    background: linear-gradient(135deg, #ff6600 0%, #e65c00 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 14px 20px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    box-shadow: 0 4px 14px rgba(255, 102, 0, 0.35) !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.btn-orange:hover {
+    background: linear-gradient(135deg, #e65c00 0%, #cc5200 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 102, 0, 0.45) !important;
+}
+
+.selection-form .form-group {
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+.select-searchable {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    color: var(--text-main);
+    outline: none;
+    transition: all 0.2s;
+    font-family: inherit;
+    cursor: pointer;
+    background-color: #F8F9FA;
+}
+
+.select-searchable:focus {
+    border-color: var(--primary);
+    background-color: #FFFFFF;
+}
+
+.btn-block {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+    font-size: 16px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 15px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: var(--primary);
+}
+
+/* badge overrides for mensualidad */
+.badge-status.pagado {
+    background-color: rgba(39, 174, 96, 0.1);
+    color: var(--success);
+}
+.badge-status.pendiente {
+    background-color: rgba(243, 156, 18, 0.1);
+    color: #F39C12;
+}
+.badge-status.anulado {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+}
+
+/* Toast Notification */
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #edf7ed; /* Verde pastel suave */
+    color: #1e4620; /* Texto verde oscuro */
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    font-weight: 500;
+    font-size: 15px;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    border-left: 5px solid #4caf50;
+    font-family: inherit;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Estilo para botón deshabilitado */
+#btnGuardarMensualidad:disabled,
+#btnGuardarAporte:disabled,
+.btn-primary:disabled {
+    background-color: #bdc3c7 !important;
+    color: #7f8c8d !important;
+    border-color: #bdc3c7 !important;
+    cursor: not-allowed !important;
+    opacity: 0.65;
+    box-shadow: none !important;
+    pointer-events: none;
+}
+
+/* Custom modal max width for Mensualidades batch payment modal */
+#mensualidadModal .modal-content {
+    max-width: 660px;
+}
+
+/* Months Grid & Cards for Yearly Payment Checklist */
+.months-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 8px;
+}
+
+@media (min-width: 520px) {
+    .months-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.month-card {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+    background-color: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    position: relative;
+    min-height: 48px;
+    box-sizing: border-box;
+}
+
+.month-card:hover:not(.paid) {
+    border-color: #27AE60;
+    background-color: #f0fdf4;
+}
+
+.month-card input[type="checkbox"].month-checkbox {
+    position: static !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    margin: 0 !important;
+    accent-color: #27AE60;
+    cursor: pointer;
+    flex-shrink: 0 !important;
+}
+
+.month-card.selected {
+    border-color: #27AE60;
+    background-color: #e8f5e9;
+    box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.2);
+}
+
+.month-card.paid {
+    background-color: #edf7ed;
+    border-color: #a5d6a7;
+    cursor: not-allowed;
+    opacity: 0.88;
+}
+
+.month-card .month-name {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #1e293b;
+    line-height: 1.2;
+    white-space: nowrap;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.month-card.paid .month-name {
+    color: #1e4620;
+}
+
+.month-status-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: #27AE60;
+    margin-left: auto;
+    line-height: 1;
+}
+
+.month-card.paid .month-status-tag {
+    color: #2e7d32;
+}
+
+.btn-xs {
+    padding: 4px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 5px;
+    background-color: #27AE60;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-xs:hover {
+    background-color: #219150;
+}
+
+.btn-xs-secondary {
+    background-color: #64748b;
+}
+
+.btn-xs-secondary:hover {
+    background-color: #475569;
+}

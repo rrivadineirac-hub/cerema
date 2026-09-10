@@ -1,0 +1,46 @@
+/* css/servicio.css */
+.badge-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Colores para tipos de servicios */
+.badge-electricidad {
+    background-color: rgba(241, 196, 15, 0.2);
+    color: #d35400;
+}
+
+.badge-agua {
+    background-color: rgba(52, 152, 219, 0.2);
+    color: #2980b9;
+}
+
+.badge-telefonia {
+    background-color: rgba(155, 89, 182, 0.2);
+    color: #8e44ad;
+}
+
+/* Colores para estados */
+.estado-realizado {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #27ae60;
+}
+
+.estado-cancelado {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #c0392b;
+}
+
+/* Alineación horizontal de botones de acción */
+td.actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+}

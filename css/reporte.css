@@ -1,0 +1,311 @@
+/* css/reporte.css */
+
+/* Tarjetas de estadísticas del reporte */
+.report-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.report-stat-card {
+    background: var(--bg-panel, #ffffff);
+    border-radius: var(--radius-md, 12px);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border-color, #E2E8F0);
+}
+
+.report-stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.report-stat-icon.active-users {
+    background: rgba(39, 174, 96, 0.12);
+    color: #27AE60;
+}
+
+.report-stat-icon.shares {
+    background: rgba(41, 128, 185, 0.12);
+    color: #2980B9;
+}
+
+.report-stat-icon.date {
+    background: rgba(155, 89, 182, 0.12);
+    color: #8e44ad;
+}
+
+.report-stat-info h4 {
+    font-size: 12px;
+    color: var(--text-muted, #7F8C8D);
+    font-weight: 600;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.report-stat-info p {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-main, #2C3E50);
+}
+
+/* Botones de Acción */
+.btn-export {
+    background-color: #27ae60;
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.btn-export:hover {
+    background-color: #219150;
+    color: #ffffff;
+}
+
+.btn-print {
+    background-color: #2980b9;
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.btn-print:hover {
+    background-color: #1f6391;
+    color: #ffffff;
+}
+
+/* Buscador de Reporte Elegante y Amplio */
+.toolbar-container {
+    margin-bottom: 22px;
+}
+
+.search-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 550px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #27AE60;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 18px 12px 46px;
+    border: 2px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #1e293b;
+    background-color: #ffffff;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.search-input:focus {
+    border-color: #27AE60;
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.15);
+}
+
+/* Encabezado, pie y contenedor de impresión (ocultos en pantalla) */
+.print-header,
+.print-footer,
+#printReportView {
+    display: none;
+}
+
+/* ESTILOS DE IMPRESIÓN (@media print) */
+@media print {
+    /* Eliminar de manera absoluta encabezados/pies predeterminados del navegador (fecha/hora, título, URL) */
+    @page {
+        size: letter portrait;
+        margin: 0mm !important;
+    }
+
+    @page :left { margin: 0mm !important; }
+    @page :right { margin: 0mm !important; }
+    @page :first { margin: 0mm !important; }
+
+    /* Ocultar elementos de la interfaz interactiva de pantalla */
+    #screenReportView,
+    .sidebar,
+    .top-navbar,
+    .dashboard-header,
+    .report-stats-grid,
+    .toolbar-container,
+    .pagination-container,
+    .no-print,
+    header,
+    nav {
+        display: none !important;
+    }
+
+    /* Mostrar contenedor exclusivo de impresión */
+    #printReportView {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    /* Cada bloque corresponde a 1 hoja de papel impresa (40 asociados) */
+    .print-page-block {
+        box-sizing: border-box;
+        width: 100% !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        padding-top: 0px;
+        margin: 0;
+    }
+
+    .print-page-block:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
+    }
+
+    /* Desbloquear contenedores para permitir impresión multipágina completa */
+    html, body, .app-container, .main-wrapper, .content-wrapper, .table-container {
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        overflow-y: visible !important;
+        overflow-x: visible !important;
+        display: block !important;
+        position: static !important;
+    }
+
+    body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        margin: 0 !important;
+        padding: 0.25cm 0.6cm 0.25cm 0.6cm !important;
+    }
+
+    .main-content, .content-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    .table-container {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Mostrar Encabezado Oficial en Impresión en Cada Hoja */
+    .print-header {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 4px;
+        border-bottom: 2px solid #27AE60;
+        padding-bottom: 2px;
+    }
+
+    .print-header-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2px;
+    }
+
+    .print-logo {
+        height: 32px;
+        width: auto;
+    }
+
+    .print-title-group h2 {
+        font-size: 13.5px;
+        margin: 0;
+        color: #1a252f;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.1;
+    }
+
+    .print-title-group h3 {
+        font-size: 10.5px;
+        margin: 1px 0 0 0;
+        color: #27AE60;
+        font-weight: 600;
+        line-height: 1.1;
+    }
+
+    .print-meta {
+        font-size: 9.5px;
+        color: #333;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2px;
+        line-height: 1.1;
+    }
+
+    /* Estilo de Tabla Extendida (45 asociados por hoja ocupando hasta la parte inferior) */
+    .print-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 10px !important;
+        margin-bottom: 0px !important;
+    }
+
+    .print-table th,
+    .print-table td {
+        border: 1px solid #cbd5e1 !important;
+        padding: 3.8px 4px !important;
+        color: #000000 !important;
+        white-space: nowrap !important;
+        line-height: 1.18 !important;
+        font-size: 10px !important;
+    }
+
+    .print-table th {
+        background-color: #f1f5f9 !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        font-size: 10px !important;
+        padding: 4px 4px !important;
+    }
+}

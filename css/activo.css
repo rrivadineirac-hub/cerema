@@ -1,0 +1,261 @@
+/* css/activo.css */
+
+/* Tarjetas de estadísticas de activos */
+.activo-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.activo-stat-card {
+    background: var(--bg-panel, #ffffff);
+    border-radius: var(--radius-md, 12px);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border-color, #E2E8F0);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.activo-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.activo-stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.activo-stat-icon.total {
+    background: rgba(39, 174, 96, 0.12);
+    color: #27AE60;
+}
+
+.activo-stat-icon.valor {
+    background: rgba(41, 128, 185, 0.12);
+    color: #2980B9;
+}
+
+.activo-stat-icon.operativo {
+    background: rgba(46, 204, 113, 0.12);
+    color: #2ecc71;
+}
+
+.activo-stat-icon.observado {
+    background: rgba(230, 126, 34, 0.12);
+    color: #e67e22;
+}
+
+.activo-stat-info h4 {
+    font-size: 13px;
+    color: var(--text-muted, #7F8C8D);
+    font-weight: 500;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.activo-stat-info p {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-main, #2C3E50);
+}
+
+/* Filtros y barra de herramientas */
+.toolbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.search-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    position: relative;
+    min-width: 260px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted, #7F8C8D);
+    font-size: 14px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border: 1.5px solid var(--border-color, #E2E8F0);
+    border-radius: var(--radius-sm, 8px);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #FFFFFF;
+}
+
+.search-input:focus {
+    border-color: var(--primary, #27AE60);
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.12);
+}
+
+.filter-select {
+    padding: 10px 14px;
+    border: 1.5px solid var(--border-color, #E2E8F0);
+    border-radius: var(--radius-sm, 8px);
+    font-size: 14px;
+    color: var(--text-main, #2C3E50);
+    background-color: #FFFFFF;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.filter-select:focus {
+    border-color: var(--primary, #27AE60);
+}
+
+/* Badges para Tipo de Activo */
+.badge-tipo {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge-tipo.inmueble {
+    background-color: rgba(52, 152, 219, 0.12);
+    color: #2980b9;
+}
+
+.badge-tipo.maquinaria {
+    background-color: rgba(155, 89, 182, 0.12);
+    color: #8e44ad;
+}
+
+.badge-tipo.herramienta {
+    background-color: rgba(22, 160, 133, 0.12);
+    color: #16a085;
+}
+
+.badge-tipo.infraestructura {
+    background-color: rgba(44, 62, 80, 0.12);
+    color: #2c3e50;
+}
+
+.badge-tipo.otro {
+    background-color: rgba(127, 140, 141, 0.12);
+    color: #7f8c8d;
+}
+
+/* Badges para Estado Operativo */
+.badge-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-estado::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.badge-estado.excelente {
+    background-color: rgba(39, 174, 96, 0.12);
+    color: #27ae60;
+}
+.badge-estado.excelente::before {
+    background-color: #27ae60;
+}
+
+.badge-estado.bueno {
+    background-color: rgba(46, 204, 113, 0.12);
+    color: #27ae60;
+}
+.badge-estado.bueno::before {
+    background-color: #2ecc71;
+}
+
+.badge-estado.regular {
+    background-color: rgba(243, 156, 18, 0.12);
+    color: #d35400;
+}
+.badge-estado.regular::before {
+    background-color: #f39c12;
+}
+
+.badge-estado.en-mantenimiento {
+    background-color: rgba(230, 126, 34, 0.12);
+    color: #e67e22;
+}
+.badge-estado.en-mantenimiento::before {
+    background-color: #e67e22;
+}
+
+.badge-estado.fuera-de-servicio {
+    background-color: rgba(231, 76, 60, 0.12);
+    color: #c0392b;
+}
+.badge-estado.fuera-de-servicio::before {
+    background-color: #e74c3c;
+}
+
+/* Estilo para botón deshabilitado */
+#btnGuardarActivo:disabled {
+    background-color: #bdc3c7 !important;
+    color: #7f8c8d !important;
+    border-color: #bdc3c7 !important;
+    cursor: not-allowed !important;
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+/* Formulario en Modal */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .toolbar-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-filter-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

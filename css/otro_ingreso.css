@@ -1,0 +1,99 @@
+/* css/otro_ingreso.css */
+
+.badge-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Colores para estados de ingreso */
+.estado-cobrado {
+    background-color: rgba(46, 204, 113, 0.15);
+    color: #27ae60;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.estado-anulado {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: #c0392b;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.monto-ingreso {
+    font-weight: 700;
+    color: #27ae60;
+}
+
+.ingreso-summary-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.ingreso-summary-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background: rgba(39, 174, 96, 0.1);
+    color: #27ae60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+/* Alineación horizontal de botones de acción */
+td.actions {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.action-buttons {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    white-space: nowrap !important;
+}
+
+.action-buttons .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.action-buttons .edit-btn {
+    background-color: rgba(52, 152, 219, 0.12);
+    color: #2980b9;
+}
+
+.action-buttons .edit-btn:hover {
+    background-color: #3498db;
+    color: #ffffff;
+}
+
+.action-buttons .delete-btn {
+    background-color: rgba(231, 76, 60, 0.12);
+    color: #c0392b;
+}
+
+.action-buttons .delete-btn:hover {
+    background-color: #e74c3c;
+    color: #ffffff;
+}

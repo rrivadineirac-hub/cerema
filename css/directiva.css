@@ -1,0 +1,53 @@
+/* css/directiva.css */
+
+/* Reutilización de los estilos de tabla y modales (asumen que existen en style.css o socio.css)
+   Aquí agregaremos estilos específicos para los roles. */
+
+/* Badges para cargos */
+.badge-cargo {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.5px;
+}
+
+/* Colores por defecto y específicos */
+.badge-cargo {
+    background-color: rgba(44, 62, 80, 0.1);
+    color: var(--text-main);
+}
+
+.badge-presidente {
+    background-color: rgba(255, 122, 0, 0.1); /* Naranja / Dorado */
+    color: var(--primary);
+    border: 1px solid rgba(255, 122, 0, 0.2);
+}
+
+.badge-vicepresidente {
+    background-color: rgba(52, 152, 219, 0.1); /* Azul */
+    color: var(--info);
+}
+
+.badge-tesorero, .badge-contador {
+    background-color: rgba(39, 174, 96, 0.1); /* Verde */
+    color: var(--secondary);
+}
+
+.badge-secretario {
+    background-color: rgba(142, 68, 173, 0.1); /* Morado */
+    color: #8E44AD;
+}
+
+/* Modificación de selects para que resalten */
+select#id_cargo, select#id_socio {
+    background-color: #FAFCFD;
+    cursor: pointer;
+}
+
+select#id_cargo:focus, select#id_socio:focus {
+    background-color: #FFFFFF;
+}
