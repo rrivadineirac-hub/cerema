@@ -435,7 +435,6 @@ CREATE TABLE `mensualidad` (
 
 LOCK TABLES `mensualidad` WRITE;
 /*!40000 ALTER TABLE `mensualidad` DISABLE KEYS */;
-INSERT INTO `mensualidad` VALUES (1,138,'Agosto',2026,50.00,NULL,'2026-08-24 00:00:00',1,'000325','Pagado',NULL);
 /*!40000 ALTER TABLE `mensualidad` ENABLE KEYS */;
 UNLOCK TABLES;
 
