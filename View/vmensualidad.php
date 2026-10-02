@@ -19,9 +19,10 @@ include 'header.php';
                 <select name="id_socio" id="id_socio_select" required class="select-searchable">
                     <option value="" disabled selected>-- Selecciona un socio --</option>
                     <?php 
-                    if(isset($socios) && $socios->rowCount() > 0) {
-                        while($row = $socios->fetch(PDO::FETCH_ASSOC)) {
-                            $nombre_completo = htmlspecialchars($row['ap_paterno'] . ' ' . $row['ap_materno'] . ' ' . $row['nombre']);
+                    $list = isset($sociosList) ? $sociosList : (isset($socios) && is_array($socios) ? $socios : []);
+                    if (!empty($list)) {
+                        foreach ($list as $row) {
+                            $nombre_completo = htmlspecialchars(trim($row['ap_paterno'] . ' ' . $row['ap_materno'] . ' ' . $row['nombre']));
                             $ci_full = htmlspecialchars($row['ci']) . (!empty($row['complemento']) ? '-' . htmlspecialchars($row['complemento']) : '');
                             echo "<option value='" . $row['id_socio'] . "'>" . $ci_full . " - " . $nombre_completo . "</option>";
                         }
@@ -248,21 +249,15 @@ include 'header.php';
                         <div style="flex: 2; min-width: 250px;">
                             <label style="font-weight: 600; font-size: 12px; margin-bottom: 4px; display: block; color: #334155;">Socio a Cargar:</label>
                             <select name="id_socio" id="range_id_socio" required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; background: #fff;">
-                                <?php if (isset($socio_actual)): ?>
-                                    <option value="<?php echo $socio_actual['id_socio']; ?>" selected>
-                                        <?php echo htmlspecialchars($socio_actual['ci'] . ' - ' . trim($socio_actual['ap_paterno'] . ' ' . $socio_actual['ap_materno'] . ' ' . $socio_actual['nombre'])); ?>
-                                    </option>
-                                    <option value="all">-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
-                                <?php else: ?>
-                                    <option value="all" selected>-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
-                                    <?php 
-                                    if(isset($socios) && $socios->rowCount() > 0) {
-                                        while($sRow = $socios->fetch(PDO::FETCH_ASSOC)) {
-                                            echo "<option value='" . $sRow['id_socio'] . "'>" . htmlspecialchars($sRow['ci']) . " - " . htmlspecialchars($sRow['ap_paterno'] . ' ' . $sRow['ap_materno'] . ' ' . $sRow['nombre']) . "</option>";
-                                        }
-                                    }
-                                    ?>
-                                <?php endif; ?>
+                                <option value="all" <?php echo !isset($socio_actual) ? 'selected' : ''; ?>>-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
+                                <?php 
+                                $sList = isset($sociosList) ? $sociosList : [];
+                                foreach ($sList as $sRow) {
+                                    $isSel = (isset($socio_actual) && $socio_actual['id_socio'] == $sRow['id_socio']) ? 'selected' : '';
+                                    $nombreFull = htmlspecialchars($sRow['ci'] . ' - ' . trim($sRow['ap_paterno'] . ' ' . $sRow['ap_materno'] . ' ' . $sRow['nombre']));
+                                    echo "<option value='" . $sRow['id_socio'] . "' $isSel>" . $nombreFull . "</option>";
+                                }
+                                ?>
                             </select>
                         </div>
                         <div style="flex: 1; min-width: 130px;">

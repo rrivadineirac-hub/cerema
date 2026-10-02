@@ -339,6 +339,10 @@ $stmt_cat_m->execute();
 $row_cat_m = $stmt_cat_m->fetch(PDO::FETCH_ASSOC);
 $monto_mensualidad_sugerido = $row_cat_m ? (float)$row_cat_m['monto_sugerido'] : 50.00;
 
+// Always fetch all socios for range modal selection
+$stmtSocios = $socioModel->getAll();
+$sociosList = $stmtSocios ? $stmtSocios->fetchAll(PDO::FETCH_ASSOC) : [];
+
 // If we have an id_socio, show the CRUD for that socio
 if (isset($_GET['id_socio']) && !empty($_GET['id_socio'])) {
     $id_socio = $_GET['id_socio'];
@@ -354,7 +358,6 @@ if (isset($_GET['id_socio']) && !empty($_GET['id_socio'])) {
     include '../View/vmensualidad.php';
 } else {
     // No id_socio, show the selection screen
-    $socios = $socioModel->getAll();
     include '../View/vmensualidad.php';
 }
 ?>
