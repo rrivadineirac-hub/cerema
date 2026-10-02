@@ -103,12 +103,12 @@
 
 <!-- Modal para Configurar / Crear Nuevo Ingreso -->
 <div id="categoriaModal" class="modal">
-    <div class="modal-content" style="max-width: 550px; border-radius: 12px;">
-        <div class="modal-header" style="border-bottom: 1px solid #e2e8f0; padding: 16px 24px;">
-            <h2 id="modalTitle" style="font-size: 18px; font-weight: 700; color: #1e293b;">Crear Nuevo Ingreso</h2>
+    <div class="modal-content" style="max-width: 550px; border-radius: 14px; display: flex; flex-direction: column; max-height: 90vh; overflow: hidden; padding: 0;">
+        <div class="modal-header" style="flex-shrink: 0; border-bottom: 1px solid #e2e8f0; padding: 16px 24px; background: #ffffff; display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="modalTitle" style="font-size: 18px; font-weight: 700; color: #1e293b; margin: 0;">Crear Nuevo Ingreso</h2>
             <span class="close" onclick="closeCategoriaModal()">&times;</span>
         </div>
-        <div class="modal-body" style="padding: 20px 24px;">
+        <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 20px 24px; background: #ffffff;">
             <form id="categoriaForm">
                 <input type="hidden" id="id_cat_ingreso" name="id_cat_ingreso">
                 <input type="hidden" id="form_action" name="action" value="create">
@@ -205,24 +205,28 @@
                         <input type="number" step="0.01" id="monto_mensual" name="monto_mensual" placeholder="Ej: 50.00" oninput="calculateIncomeTotals()" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-weight: 700; color: #27AE60;">
                     </div>
 
-                    <!-- Resumen Calculado: Cuántos Meses y Cuánto Sería Total -->
-                    <div id="calcSummaryBox" style="background: #e0f2fe; border: 1px solid #bae6fd; padding: 12px 16px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #0369a1; display: block;">Duración Calculada</span>
-                            <strong id="calc_total_meses" style="font-size: 14px; color: #0284c7;">12 Meses</strong>
-                        </div>
-                        <div style="text-align: right;">
-                            <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #0369a1; display: block;">Monto Total Acumulado</span>
-                            <strong id="calc_monto_total" style="font-size: 18px; color: #27AE60; font-weight: 800;">Bs. 0.00</strong>
-                        </div>
-                    </div>
-
                 </div>
             </form>
         </div>
-        <div class="modal-footer" style="border-top: 1px solid #e2e8f0; padding: 14px 24px; display: flex; justify-content: flex-end; gap: 10px;">
-            <button type="button" class="btn-secondary" onclick="closeCategoriaModal()">Cancelar</button>
-            <button type="button" class="btn-primary" onclick="saveCategoria()" style="background: #FF7A00; border: none; font-weight: 700; padding: 10px 20px; border-radius: 8px;">Guardar Ingreso</button>
+        
+        <!-- FOOTER FIJO SIEMPRE VISIBLE CON RESUMEN CALCULADO Y BOTONES -->
+        <div class="modal-footer" style="flex-shrink: 0; border-top: 1px solid #e2e8f0; padding: 14px 24px; background: #ffffff; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 -4px 12px rgba(0,0,0,0.03);">
+            <!-- Resumen Calculado SIEMPRE VISIBLE -->
+            <div id="calcSummaryBox" style="background: #e0f2fe; border: 1.5px solid #7dd3fc; padding: 12px 16px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                    <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #0369a1; display: block;">Duración Calculada</span>
+                    <strong id="calc_total_meses" style="font-size: 15px; color: #0284c7; font-weight: 800;">12 Meses</strong>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #0369a1; display: block;">Monto Total Acumulado</span>
+                    <strong id="calc_monto_total" style="font-size: 20px; color: #27AE60; font-weight: 800;">Bs. 0.00</strong>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; width: 100%;">
+                <button type="button" class="btn-secondary" onclick="closeCategoriaModal()">Cancelar</button>
+                <button type="button" class="btn-primary" onclick="saveCategoria()" style="background: #FF7A00; border: none; font-weight: 700; padding: 10px 22px; border-radius: 8px; color: white;">Guardar Ingreso</button>
+            </div>
         </div>
     </div>
 </div>
