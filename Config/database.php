@@ -70,14 +70,19 @@ class Database {
         if ($this->conn) {
             try {
                 $anioActual = (int)date('Y');
-                // 1. Asegurar que existe la gestión del año actual
+                // 1. Asegurar que existen todas las gestiones desde 2018 hasta 2029
                 $stmtCheck = $this->conn->prepare("SELECT id_gestion FROM gestiones WHERE gestion = ?");
-                $stmtCheck->execute([$anioActual]);
-                if ($stmtCheck->rowCount() == 0) {
-                    $stmtIns = $this->conn->prepare("INSERT INTO gestiones (gestion, fecha_inicio, fecha_fin, estado) VALUES (?, ?, ?, 'En Curso')");
-                    $stmtIns->execute([$anioActual, "$anioActual-01-01", "$anioActual-12-31"]);
+                $stmtIns = $this->conn->prepare("INSERT INTO gestiones (gestion, fecha_inicio, fecha_fin, estado) VALUES (?, ?, ?, ?)");
+                
+                for ($g = 2018; $g <= 2029; $g++) {
+                    $stmtCheck->execute([$g]);
+                    if ($stmtCheck->rowCount() == 0) {
+                        $est = ($g < $anioActual) ? 'Cerrada' : (($g == $anioActual) ? 'En Curso' : 'Planificada');
+                        $stmtIns->execute([$g, "$g-01-01", "$g-12-31", $est]);
+                    }
                 }
-                // 2. Actualizar estados de gestiones (Cerrada para anteriores, Planificada para futuras, En Curso para la actual)
+                
+                // 2. Actualizar estados de gestiones
                 $this->conn->prepare("UPDATE gestiones SET estado = 'Cerrada' WHERE gestion < ?")->execute([$anioActual]);
                 $this->conn->prepare("UPDATE gestiones SET estado = 'Planificada' WHERE gestion > ?")->execute([$anioActual]);
                 $this->conn->prepare("UPDATE gestiones SET estado = 'En Curso' WHERE gestion = ?")->execute([$anioActual]);

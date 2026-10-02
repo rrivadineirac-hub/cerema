@@ -327,11 +327,71 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Functions for Carga Masiva por Rango (2018 - 2029)
+function openRangeModal() {
+    const rangeModal = document.getElementById('rangeModal');
+    if (rangeModal) {
+        rangeModal.style.display = 'block';
+    }
+}
+
+function closeRangeModal() {
+    const rangeModal = document.getElementById('rangeModal');
+    if (rangeModal) {
+        rangeModal.style.display = 'none';
+    }
+}
+
+function submitRangeLoad() {
+    const form = document.getElementById('rangeForm');
+    if (!form) return;
+
+    const btn = document.getElementById('btnSubmitRange');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando Carga...';
+    }
+
+    const formData = new FormData(form);
+
+    fetch('../Controller/mensualidad.controller.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.status === 'success') {
+            closeRangeModal();
+            showToast(data.message);
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(err => {
+        console.error('Error al cargar rango:', err);
+        alert('Ocurrió un error al procesar la carga masiva.');
+    })
+    .finally(() => {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Registrar Rango de Pagos';
+        }
+    });
+}
+
 // Cerrar modal al hacer click fuera
 window.onclick = function(event) {
     const modal = document.getElementById('mensualidadModal');
+    const rangeModal = document.getElementById('rangeModal');
     if (event.target == modal) {
         closeMensualidadModal();
     }
+    if (event.target == rangeModal) {
+        closeRangeModal();
+    }
 }
+
 

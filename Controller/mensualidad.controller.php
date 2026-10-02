@@ -90,6 +90,93 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo json_encode(["status" => "error", "message" => "No se pudo registrar la mensualidad."]);
                 }
             }
+        } elseif ($action == 'save_range') {
+            $id_socio = $_POST['id_socio'] ?? '';
+            $numero_accion = $_POST['numero_accion'] ?? 1;
+            $numero_recibo = $_POST['numero_recibo'] ?? '';
+            $start_y = intval($_POST['anio_inicio'] ?? 2018);
+            $start_m = intval($_POST['mes_inicio'] ?? 1);
+            $end_y = intval($_POST['anio_fin'] ?? 2026);
+            $end_m = intval($_POST['mes_fin'] ?? 12);
+            $monto_mensual = floatval($_POST['monto_mensual'] ?? 50.00);
+
+            if (empty($id_socio)) {
+                echo json_encode(["status" => "error", "message" => "Debe seleccionar un socio."]);
+                exit();
+            }
+
+            $meses_nombres = [
+                1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+                5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+                9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
+            ];
+
+            $socios_lista = [];
+            if ($id_socio === 'all') {
+                $stmtAllSocios = $socioModel->getAll();
+                while ($s = $stmtAllSocios->fetch(PDO::FETCH_ASSOC)) {
+                    $socios_lista[] = $s;
+                }
+            } else {
+                $s = $socioModel->getById($id_socio);
+                if ($s) $socios_lista[] = $s;
+            }
+
+            $count_added = 0;
+            $count_skipped = 0;
+
+            foreach ($socios_lista as $soc) {
+                $s_id = $soc['id_socio'];
+                $acciones_loop = [];
+                if ($numero_accion === 'all') {
+                    $max_acc = intval($soc['acciones'] ?? 1);
+                    for ($a = 1; $a <= $max_acc; $a++) {
+                        $acciones_loop[] = $a;
+                    }
+                } else {
+                    $acciones_loop[] = intval($numero_accion);
+                }
+
+                foreach ($acciones_loop as $acc) {
+                    $curr_y = $start_y;
+                    $curr_m = $start_m;
+
+                    while ($curr_y < $end_y || ($curr_y == $end_y && $curr_m <= $end_m)) {
+                        $nombre_mes = $meses_nombres[$curr_m];
+                        $existing = $mensualidadModel->checkExists($s_id, $acc, $nombre_mes, $curr_y);
+
+                        if (!$existing) {
+                            $data_ins = [
+                                'id_socio' => $s_id,
+                                'numero_accion' => $acc,
+                                'numero_recibo' => $numero_recibo,
+                                'mes' => $nombre_mes,
+                                'anio' => $curr_y,
+                                'monto' => $monto_mensual,
+                                'fecha_pago' => date('Y-m-d H:i:s'),
+                                'estado' => 'Pagado'
+                            ];
+                            if ($mensualidadModel->create($data_ins)) {
+                                $count_added++;
+                            }
+                        } else {
+                            $count_skipped++;
+                        }
+
+                        $curr_m++;
+                        if ($curr_m > 12) {
+                            $curr_m = 1;
+                            $curr_y++;
+                        }
+                    }
+                }
+            }
+
+            echo json_encode([
+                "status" => "success", 
+                "message" => "Carga de rango completada. Registrados: $count_added mensualidades. Ya existían: $count_skipped mensualidades."
+            ]);
+            exit();
         } elseif ($action == 'delete') {
             $id = isset($_POST['id_mensualidad']) ? $_POST['id_mensualidad'] : die(json_encode(["status" => "error", "message" => "ID no proporcionado."]));
             if ($mensualidadModel->delete($id)) {
