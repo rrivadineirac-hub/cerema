@@ -69,6 +69,9 @@
                             <button class="btn-icon btn-edit" onclick="editCategoria(<?php echo $cat['id_cat_ingreso']; ?>)" title="Configurar Monto">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
+                            <button class="btn-icon btn-delete" onclick="deleteCategoria(<?php echo $cat['id_cat_ingreso']; ?>, '<?php echo htmlspecialchars(addslashes($cat['nombre'])); ?>')" title="Eliminar Ingreso">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>

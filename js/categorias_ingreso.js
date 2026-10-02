@@ -76,6 +76,44 @@ function saveCategoria() {
     });
 }
 
+function deleteCategoria(id, name) {
+    if (confirm(`¿Estás seguro de eliminar el ingreso "${name}"?`)) {
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('id_cat_ingreso', id);
+
+        fetch('../Controller/categorias_ingreso.controller.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showToast(data.message);
+                setTimeout(() => { location.reload(); }, 1200);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting categoria:', error);
+            alert('Ocurrió un error al eliminar.');
+        });
+    }
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.innerText = message;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.classList.add('show'); }, 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => { toast.remove(); }, 400);
+    }, 3000);
+}
+
 window.onclick = function(event) {
     if (event.target == modal) {
         closeCategoriaModal();

@@ -40,6 +40,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se pudo crear la categoría']);
             }
+        } elseif ($action == 'delete') {
+            $id_cat_ingreso = $_POST['id_cat_ingreso'] ?? '';
+            if (!empty($id_cat_ingreso)) {
+                if ($categoriasModel->delete($id_cat_ingreso)) {
+                    echo json_encode(['status' => 'success', 'message' => 'Categoría eliminada correctamente']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No se pudo eliminar la categoría']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'ID de categoría requerido']);
+            }
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         }

@@ -84,5 +84,16 @@ class CategoriasIngresoModel {
         }
         return false;
     }
+
+    // Eliminar categoría de ingreso
+    public function delete($id_cat_ingreso) {
+        $query = "DELETE FROM " . $this->table_name . " WHERE id_cat_ingreso = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, $id_cat_ingreso);
+        if($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
 }
 ?>
