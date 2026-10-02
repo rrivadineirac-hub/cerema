@@ -300,6 +300,16 @@ if ($action == 'get_paid_months') {
     exit();
 }
 
+if ($action == 'get_all_paid_months') {
+    header('Content-Type: application/json');
+    $id_socio = $_GET['id_socio'] ?? '';
+    $numero_accion = $_GET['numero_accion'] ?? 1;
+    
+    $paidData = $mensualidadModel->getAllPaidMonthsAllYears($id_socio, $numero_accion);
+    echo json_encode(["status" => "success", "paid_data" => $paidData]);
+    exit();
+}
+
 if ($action == 'check_status') {
     header('Content-Type: application/json');
     $id_socio = $_GET['id_socio'] ?? '';

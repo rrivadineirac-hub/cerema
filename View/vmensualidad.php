@@ -248,7 +248,7 @@ include 'header.php';
                     <div class="form-row" style="display: flex; gap: 15px; flex-wrap: wrap;">
                         <div style="flex: 2; min-width: 250px;">
                             <label style="font-weight: 600; font-size: 12px; margin-bottom: 4px; display: block; color: #334155;">Socio a Cargar:</label>
-                            <select name="id_socio" id="range_id_socio" required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; background: #fff;">
+                            <select name="id_socio" id="range_id_socio" required onchange="loadAllPaidMonthsMultiYear()" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; background: #fff;">
                                 <option value="all" <?php echo !isset($socio_actual) ? 'selected' : ''; ?>>-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
                                 <?php 
                                 $sList = isset($sociosList) ? $sociosList : [];
@@ -262,7 +262,7 @@ include 'header.php';
                         </div>
                         <div style="flex: 1; min-width: 130px;">
                             <label style="font-weight: 600; font-size: 12px; margin-bottom: 4px; display: block; color: #334155;">Acción:</label>
-                            <select name="numero_accion" id="range_numero_accion" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; font-size: 13px;">
+                            <select name="numero_accion" id="range_numero_accion" onchange="loadAllPaidMonthsMultiYear()" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; font-size: 13px;">
                                 <option value="all">Todas las Acciones</option>
                                 <option value="1" selected>Acción 1</option>
                                 <option value="2">Acción 2</option>

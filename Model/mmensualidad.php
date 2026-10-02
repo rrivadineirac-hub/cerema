@@ -59,6 +59,41 @@ class MensualidadModel {
         return $months;
     }
 
+    // Obtener todos los meses pagados por año para un socio y acción
+    public function getAllPaidMonthsAllYears($id_socio, $numero_accion = 1) {
+        if ($id_socio === 'all' || empty($id_socio)) {
+            return [];
+        }
+
+        $query = "SELECT anio, mes FROM " . $this->table_name . " 
+                  WHERE id_socio = :id_socio ";
+        
+        if ($numero_accion !== 'all') {
+            $query .= " AND numero_accion = :numero_accion ";
+        }
+        $query .= " AND (estado = 'Pagado' OR estado IS NULL OR estado = '') ORDER BY anio ASC";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id_socio", $id_socio);
+        if ($numero_accion !== 'all') {
+            $stmt->bindParam(":numero_accion", $numero_accion);
+        }
+        $stmt->execute();
+
+        $paid = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $y = $row['anio'];
+            $m = $row['mes'];
+            if (!isset($paid[$y])) {
+                $paid[$y] = [];
+            }
+            if (!in_array($m, $paid[$y])) {
+                $paid[$y][] = $m;
+            }
+        }
+        return $paid;
+    }
+
     // Crear una nueva mensualidad
     public function create($data) {
         $query = "INSERT INTO " . $this->table_name . " 
