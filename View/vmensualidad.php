@@ -222,12 +222,12 @@ include 'header.php';
             <p style="margin-bottom: 30px; font-size: 16px; color: #444;">
                 ¿Está seguro de que desea eliminar el pago de: <br><strong id="deleteDesc" style="font-size: 18px; color: #222; display: inline-block; margin-top: 10px;"></strong>?
             </p>
-            <div style="display: flex; justify-content: center; gap: 15px;">
-                <button type="button" style="background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onclick="closeDeleteModal()">Cancelar</button>
-                <button type="button" style="background-color: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" id="btnConfirmDelete">Borrar registro</button>
             </div>
         </div>
-   <!-- Modal Carga Masiva por Rango & Multiaño (2018 - 2029) -->
+    </div>
+</div>
+
+<!-- Modal Carga Masiva por Rango & Multiaño (2018 - 2029) -->
 <div id="rangeModal" class="modal">
     <div class="modal-content" style="max-width: 850px; height: 90vh; max-height: 880px; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-radius: 12px; background: #ffffff;">
         
