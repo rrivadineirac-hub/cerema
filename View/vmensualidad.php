@@ -303,12 +303,16 @@ include 'header.php';
                         <input type="number" step="0.01" id="globalMontoInput" value="50.00" style="width: 75px; padding: 5px 8px; border-radius: 6px; border: 1px solid #7dd3fc; font-weight: 700; text-align: center;">
                         <button type="button" class="btn-xs" onclick="applyGlobalMonto()" style="background: #0284c7; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-weight: 600; cursor: pointer;">Aplicar a Todos</button>
                         <button type="button" class="btn-xs" onclick="applyDefaultRates()" style="background: #FF7A00; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; cursor: pointer;" title="Fijar 30 Bs para 2018-2024 y 50 Bs para 2025+">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Tarifas: 2018-24 (30 Bs) / 2025+ (50 Bs)
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Tarifas 2018-24 (30 Bs) / 2025+ (50 Bs)
                         </button>
                     </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button type="button" class="btn-xs" onclick="selectAllYears(true)" style="background: #27AE60; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-weight: 600; cursor: pointer;">Seleccionar Todos los Años</button>
-                        <button type="button" class="btn-xs" onclick="selectAllYears(false)" style="background: #64748b; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-weight: 600; cursor: pointer;">Desmarcar Todos</button>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button type="button" class="btn-xs" onclick="selectAllMonthsGlobal(true)" style="background: #27AE60; color: white; border: none; padding: 7px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-check-double"></i> Seleccionar TODOS los Meses (2018-2029)
+                        </button>
+                        <button type="button" class="btn-xs" onclick="selectAllMonthsGlobal(false)" style="background: #64748b; color: white; border: none; padding: 7px 10px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px;">
+                            Desmarcar Todos
+                        </button>
                     </div>
                 </div>
 

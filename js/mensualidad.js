@@ -397,19 +397,15 @@ function toggleYearCard(year) {
             card.style.borderColor = '#0284c7';
             card.style.background = '#f0f9ff';
         }
-        // If no months checked for this year, check all 12 by default
-        let checkedCount = 0;
-        monthCbs.forEach(mcb => { if (mcb.checked) checkedCount++; });
-        if (checkedCount === 0) {
-            monthCbs.forEach(mcb => {
-                mcb.checked = true;
-                const lbl = document.getElementById(`ymlabel_${year}_${mcb.value}`);
-                if (lbl) {
-                    lbl.style.borderColor = '#27AE60';
-                    lbl.style.background = '#e8f5e9';
-                }
-            });
-        }
+        // Check all 12 months for this year when checked
+        monthCbs.forEach(mcb => {
+            mcb.checked = true;
+            const lbl = document.getElementById(`ymlabel_${year}_${mcb.value}`);
+            if (lbl) {
+                lbl.style.borderColor = '#27AE60';
+                lbl.style.background = '#e8f5e9';
+            }
+        });
     } else {
         if (card) {
             card.style.borderColor = '#cbd5e1';
@@ -437,11 +433,34 @@ function setYearMonths(year, mode) {
             mcb.checked = true;
         });
     } else if (mode === 'clear') {
+        if (yearCb) yearCb.checked = false;
         monthCbs.forEach(mcb => {
             mcb.checked = false;
         });
     }
     toggleYearCard(year);
+}
+
+function selectAllMonthsGlobal(enable) {
+    for (let y = 2018; y <= 2029; y++) {
+        const yearCb = document.querySelector(`.year-enable-cb[data-year="${y}"]`);
+        if (yearCb) yearCb.checked = enable;
+        const monthCbs = document.querySelectorAll(`.ymonth-cb-${y}`);
+        monthCbs.forEach(mcb => {
+            mcb.checked = enable;
+            const lbl = document.getElementById(`ymlabel_${y}_${mcb.value}`);
+            if (lbl) {
+                lbl.style.borderColor = enable ? '#27AE60' : '#cbd5e1';
+                lbl.style.background = enable ? '#e8f5e9' : '#ffffff';
+            }
+        });
+        const card = document.getElementById(`ycard_${y}`);
+        if (card) {
+            card.style.borderColor = enable ? '#0284c7' : '#cbd5e1';
+            card.style.background = enable ? '#f0f9ff' : '#f8fafc';
+        }
+    }
+    updateMultiYearTotals();
 }
 
 function applyGlobalMonto() {
