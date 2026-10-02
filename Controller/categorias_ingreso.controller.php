@@ -26,19 +26,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'ID de categoría requerido']);
             }
-        } elseif ($action == 'create') {
+        } elseif ($action == 'create' || $action == 'update') {
             $data = [
+                'id_cat_ingreso' => $_POST['id_cat_ingreso'] ?? '',
                 'id_gestion' => $_POST['id_gestion'] ?? null,
                 'nombre' => $_POST['nombre'] ?? '',
-                'requiere_socio' => $_POST['requiere_socio'] ?? 0,
-                'monto_sugerido' => $_POST['monto_sugerido'] ?? 0,
-                'descripcion' => $_POST['descripcion'] ?? ''
+                'requiere_socio' => $_POST['requiere_socio'] ?? 1,
+                'monto_sugerido' => $_POST['monto_mensual'] ?? $_POST['monto_sugerido'] ?? 0,
+                'descripcion' => $_POST['descripcion'] ?? '',
+                'anio_inicio' => $_POST['anio_inicio'] ?? null,
+                'mes_inicio' => $_POST['mes_inicio'] ?? '',
+                'anio_fin' => $_POST['anio_fin'] ?? null,
+                'mes_fin' => $_POST['mes_fin'] ?? '',
+                'monto_mensual' => $_POST['monto_mensual'] ?? 0,
+                'monto_total' => $_POST['monto_total'] ?? 0
             ];
             
-            if ($categoriasModel->create($data)) {
-                echo json_encode(['status' => 'success', 'message' => 'Categoría creada exitosamente']);
+            if ($action == 'update' && !empty($data['id_cat_ingreso'])) {
+                if ($categoriasModel->update($data)) {
+                    echo json_encode(['status' => 'success', 'message' => 'Configuración de ingreso actualizada']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No se pudo actualizar el ingreso']);
+                }
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'No se pudo crear la categoría']);
+                if ($categoriasModel->create($data)) {
+                    echo json_encode(['status' => 'success', 'message' => 'Configuración de ingreso creada exitosamente']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No se pudo crear el ingreso']);
+                }
             }
         } elseif ($action == 'delete') {
             $id_cat_ingreso = $_POST['id_cat_ingreso'] ?? '';
