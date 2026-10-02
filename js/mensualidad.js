@@ -453,6 +453,17 @@ function applyGlobalMonto() {
     updateMultiYearTotals();
 }
 
+function applyDefaultRates() {
+    for (let y = 2018; y <= 2029; y++) {
+        const input = document.getElementById(`ymonto_${y}`);
+        if (input) {
+            input.value = (y <= 2024) ? "30.00" : "50.00";
+        }
+    }
+    updateMultiYearTotals();
+}
+
+
 function selectAllYears(enable) {
     const yearCbs = document.querySelectorAll('.year-enable-cb');
     yearCbs.forEach(cb => {
