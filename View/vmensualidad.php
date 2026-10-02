@@ -437,25 +437,29 @@ include 'header.php';
                 </form>
             </div>
 
-            <!-- Resumen Total Calculado -->
-            <div style="background: #1e293b; color: white; padding: 14px 20px; border-radius: 10px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+        </div>
+
+        <!-- Sticky Footer con Resumen Total Fijo y Botones de Acción -->
+        <div class="modal-footer" style="padding: 16px 24px; background-color: #f8fafc; border-top: 1.5px solid #e2e8f0; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 -4px 12px rgba(0,0,0,0.05);">
+            <!-- Resumen Total Calculado (Siempre Visible) -->
+            <div style="background: #1e293b; color: white; padding: 12px 18px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
                 <div>
-                    <span style="font-size: 12px; color: #94a3b8; display: block;">Resumen Total a Registrar:</span>
-                    <strong style="font-size: 16px; color: #38bdf8;" id="summaryTotalText">0 Años seleccionados | 0 Meses Totales</strong>
+                    <span style="font-size: 11px; color: #94a3b8; display: block; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Resumen Total a Registrar:</span>
+                    <strong style="font-size: 15px; color: #38bdf8;" id="summaryTotalText">0 Años seleccionados | 0 Meses Totales</strong>
                 </div>
                 <div>
-                    <span style="font-size: 12px; color: #94a3b8; display: block; text-align: right;">Monto Total Estimado:</span>
+                    <span style="font-size: 11px; color: #94a3b8; display: block; text-align: right; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Monto Total Estimado:</span>
                     <strong style="font-size: 20px; color: #4ade80;" id="summaryTotalMonto">Bs. 0.00</strong>
                 </div>
             </div>
 
-        </div>
-
-        <div class="modal-footer" style="padding: 16px 24px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 12px;">
-            <button type="button" class="btn-secondary" onclick="closeRangeModal()">Cancelar</button>
-            <button type="button" class="btn-primary" id="btnSubmitRange" onclick="submitRangeLoad()" style="background-color: #FF7A00; border: none; padding: 12px 24px; font-weight: 700; font-size: 14px;">
-                <i class="fa-solid fa-floppy-disk"></i> Registrar Pagos Multiaño
-            </button>
+            <!-- Botones de Acción -->
+            <div style="display: flex; justify-content: flex-end; gap: 12px; width: 100%;">
+                <button type="button" class="btn-secondary" onclick="closeRangeModal()">Cancelar</button>
+                <button type="button" class="btn-primary" id="btnSubmitRange" onclick="submitRangeLoad()" style="background-color: #FF7A00; border: none; padding: 12px 24px; font-weight: 700; font-size: 14px;">
+                    <i class="fa-solid fa-floppy-disk"></i> Registrar Pagos Multiaño
+                </button>
+            </div>
         </div>
     </div>
 </div>
