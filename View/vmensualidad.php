@@ -250,7 +250,7 @@ include 'header.php';
                             <select name="id_socio" id="range_id_socio" required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; background: #fff;">
                                 <?php if (isset($socio_actual)): ?>
                                     <option value="<?php echo $socio_actual['id_socio']; ?>" selected>
-                                        <?php echo htmlspecialchars($socio_actual['ci'] . ' - ' . $socio_actual['ap_paterno'] . ' ' . $socio_actual['nombre']); ?>
+                                        <?php echo htmlspecialchars($socio_actual['ci'] . ' - ' . trim($socio_actual['ap_paterno'] . ' ' . $socio_actual['ap_materno'] . ' ' . $socio_actual['nombre'])); ?>
                                     </option>
                                     <option value="all">-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
                                 <?php else: ?>
