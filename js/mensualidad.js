@@ -327,11 +327,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Functions for Carga Masiva por Rango (2018 - 2029)
+// Functions for Carga Masiva Multiaño & Rango (2018 - 2029)
+let activeRangeTab = 'multi';
+
 function openRangeModal() {
     const rangeModal = document.getElementById('rangeModal');
     if (rangeModal) {
         rangeModal.style.display = 'block';
+        switchRangeTab(activeRangeTab);
+        updateMultiYearTotals();
     }
 }
 
@@ -342,9 +346,199 @@ function closeRangeModal() {
     }
 }
 
+function switchRangeTab(tab) {
+    activeRangeTab = tab;
+    const tabBtnMulti = document.getElementById('tabBtnMulti');
+    const tabBtnRange = document.getElementById('tabBtnRange');
+    const tabContentMulti = document.getElementById('tabContentMulti');
+    const tabContentRange = document.getElementById('tabContentRange');
+
+    if (tab === 'multi') {
+        if (tabBtnMulti) {
+            tabBtnMulti.classList.add('active');
+            tabBtnMulti.style.background = '#ffffff';
+            tabBtnMulti.style.color = '#0284c7';
+            tabBtnMulti.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+        }
+        if (tabBtnRange) {
+            tabBtnRange.classList.remove('active');
+            tabBtnRange.style.background = 'transparent';
+            tabBtnRange.style.color = '#64748b';
+            tabBtnRange.style.boxShadow = 'none';
+        }
+        if (tabContentMulti) tabContentMulti.style.display = 'block';
+        if (tabContentRange) tabContentRange.style.display = 'none';
+    } else {
+        if (tabBtnRange) {
+            tabBtnRange.classList.add('active');
+            tabBtnRange.style.background = '#ffffff';
+            tabBtnRange.style.color = '#0284c7';
+            tabBtnRange.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+        }
+        if (tabBtnMulti) {
+            tabBtnMulti.classList.remove('active');
+            tabBtnMulti.style.background = 'transparent';
+            tabBtnMulti.style.color = '#64748b';
+            tabBtnMulti.style.boxShadow = 'none';
+        }
+        if (tabContentMulti) tabContentMulti.style.display = 'none';
+        if (tabContentRange) tabContentRange.style.display = 'block';
+    }
+    updateMultiYearTotals();
+}
+
+function toggleYearCard(year) {
+    const cb = document.querySelector(`.year-enable-cb[data-year="${year}"]`);
+    const card = document.getElementById(`ycard_${year}`);
+    const monthCbs = document.querySelectorAll(`.ymonth-cb-${year}`);
+
+    if (cb && cb.checked) {
+        if (card) {
+            card.style.borderColor = '#0284c7';
+            card.style.background = '#f0f9ff';
+        }
+        // If no months checked for this year, check all 12 by default
+        let checkedCount = 0;
+        monthCbs.forEach(mcb => { if (mcb.checked) checkedCount++; });
+        if (checkedCount === 0) {
+            monthCbs.forEach(mcb => {
+                mcb.checked = true;
+                const lbl = document.getElementById(`ymlabel_${year}_${mcb.value}`);
+                if (lbl) {
+                    lbl.style.borderColor = '#27AE60';
+                    lbl.style.background = '#e8f5e9';
+                }
+            });
+        }
+    } else {
+        if (card) {
+            card.style.borderColor = '#cbd5e1';
+            card.style.background = '#f8fafc';
+        }
+        monthCbs.forEach(mcb => {
+            mcb.checked = false;
+            const lbl = document.getElementById(`ymlabel_${year}_${mcb.value}`);
+            if (lbl) {
+                lbl.style.borderColor = '#cbd5e1';
+                lbl.style.background = '#ffffff';
+            }
+        });
+    }
+    updateMultiYearTotals();
+}
+
+function setYearMonths(year, mode) {
+    const yearCb = document.querySelector(`.year-enable-cb[data-year="${year}"]`);
+    const monthCbs = document.querySelectorAll(`.ymonth-cb-${year}`);
+
+    if (mode === 'all') {
+        if (yearCb) yearCb.checked = true;
+        monthCbs.forEach(mcb => {
+            mcb.checked = true;
+        });
+    } else if (mode === 'clear') {
+        monthCbs.forEach(mcb => {
+            mcb.checked = false;
+        });
+    }
+    toggleYearCard(year);
+}
+
+function applyGlobalMonto() {
+    const globalVal = document.getElementById('globalMontoInput').value;
+    const montoInputs = document.querySelectorAll('.year-monto-input');
+    montoInputs.forEach(input => {
+        input.value = globalVal;
+    });
+    updateMultiYearTotals();
+}
+
+function selectAllYears(enable) {
+    const yearCbs = document.querySelectorAll('.year-enable-cb');
+    yearCbs.forEach(cb => {
+        cb.checked = enable;
+        const y = cb.getAttribute('data-year');
+        toggleYearCard(y);
+    });
+}
+
+function updateMultiYearTotals() {
+    if (activeRangeTab === 'multi') {
+        let totalYears = 0;
+        let totalMonths = 0;
+        let totalMontoSum = 0;
+
+        for (let y = 2018; y <= 2029; y++) {
+            const yearCb = document.querySelector(`.year-enable-cb[data-year="${y}"]`);
+            const montoInput = document.getElementById(`ymonto_${y}`);
+            const montoVal = parseFloat(montoInput ? montoInput.value : 50) || 0;
+            const monthCbs = document.querySelectorAll(`.ymonth-cb-${y}`);
+            const card = document.getElementById(`ycard_${y}`);
+            
+            let checkedMonths = 0;
+            monthCbs.forEach(mcb => {
+                const lbl = document.getElementById(`ymlabel_${y}_${mcb.value}`);
+                if (mcb.checked) {
+                    checkedMonths++;
+                    if (lbl) {
+                        lbl.style.borderColor = '#27AE60';
+                        lbl.style.background = '#e8f5e9';
+                    }
+                } else {
+                    if (lbl) {
+                        lbl.style.borderColor = '#cbd5e1';
+                        lbl.style.background = '#ffffff';
+                    }
+                }
+            });
+
+            if (yearCb) {
+                if (checkedMonths > 0) {
+                    yearCb.checked = true;
+                    if (card) {
+                        card.style.borderColor = '#0284c7';
+                        card.style.background = '#f0f9ff';
+                    }
+                } else {
+                    yearCb.checked = false;
+                    if (card) {
+                        card.style.borderColor = '#cbd5e1';
+                        card.style.background = '#f8fafc';
+                    }
+                }
+            }
+
+            const yearSubtotal = checkedMonths * montoVal;
+            const subtotalEl = document.getElementById(`ysubtotal_${y}`);
+            if (subtotalEl) {
+                subtotalEl.innerText = `Subtotal ${checkedMonths} meses = Bs. ${yearSubtotal.toFixed(2)}`;
+            }
+
+            if (checkedMonths > 0) {
+                totalYears++;
+                totalMonths += checkedMonths;
+                totalMontoSum += yearSubtotal;
+            }
+        }
+
+        const textEl = document.getElementById('summaryTotalText');
+        const montoEl = document.getElementById('summaryTotalMonto');
+        if (textEl) textEl.innerText = `${totalYears} Años configurados | ${totalMonths} Meses Totales`;
+        if (montoEl) montoEl.innerText = `Bs. ${totalMontoSum.toFixed(2)}`;
+
+    } else {
+        // Range Tab Summary
+        const textEl = document.getElementById('summaryTotalText');
+        const montoEl = document.getElementById('summaryTotalMonto');
+        if (textEl) textEl.innerText = `Carga en Modo Rango Continuo`;
+        if (montoEl) montoEl.innerText = `Calculado al procesar`;
+    }
+}
+
 function submitRangeLoad() {
-    const form = document.getElementById('rangeForm');
-    if (!form) return;
+    const id_socio = document.getElementById('range_id_socio').value;
+    const numero_accion = document.getElementById('range_numero_accion').value;
+    const numero_recibo = document.getElementById('range_numero_recibo').value;
 
     const btn = document.getElementById('btnSubmitRange');
     if (btn) {
@@ -352,7 +546,56 @@ function submitRangeLoad() {
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando Carga...';
     }
 
-    const formData = new FormData(form);
+    const formData = new FormData();
+
+    if (activeRangeTab === 'multi') {
+        formData.append('action', 'save_multi_year');
+        formData.append('id_socio', id_socio);
+        formData.append('numero_accion', numero_accion);
+        formData.append('numero_recibo', numero_recibo);
+
+        const yearsData = [];
+        for (let y = 2018; y <= 2029; y++) {
+            const monthCbs = document.querySelectorAll(`.ymonth-cb-${y}`);
+            const selectedMonths = [];
+            monthCbs.forEach(mcb => {
+                if (mcb.checked) selectedMonths.push(mcb.value);
+            });
+
+            if (selectedMonths.length > 0) {
+                const montoInput = document.getElementById(`ymonto_${y}`);
+                const montoVal = parseFloat(montoInput ? montoInput.value : 50) || 50;
+                yearsData.push({
+                    anio: y,
+                    monto: montoVal,
+                    meses: selectedMonths
+                });
+            }
+        }
+
+        if (yearsData.length === 0) {
+            alert('Por favor selecciona al menos un año y los meses a registrar.');
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Registrar Pagos Multiaño';
+            }
+            return;
+        }
+
+        formData.append('years_json', JSON.stringify(yearsData));
+    } else {
+        const form = document.getElementById('rangeForm');
+        if (!form) return;
+        formData.append('action', 'save_range');
+        formData.append('id_socio', id_socio);
+        formData.append('numero_accion', numero_accion);
+        formData.append('numero_recibo', numero_recibo);
+        
+        const fData = new FormData(form);
+        for (let [k, v] of fData.entries()) {
+            if (k !== 'action') formData.append(k, v);
+        }
+    }
 
     fetch('../Controller/mensualidad.controller.php', {
         method: 'POST',
@@ -371,13 +614,13 @@ function submitRangeLoad() {
         }
     })
     .catch(err => {
-        console.error('Error al cargar rango:', err);
+        console.error('Error al cargar multiaño:', err);
         alert('Ocurrió un error al procesar la carga masiva.');
     })
     .finally(() => {
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Registrar Rango de Pagos';
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Registrar Pagos Multiaño';
         }
     });
 }
@@ -393,5 +636,6 @@ window.onclick = function(event) {
         closeRangeModal();
     }
 }
+
 
 

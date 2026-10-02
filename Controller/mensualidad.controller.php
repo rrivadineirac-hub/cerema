@@ -177,6 +177,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 "message" => "Carga de rango completada. Registrados: $count_added mensualidades. Ya existían: $count_skipped mensualidades."
             ]);
             exit();
+        } elseif ($action == 'save_multi_year') {
+            $id_socio = $_POST['id_socio'] ?? '';
+            $numero_accion = $_POST['numero_accion'] ?? 1;
+            $numero_recibo = $_POST['numero_recibo'] ?? '';
+            
+            $years_input = [];
+            if (!empty($_POST['years_json'])) {
+                $years_input = json_decode($_POST['years_json'], true);
+            } elseif (isset($_POST['years']) && is_array($_POST['years'])) {
+                $years_input = $_POST['years'];
+            }
+
+            if (empty($id_socio)) {
+                echo json_encode(["status" => "error", "message" => "Debe seleccionar un socio."]);
+                exit();
+            }
+
+            if (empty($years_input)) {
+                echo json_encode(["status" => "error", "message" => "No se ha seleccionado ningún año ni meses a registrar."]);
+                exit();
+            }
+
+            $socios_lista = [];
+            if ($id_socio === 'all') {
+                $stmtAllSocios = $socioModel->getAll();
+                while ($s = $stmtAllSocios->fetch(PDO::FETCH_ASSOC)) {
+                    $socios_lista[] = $s;
+                }
+            } else {
+                $s = $socioModel->getById($id_socio);
+                if ($s) $socios_lista[] = $s;
+            }
+
+            $count_added = 0;
+            $count_skipped = 0;
+
+            foreach ($socios_lista as $soc) {
+                $s_id = $soc['id_socio'];
+                $acciones_loop = [];
+                if ($numero_accion === 'all') {
+                    $max_acc = intval($soc['acciones'] ?? 1);
+                    for ($a = 1; $a <= $max_acc; $a++) {
+                        $acciones_loop[] = $a;
+                    }
+                } else {
+                    $acciones_loop[] = intval($numero_accion);
+                }
+
+                foreach ($acciones_loop as $acc) {
+                    foreach ($years_input as $yConfig) {
+                        $anio_val = intval($yConfig['anio'] ?? 0);
+                        $monto_val = floatval($yConfig['monto'] ?? 50.00);
+                        $meses_list = isset($yConfig['meses']) && is_array($yConfig['meses']) ? $yConfig['meses'] : [];
+
+                        if ($anio_val <= 0 || empty($meses_list)) continue;
+
+                        foreach ($meses_list as $nombre_mes) {
+                            $existing = $mensualidadModel->checkExists($s_id, $acc, $nombre_mes, $anio_val);
+                            if (!$existing) {
+                                $data_ins = [
+                                    'id_socio' => $s_id,
+                                    'numero_accion' => $acc,
+                                    'numero_recibo' => $numero_recibo,
+                                    'mes' => $nombre_mes,
+                                    'anio' => $anio_val,
+                                    'monto' => $monto_val,
+                                    'fecha_pago' => date('Y-m-d H:i:s'),
+                                    'estado' => 'Pagado'
+                                ];
+                                if ($mensualidadModel->create($data_ins)) {
+                                    $count_added++;
+                                }
+                            } else {
+                                $count_skipped++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            echo json_encode([
+                "status" => "success", 
+                "message" => "Carga multiaño completada. Registrados: $count_added mensualidades. Ya existían: $count_skipped mensualidades."
+            ]);
+            exit();
         } elseif ($action == 'delete') {
             $id = isset($_POST['id_mensualidad']) ? $_POST['id_mensualidad'] : die(json_encode(["status" => "error", "message" => "ID no proporcionado."]));
             if ($mensualidadModel->delete($id)) {

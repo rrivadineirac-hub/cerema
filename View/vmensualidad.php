@@ -230,48 +230,45 @@ include 'header.php';
     </div>
 </div>
 
-<!-- Modal Carga Masiva por Rango (2018 - 2029) -->
+<!-- Modal Carga Masiva por Rango & Multiaño (2018 - 2029) -->
 <div id="rangeModal" class="modal">
-    <div class="modal-content" style="max-width: 550px; padding: 0; overflow: hidden; border-radius: 12px;">
-        <div class="modal-header" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 18px 24px;">
+    <div class="modal-content" style="max-width: 850px; padding: 0; overflow: hidden; border-radius: 12px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center;">
             <h2 style="margin: 0; font-size: 18px; font-weight: 700; color: #fff;">
                 <i class="fa-solid fa-calendar-days" style="color: #FF7A00; margin-right: 8px;"></i>
-                Carga Masiva por Rango (2018 - 2029)
+                Carga Masiva de Mensualidades (2018 - 2029)
             </h2>
             <span class="close-btn" onclick="closeRangeModal()" style="color: #fff; font-size: 24px; cursor: pointer;">&times;</span>
         </div>
-        <div class="modal-body" style="padding: 24px; background: #ffffff;">
-            <p style="font-size: 13px; color: #64748b; margin-bottom: 20px; line-height: 1.4;">
-                Registra en bloque las mensualidades pagadas seleccionando el año/mes de inicio y el año/mes de término. Los meses que ya estén pagados no se duplicarán.
-            </p>
-            <form id="rangeForm">
-                <input type="hidden" name="action" value="save_range">
-                
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="font-weight: 600; font-size: 13px; margin-bottom: 6px; display: block; color: #334155;">Socio a Cargar:</label>
-                    <select name="id_socio" id="range_id_socio" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 14px;">
-                        <?php if (isset($socio_actual)): ?>
-                            <option value="<?php echo $socio_actual['id_socio']; ?>" selected>
-                                <?php echo htmlspecialchars($socio_actual['ci'] . ' - ' . $socio_actual['ap_paterno'] . ' ' . $socio_actual['nombre']); ?>
-                            </option>
-                            <option value="all">-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
-                        <?php else: ?>
-                            <option value="all" selected>-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
-                            <?php 
-                            if(isset($socios) && $socios->rowCount() > 0) {
-                                while($sRow = $socios->fetch(PDO::FETCH_ASSOC)) {
-                                    echo "<option value='" . $sRow['id_socio'] . "'>" . htmlspecialchars($sRow['ci']) . " - " . htmlspecialchars($sRow['ap_paterno'] . ' ' . $sRow['ap_materno'] . ' ' . $sRow['nombre']) . "</option>";
+        
+        <div class="modal-body" style="padding: 20px 24px; background: #ffffff; max-height: 80vh; overflow-y: auto;">
+            
+            <!-- Selector de Socio y Acción Común -->
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 10px; margin-bottom: 20px;">
+                <div class="form-row" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div style="flex: 2; min-width: 250px;">
+                        <label style="font-weight: 600; font-size: 13px; margin-bottom: 6px; display: block; color: #334155;">Socio a Cargar:</label>
+                        <select name="id_socio" id="range_id_socio" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 14px; background: #fff;">
+                            <?php if (isset($socio_actual)): ?>
+                                <option value="<?php echo $socio_actual['id_socio']; ?>" selected>
+                                    <?php echo htmlspecialchars($socio_actual['ci'] . ' - ' . $socio_actual['ap_paterno'] . ' ' . $socio_actual['nombre']); ?>
+                                </option>
+                                <option value="all">-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
+                            <?php else: ?>
+                                <option value="all" selected>-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
+                                <?php 
+                                if(isset($socios) && $socios->rowCount() > 0) {
+                                    while($sRow = $socios->fetch(PDO::FETCH_ASSOC)) {
+                                        echo "<option value='" . $sRow['id_socio'] . "'>" . htmlspecialchars($sRow['ci']) . " - " . htmlspecialchars($sRow['ap_paterno'] . ' ' . $sRow['ap_materno'] . ' ' . $sRow['nombre']) . "</option>";
+                                    }
                                 }
-                            }
-                            ?>
-                        <?php endif; ?>
-                    </select>
-                </div>
-
-                <div class="form-row" style="display: flex; gap: 15px; margin-bottom: 16px;">
-                    <div class="form-group half" style="flex: 1;">
-                        <label style="font-weight: 600; font-size: 13px; margin-bottom: 6px; display: block; color: #334155;">Acción</label>
-                        <select name="numero_accion" id="range_numero_accion" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-weight: 600; font-size: 13px; margin-bottom: 6px; display: block; color: #334155;">Acción:</label>
+                        <select name="numero_accion" id="range_numero_accion" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff;">
                             <option value="all">Todas las Acciones</option>
                             <option value="1" selected>Acción 1</option>
                             <option value="2">Acción 2</option>
@@ -280,94 +277,178 @@ include 'header.php';
                             <option value="5">Acción 5</option>
                         </select>
                     </div>
-                    <div class="form-group half" style="flex: 1;">
-                        <label style="font-weight: 600; font-size: 13px; margin-bottom: 6px; display: block; color: #334155;">Monto por Mes (Bs)</label>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-weight: 600; font-size: 13px; margin-bottom: 6px; display: block; color: #334155;">Nº Recibo (Opcional):</label>
+                        <input type="text" id="range_numero_recibo" placeholder="Ej: REC-2018-2029" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pestañas de Modo de Carga -->
+            <div style="display: flex; gap: 8px; background: #f1f5f9; padding: 5px; border-radius: 10px; margin-bottom: 20px;">
+                <button type="button" id="tabBtnMulti" class="modal-tab-btn active" onclick="switchRangeTab('multi')" style="flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; background: #ffffff; color: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fa-solid fa-sliders"></i> Configurar Montos y Meses por Año (Multiaño)
+                </button>
+                <button type="button" id="tabBtnRange" class="modal-tab-btn" onclick="switchRangeTab('range')" style="flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; background: transparent; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fa-solid fa-arrows-left-right"></i> Rango Continuo (Desde - Hasta)
+                </button>
+            </div>
+
+            <!-- TAB 1: CONFIGURACIÓN MULTIAÑO PERSONALIZADA POR AÑO -->
+            <div id="tabContentMulti" style="display: block;">
+                <!-- Barra de Acciones Rápidas Globales -->
+                <div style="background: #e0f2fe; border: 1px solid #bae6fd; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-weight: 700; font-size: 13px; color: #0369a1;">Monto Global:</span>
+                        <input type="number" step="0.01" id="globalMontoInput" value="<?php echo number_format($monto_mensualidad_sugerido ?? 50.00, 2, '.', ''); ?>" style="width: 85px; padding: 5px 8px; border-radius: 6px; border: 1px solid #7dd3fc; font-weight: 700; text-align: center;">
+                        <button type="button" class="btn-xs" onclick="applyGlobalMonto()" style="background: #0284c7; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 600; cursor: pointer;">Aplicar a Todos</button>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn-xs" onclick="selectAllYears(true)" style="background: #27AE60; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-weight: 600; cursor: pointer;">Seleccionar Todos los Años</button>
+                        <button type="button" class="btn-xs" onclick="selectAllYears(false)" style="background: #64748b; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-weight: 600; cursor: pointer;">Desmarcar Todos</button>
+                    </div>
+                </div>
+
+                <!-- Lista de Tarjetas por Año (2018 a 2029) -->
+                <div id="yearsContainer" style="display: flex; flex-direction: column; gap: 12px;">
+                    <?php 
+                    $mesesNom = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                    for ($y = 2018; $y <= 2029; $y++): 
+                    ?>
+                        <div class="year-card" id="ycard_<?php echo $y; ?>" style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 14px; transition: all 0.2s;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                                <label style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #1e293b; cursor: pointer;">
+                                    <input type="checkbox" class="year-enable-cb" data-year="<?php echo $y; ?>" onchange="toggleYearCard(<?php echo $y; ?>)" style="width: 18px; height: 18px; accent-color: #0284c7; cursor: pointer;">
+                                    <i class="fa-solid fa-calendar-day" style="color: #0284c7;"></i> Gestión <?php echo $y; ?>
+                                </label>
+
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="font-size: 12px; font-weight: 600; color: #64748b;">Monto/Mes (Bs):</span>
+                                    <input type="number" step="0.01" class="year-monto-input" id="ymonto_<?php echo $y; ?>" data-year="<?php echo $y; ?>" value="<?php echo number_format($monto_mensualidad_sugerido ?? 50.00, 2, '.', ''); ?>" oninput="updateMultiYearTotals()" style="width: 85px; padding: 6px 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: #27AE60; text-align: center;">
+                                    <div style="display: flex; gap: 4px;">
+                                        <button type="button" class="btn-xs" onclick="setYearMonths(<?php echo $y; ?>, 'all')" style="background: #e2e8f0; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;">12 Meses</button>
+                                        <button type="button" class="btn-xs" onclick="setYearMonths(<?php echo $y; ?>, 'clear')" style="background: #f1f5f9; color: #64748b; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;">Limpiar</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Grid de 12 Meses para esta Gestión -->
+                            <div class="ymonths-grid" id="ymonths_<?php echo $y; ?>" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px;">
+                                <?php foreach($mesesNom as $mIdx => $mName): ?>
+                                    <label class="ymonth-label" id="ymlabel_<?php echo $y; ?>_<?php echo $mName; ?>" style="display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 6px 8px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; user-select: none;">
+                                        <input type="checkbox" class="ymonth-cb ymonth-cb-<?php echo $y; ?>" data-year="<?php echo $y; ?>" value="<?php echo $mName; ?>" onchange="updateMultiYearTotals()" style="width: 16px; height: 16px; accent-color: #27AE60; cursor: pointer;">
+                                        <span><?php echo substr($mName, 0, 3); ?></span>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                            
+                            <div style="margin-top: 8px; font-size: 11px; font-weight: 600; color: #64748b; text-align: right;" id="ysubtotal_<?php echo $y; ?>">
+                                Subtotal 0 meses = Bs. 0.00
+                            </div>
+                        </div>
+                    <?php endfor; ?>
+                </div>
+            </div>
+
+            <!-- TAB 2: RANGO RÁPIDO DESDE - HASTA -->
+            <div id="tabContentRange" style="display: none;">
+                <form id="rangeForm">
+                    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                        <label style="font-weight: 700; font-size: 14px; color: #1e293b; display: block; margin-bottom: 12px;">
+                            <i class="fa-solid fa-play" style="color: #27AE60;"></i> Desde (Inicio de Pago):
+                        </label>
+                        <div class="form-row" style="display: flex; gap: 15px;">
+                            <div style="flex: 1;">
+                                <label style="font-size: 12px; color: #64748b;">Mes Inicio</label>
+                                <select name="mes_inicio" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                    <option value="1" selected>Enero</option>
+                                    <option value="2">Febrero</option>
+                                    <option value="3">Marzo</option>
+                                    <option value="4">Abril</option>
+                                    <option value="5">Mayo</option>
+                                    <option value="6">Junio</option>
+                                    <option value="7">Julio</option>
+                                    <option value="8">Agosto</option>
+                                    <option value="9">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="font-size: 12px; color: #64748b;">Año Inicio</label>
+                                <select name="anio_inicio" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                    <?php for($y=2018; $y<=2029; $y++): ?>
+                                        <option value="<?php echo $y; ?>" <?php echo $y==2018?'selected':''; ?>><?php echo $y; ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                        <label style="font-weight: 700; font-size: 14px; color: #1e293b; display: block; margin-bottom: 12px;">
+                            <i class="fa-solid fa-flag-checkered" style="color: #FF7A00;"></i> Hasta (Término de Pago):
+                        </label>
+                        <div class="form-row" style="display: flex; gap: 15px;">
+                            <div style="flex: 1;">
+                                <label style="font-size: 12px; color: #64748b;">Mes Término</label>
+                                <select name="mes_fin" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                    <option value="1">Enero</option>
+                                    <option value="2">Febrero</option>
+                                    <option value="3">Marzo</option>
+                                    <option value="4">Abril</option>
+                                    <option value="5">Mayo</option>
+                                    <option value="6">Junio</option>
+                                    <option value="7">Julio</option>
+                                    <option value="8">Agosto</option>
+                                    <option value="9">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12" selected>Diciembre</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="font-size: 12px; color: #64748b;">Año Término</label>
+                                <select name="anio_fin" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                    <?php for($y=2018; $y<=2029; $y++): ?>
+                                        <option value="<?php echo $y; ?>" <?php echo $y==2026?'selected':''; ?>><?php echo $y; ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="font-size: 13px; font-weight: 600; color: #334155;">Monto Fijo por Mes para el Rango (Bs):</label>
                         <input type="number" step="0.01" name="monto_mensual" value="<?php echo number_format($monto_mensualidad_sugerido ?? 50.00, 2, '.', ''); ?>" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;" required>
                     </div>
-                </div>
+                </form>
+            </div>
 
-                <!-- Rango Desde -->
-                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 14px; border-radius: 8px; margin-bottom: 16px;">
-                    <label style="font-weight: 700; font-size: 13px; color: #1e293b; display: block; margin-bottom: 10px;">
-                        <i class="fa-solid fa-play" style="color: #27AE60;"></i> Desde (Inicio de Pago):
-                    </label>
-                    <div class="form-row" style="display: flex; gap: 15px;">
-                        <div style="flex: 1;">
-                            <label style="font-size: 12px; color: #64748b;">Mes Inicio</label>
-                            <select name="mes_inicio" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                <option value="1" selected>Enero</option>
-                                <option value="2">Febrero</option>
-                                <option value="3">Marzo</option>
-                                <option value="4">Abril</option>
-                                <option value="5">Mayo</option>
-                                <option value="6">Junio</option>
-                                <option value="7">Julio</option>
-                                <option value="8">Agosto</option>
-                                <option value="9">Septiembre</option>
-                                <option value="10">Octubre</option>
-                                <option value="11">Noviembre</option>
-                                <option value="12">Diciembre</option>
-                            </select>
-                        </div>
-                        <div style="flex: 1;">
-                            <label style="font-size: 12px; color: #64748b;">Año Inicio</label>
-                            <select name="anio_inicio" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                <?php for($y=2018; $y<=2029; $y++): ?>
-                                    <option value="<?php echo $y; ?>" <?php echo $y==2018?'selected':''; ?>><?php echo $y; ?></option>
-                                <?php endfor; ?>
-                            </select>
-                        </div>
-                    </div>
+            <!-- Resumen Total Calculado -->
+            <div style="background: #1e293b; color: white; padding: 14px 20px; border-radius: 10px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-size: 12px; color: #94a3b8; display: block;">Resumen Total a Registrar:</span>
+                    <strong style="font-size: 16px; color: #38bdf8;" id="summaryTotalText">0 Años seleccionados | 0 Meses Totales</strong>
                 </div>
+                <div>
+                    <span style="font-size: 12px; color: #94a3b8; display: block; text-align: right;">Monto Total Estimado:</span>
+                    <strong style="font-size: 20px; color: #4ade80;" id="summaryTotalMonto">Bs. 0.00</strong>
+                </div>
+            </div>
 
-                <!-- Rango Hasta -->
-                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 14px; border-radius: 8px; margin-bottom: 16px;">
-                    <label style="font-weight: 700; font-size: 13px; color: #1e293b; display: block; margin-bottom: 10px;">
-                        <i class="fa-solid fa-flag-checkered" style="color: #FF7A00;"></i> Hasta (Término de Pago):
-                    </label>
-                    <div class="form-row" style="display: flex; gap: 15px;">
-                        <div style="flex: 1;">
-                            <label style="font-size: 12px; color: #64748b;">Mes Término</label>
-                            <select name="mes_fin" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                <option value="1">Enero</option>
-                                <option value="2">Febrero</option>
-                                <option value="3">Marzo</option>
-                                <option value="4">Abril</option>
-                                <option value="5">Mayo</option>
-                                <option value="6">Junio</option>
-                                <option value="7">Julio</option>
-                                <option value="8">Agosto</option>
-                                <option value="9">Septiembre</option>
-                                <option value="10">Octubre</option>
-                                <option value="11">Noviembre</option>
-                                <option value="12" selected>Diciembre</option>
-                            </select>
-                        </div>
-                        <div style="flex: 1;">
-                            <label style="font-size: 12px; color: #64748b;">Año Término</label>
-                            <select name="anio_fin" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                                <?php for($y=2018; $y<=2029; $y++): ?>
-                                    <option value="<?php echo $y; ?>" <?php echo $y==2026?'selected':''; ?>><?php echo $y; ?></option>
-                                <?php endfor; ?>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label style="font-size: 12px; color: #64748b;">Nº Recibo (Opcional)</label>
-                    <input type="text" name="numero_recibo" placeholder="Ej: REC-2018-2026" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
-                </div>
-            </form>
         </div>
+
         <div class="modal-footer" style="padding: 16px 24px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 12px;">
             <button type="button" class="btn-secondary" onclick="closeRangeModal()">Cancelar</button>
-            <button type="button" class="btn-primary" id="btnSubmitRange" onclick="submitRangeLoad()" style="background-color: #FF7A00; border: none; padding: 10px 20px; font-weight: 700;">
-                <i class="fa-solid fa-floppy-disk"></i> Registrar Rango de Pagos
+            <button type="button" class="btn-primary" id="btnSubmitRange" onclick="submitRangeLoad()" style="background-color: #FF7A00; border: none; padding: 12px 24px; font-weight: 700; font-size: 14px;">
+                <i class="fa-solid fa-floppy-disk"></i> Registrar Pagos Multiaño
             </button>
         </div>
     </div>
 </div>
+
 <!-- Extra styles/scripts for Mensualidad view -->
 <link rel="stylesheet" href="../css/mensualidad.css">
 <script>
