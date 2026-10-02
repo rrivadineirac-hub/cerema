@@ -103,7 +103,15 @@
                             <option value="">Todas las Gestiones (Global)</option>
                             <?php if (isset($gestiones_list) && is_array($gestiones_list)): ?>
                                 <?php foreach ($gestiones_list as $g): ?>
-                                    <option value="<?php echo $g['id_gestion']; ?>" <?php echo ($id_gestion_selected == $g['id_gestion']) ? 'selected' : ''; ?>>
+                                    <?php 
+                                    $isSelected = false;
+                                    if (isset($id_gestion_selected) && $id_gestion_selected !== 'all' && $id_gestion_selected == $g['id_gestion']) {
+                                        $isSelected = true;
+                                    } elseif ((!isset($id_gestion_selected) || $id_gestion_selected === 'all') && $g['estado'] == 'En Curso') {
+                                        $isSelected = true;
+                                    }
+                                    ?>
+                                    <option value="<?php echo $g['id_gestion']; ?>" <?php echo $isSelected ? 'selected' : ''; ?>>
                                         Gestión <?php echo htmlspecialchars($g['gestion']); ?><?php echo ($g['estado'] == 'En Curso') ? ' (En Curso)' : ''; ?>
                                     </option>
                                 <?php endforeach; ?>

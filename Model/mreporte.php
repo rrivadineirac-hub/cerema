@@ -6,6 +6,13 @@ class ReporteModel {
 
     public function __construct($db) {
         $this->conn = $db;
+        $this->ensureOtrosGastosColumnsExist();
+    }
+
+    private function ensureOtrosGastosColumnsExist() {
+        try { $this->conn->exec("ALTER TABLE otros_gastos ADD COLUMN unidad_medida VARCHAR(50) DEFAULT 'Glb'"); } catch (Exception $e) {}
+        try { $this->conn->exec("ALTER TABLE otros_gastos ADD COLUMN cantidad DECIMAL(10,2) DEFAULT 1.00"); } catch (Exception $e) {}
+        try { $this->conn->exec("ALTER TABLE otros_gastos ADD COLUMN precio DECIMAL(10,2) DEFAULT NULL"); } catch (Exception $e) {}
     }
 
     // Obtener lista de asociados activos
@@ -13,6 +20,7 @@ class ReporteModel {
         $query = "SELECT 
                     s.id_socio, 
                     s.ci, 
+                    s.complemento,
                     s.ap_paterno, 
                     s.ap_materno, 
                     s.nombre, 
@@ -51,6 +59,7 @@ class ReporteModel {
         $query = "SELECT 
                     id_socio, 
                     ci, 
+                    complemento,
                     ap_paterno, 
                     ap_materno, 
                     nombre, 
@@ -88,6 +97,7 @@ class ReporteModel {
         $query = "SELECT 
                     id_socio, 
                     ci, 
+                    complemento,
                     ap_paterno, 
                     ap_materno, 
                     nombre, 
@@ -125,6 +135,7 @@ class ReporteModel {
         $query = "SELECT 
                     id_socio, 
                     ci, 
+                    complemento,
                     ap_paterno, 
                     ap_materno, 
                     nombre, 
@@ -167,6 +178,7 @@ class ReporteModel {
                     m.fecha_pago,
                     m.estado,
                     s.ci,
+                    s.complemento,
                     s.ap_paterno,
                     s.ap_materno,
                     s.nombre
@@ -199,6 +211,7 @@ class ReporteModel {
                     a.fecha_aporte as fecha_pago,
                     a.numero_recibo,
                     s.ci,
+                    s.complemento,
                     s.ap_paterno,
                     s.ap_materno,
                     s.nombre
@@ -231,6 +244,7 @@ class ReporteModel {
                     e.fecha_aporte as fecha_pago,
                     e.numero_recibo,
                     s.ci,
+                    s.complemento,
                     s.ap_paterno,
                     s.ap_materno,
                     s.nombre
@@ -259,7 +273,7 @@ class ReporteModel {
         }
 
         // 1. Obtener todos los asociados
-        $querySocios = "SELECT id_socio, ci, ap_paterno, ap_materno, nombre, COALESCE(acciones, 1) as total_acciones, estado 
+        $querySocios = "SELECT id_socio, ci, complemento, ap_paterno, ap_materno, nombre, COALESCE(acciones, 1) as total_acciones, estado 
                         FROM asociados 
                         ORDER BY ap_paterno ASC, ap_materno ASC, nombre ASC";
         $stmtSocios = $this->conn->prepare($querySocios);
@@ -295,7 +309,7 @@ class ReporteModel {
             for ($acc = 1; $acc <= $totalAcciones; $acc++) {
                 $row = [
                     'id_socio' => $idSocio,
-                    'ci' => $socio['ci'],
+                    'ci' => $socio['ci'] . (!empty($socio['complemento']) ? '-' . $socio['complemento'] : ''),
                     'nombre_completo' => trim($socio['ap_paterno'] . ' ' . $socio['ap_materno'] . ', ' . $socio['nombre']),
                     'estado_socio' => $socio['estado'],
                     'numero_accion' => $acc,
@@ -360,7 +374,7 @@ class ReporteModel {
             }
         }
 
-        $querySocios = "SELECT id_socio, ci, ap_paterno, ap_materno, nombre, COALESCE(acciones, 1) as total_acciones, estado 
+        $querySocios = "SELECT id_socio, ci, complemento, ap_paterno, ap_materno, nombre, COALESCE(acciones, 1) as total_acciones, estado 
                         FROM asociados 
                         ORDER BY ap_paterno ASC, ap_materno ASC, nombre ASC";
         $stmtSocios = $this->conn->prepare($querySocios);
@@ -401,7 +415,7 @@ class ReporteModel {
             for ($acc = 1; $acc <= $totalAcciones; $acc++) {
                 $row = [
                     'id_socio' => $idSocio,
-                    'ci' => $socio['ci'],
+                    'ci' => $socio['ci'] . (!empty($socio['complemento']) ? '-' . $socio['complemento'] : ''),
                     'nombre_completo' => trim($socio['ap_paterno'] . ' ' . $socio['ap_materno'] . ', ' . $socio['nombre']),
                     'estado_socio' => $socio['estado'],
                     'numero_accion' => $acc,
@@ -505,7 +519,7 @@ class ReporteModel {
             }
         }
 
-        $querySocios = "SELECT id_socio, ci, ap_paterno, ap_materno, nombre, COALESCE(acciones, 1) as total_acciones, estado 
+        $querySocios = "SELECT id_socio, ci, complemento, ap_paterno, ap_materno, nombre, COALESCE(acciones, 1) as total_acciones, estado 
                         FROM asociados 
                         ORDER BY ap_paterno ASC, ap_materno ASC, nombre ASC";
         $stmtSocios = $this->conn->prepare($querySocios);
@@ -546,7 +560,7 @@ class ReporteModel {
             for ($acc = 1; $acc <= $totalAcciones; $acc++) {
                 $row = [
                     'id_socio' => $idSocio,
-                    'ci' => $socio['ci'],
+                    'ci' => $socio['ci'] . (!empty($socio['complemento']) ? '-' . $socio['complemento'] : ''),
                     'nombre_completo' => trim($socio['ap_paterno'] . ' ' . $socio['ap_materno'] . ', ' . $socio['nombre']),
                     'estado_socio' => $socio['estado'],
                     'numero_accion' => $acc,
@@ -807,11 +821,22 @@ class ReporteModel {
     }
 
     // 5. OTROS GASTOS
+    public function getConceptosOtrosGastos() {
+        $query = "SELECT DISTINCT COALESCE(NULLIF(nombre_gasto, ''), detalle) AS concepto FROM otros_gastos WHERE (nombre_gasto IS NOT NULL AND nombre_gasto != '') OR (detalle IS NOT NULL AND detalle != '') ORDER BY concepto ASC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
     public function getReporteEgresosOtrosGastos() {
         $query = "SELECT 
                     og.id_otro_gasto,
                     og.id_gestion,
+                    COALESCE(NULLIF(og.nombre_gasto, ''), og.detalle) AS nombre_gasto,
                     og.detalle,
+                    COALESCE(og.unidad_medida, '') AS unidad_medida,
+                    COALESCE(og.cantidad, 1.00) AS cantidad,
+                    COALESCE(og.precio, og.monto) AS precio,
                     og.monto,
                     og.fecha_pago,
                     og.comprobante,

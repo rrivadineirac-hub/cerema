@@ -94,7 +94,7 @@ $chunks = array_chunk($socios_rows, $records_per_print_page);
                 ?>
                     <tr>
                         <td style="text-align: center; font-weight: 500;"><?php echo $count++; ?></td>
-                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci']); ?></td>
+                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')); ?></td>
                         <td style="font-weight: 600; color: var(--text-main); white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                         <td style="text-align: center; font-weight: 700; color: var(--primary);"><?php echo htmlspecialchars($row['acciones']); ?></td>
                         <?php if ($cuotaVal > 0): ?>
@@ -171,7 +171,7 @@ $chunks = array_chunk($socios_rows, $records_per_print_page);
                     ?>
                         <tr>
                             <td style="text-align: center; font-weight: 500;"><?php echo $globalCount; ?></td>
-                            <td style="font-weight: 600; font-family: monospace; white-space: nowrap;"><?php echo htmlspecialchars($row['ci']); ?></td>
+                            <td style="font-weight: 600; font-family: monospace; white-space: nowrap;"><?php echo htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')); ?></td>
                             <td style="font-weight: 600; color: #000; white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                             <td style="text-align: center; font-weight: 700; color: #000;"><?php echo htmlspecialchars($row['acciones']); ?></td>
                             <?php if ($cuotaVal > 0): ?>

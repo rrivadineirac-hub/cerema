@@ -77,8 +77,9 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                     <option value="all">-- Todos los Asociados --</option>
                     <?php if (!empty($todos_socios)): ?>
                         <?php foreach ($todos_socios as $s): ?>
+                            <?php $ci_full = $s['ci'] . (!empty($s['complemento']) ? '-' . $s['complemento'] : ''); ?>
                             <option value="<?php echo $s['id_socio']; ?>">
-                                <?php echo htmlspecialchars($s['ap_paterno'] . ' ' . $s['ap_materno'] . ' ' . $s['nombre'] . ' (' . $s['ci'] . ')'); ?>
+                                <?php echo htmlspecialchars($s['ap_paterno'] . ' ' . $s['ap_materno'] . ' ' . $s['nombre'] . ' (' . $ci_full . ')'); ?>
                             </option>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -174,7 +175,7 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                     <tr data-id-socio="<?php echo $row['id_socio']; ?>" data-mes="<?php echo htmlspecialchars($rowMes); ?>" data-anio="<?php echo htmlspecialchars($rowAnio); ?>">
                         <td style="text-align: center; font-weight: 500;"><?php echo $count++; ?></td>
                         <td style="font-weight: 600; font-family: monospace; font-size: 13px; color: var(--primary);"><?php echo !empty($row['numero_recibo']) ? htmlspecialchars($row['numero_recibo']) : '-'; ?></td>
-                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci']); ?></td>
+                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')); ?></td>
                         <td style="font-weight: 600; color: var(--text-main); white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                         <td style="text-align: center; font-weight: 700; color: var(--text-main);"><?php echo htmlspecialchars($row['numero_accion'] ?? 1); ?></td>
                         <td><?php echo $detalle; ?></td>
@@ -246,7 +247,7 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                         <tr>
                             <td style="text-align: center; font-weight: 500;"><?php echo $globalCount; ?></td>
                             <td style="font-weight: 600; font-family: monospace; font-size: 11px;"><?php echo !empty($row['numero_recibo']) ? htmlspecialchars($row['numero_recibo']) : '-'; ?></td>
-                            <td style="font-weight: 600; font-family: monospace; font-size: 11px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci']); ?></td>
+                            <td style="font-weight: 600; font-family: monospace; font-size: 11px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')); ?></td>
                             <td style="font-weight: 600; color: #000; white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                             <td style="text-align: center; font-weight: 700; color: #000;"><?php echo htmlspecialchars($row['numero_accion'] ?? 1); ?></td>
                             <td style="font-size: 10.5px;"><?php echo $detalle; ?></td>

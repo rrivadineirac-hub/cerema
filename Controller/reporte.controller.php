@@ -91,11 +91,12 @@ if ($type == 'planilla_anual_mensualidades' || $type == 'planilla_anual_extraord
     include __DIR__ . '/../View/vreporte_egresos.php';
 
 } elseif ($type == 'egresos_otros_gastos') {
+    $conceptos_gastos = $reporteModel->getConceptosOtrosGastos();
     $egresos = $reporteModel->getReporteEgresosOtrosGastos();
     $stats = $reporteModel->getStatsReporteEgresosOtrosGastos();
-    $titulo_reporte = "REPORTE OFICIAL DE EGRESOS - OTROS GASTOS";
+    $titulo_reporte = "REPORTE OFICIAL DE OTROS GASTOS";
     $egreso_tipo = "otros_gastos";
-    include __DIR__ . '/../View/vreporte_egresos.php';
+    include __DIR__ . '/../View/vreporte_otros_gastos.php';
 
 } elseif ($type == 'socios_inactivos') {
     $estado_filter = 'Inactivo';

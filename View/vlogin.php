@@ -6,10 +6,9 @@
     <title>Iniciar Sesión - CEREMA</title>
     <!-- Favicon -->
     <link rel="icon" href="../imagenes/institucinal/logo.png" type="image/png">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local Fonts & Icons -->
+    <link rel="stylesheet" href="../css/outfit.css">
+    <link rel="stylesheet" href="../css/font-awesome/css/all.min.css">
     <!-- Login CSS -->
     <link rel="stylesheet" href="../css/login.css">
 </head>

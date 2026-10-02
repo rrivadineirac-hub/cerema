@@ -29,11 +29,9 @@ $_SESSION['last_activity'] = time();
     <title>CEREMA - Dashboard</title>
     <!-- Favicon -->
     <link rel="icon" href="../imagenes/institucinal/logo.png" type="image/png">
-    <!-- Use Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Local Fonts & Icons -->
+    <link rel="stylesheet" href="../css/outfit.css">
+    <link rel="stylesheet" href="../css/font-awesome/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../css/style.css">
     <script>
@@ -99,8 +97,9 @@ $_SESSION['last_activity'] = time();
                 $is_activo = ($current_page == 'activo.controller.php');
                 $is_reporte = ($current_page == 'reporte.controller.php');
                 $current_report_type = $_GET['type'] ?? 'socios_activos';
-                $is_reporte_socios = strpos($current_report_type, 'socios') !== false;
-                $is_reporte_pagos = strpos($current_report_type, 'pagos') !== false;
+                $is_reporte_asociados = $is_reporte && in_array($current_report_type, ['socios_activos', 'socios_inactivos', 'socios_pasivos', 'socios']);
+                $is_reporte_ingresos = $is_reporte && in_array($current_report_type, ['pagos_mensualidades', 'pagos_extraordinario', 'pagos_especiales', 'otros_ingresos']);
+                $is_reporte_egresos = $is_reporte && in_array($current_report_type, ['egresos_sueldo', 'egresos_servicios', 'egresos_extraordinario', 'egresos_especiales', 'egresos_otros_gastos']);
                 ?>
                 <ul class="nav-list">
                     <li class="nav-item <?php echo ($current_page == 'dashboard.php') ? 'active' : ''; ?>">
@@ -174,22 +173,22 @@ $_SESSION['last_activity'] = time();
                         </a>
                         <ul class="nav-submenu">
                             <li class="has-nested-submenu">
-                                <a href="#" class="submenu-link" onclick="event.preventDefault(); event.stopPropagation(); const sub = this.nextElementSibling; const ic = this.querySelector('.sub-chevron'); const isH = sub.style.display === 'none' || sub.style.display === ''; sub.style.display = isH ? 'block' : 'none'; if(ic) ic.style.transform = isH ? 'rotate(180deg)' : 'rotate(0deg)'; return false;" style="display: flex; justify-content: space-between; align-items: center;">
+                                <a href="#" class="submenu-link <?php echo $is_reporte_asociados ? 'active' : ''; ?>" onclick="event.preventDefault(); event.stopPropagation(); const sub = this.nextElementSibling; const ic = this.querySelector('.sub-chevron'); const isH = sub.style.display === 'none' || sub.style.display === ''; sub.style.display = isH ? 'block' : 'none'; if(ic) ic.style.transform = isH ? 'rotate(180deg)' : 'rotate(0deg)'; return false;" style="display: flex; justify-content: space-between; align-items: center;">
                                     <span>Asociados</span>
-                                    <i class="fa-solid fa-chevron-down sub-chevron" style="font-size: 10px; margin-left: 6px; transition: transform 0.2s;"></i>
+                                    <i class="fa-solid fa-chevron-down sub-chevron" style="font-size: 10px; margin-left: 6px; transition: transform 0.2s; <?php echo $is_reporte_asociados ? 'transform: rotate(180deg);' : ''; ?>"></i>
                                 </a>
-                                <ul class="nav-nested-submenu" style="list-style: none; padding-left: 12px; margin-top: 4px; display: none;">
+                                <ul class="nav-nested-submenu" style="list-style: none; padding-left: 12px; margin-top: 4px; display: <?php echo $is_reporte_asociados ? 'block' : 'none'; ?>;">
                                     <li><a href="../Controller/reporte.controller.php?type=socios_activos" class="submenu-link <?php echo ($is_reporte && ($current_report_type == 'socios_activos' || $current_report_type == 'socios')) ? 'active' : ''; ?>" style="font-size: 12.5px; padding: 6px 10px;">Asociados Activos</a></li>
                                     <li><a href="../Controller/reporte.controller.php?type=socios_inactivos" class="submenu-link <?php echo ($is_reporte && $current_report_type == 'socios_inactivos') ? 'active' : ''; ?>" style="font-size: 12.5px; padding: 6px 10px;">Asociados Inactivos</a></li>
                                     <li><a href="../Controller/reporte.controller.php?type=socios_pasivos" class="submenu-link <?php echo ($is_reporte && $current_report_type == 'socios_pasivos') ? 'active' : ''; ?>" style="font-size: 12.5px; padding: 6px 10px;">Asociados Pasivos</a></li>
                                 </ul>
                             </li>
                             <li class="has-nested-submenu" style="margin-top: 4px;">
-                                <a href="#" class="submenu-link" onclick="event.preventDefault(); event.stopPropagation(); const sub = this.nextElementSibling; const ic = this.querySelector('.sub-chevron'); const isH = sub.style.display === 'none' || sub.style.display === ''; sub.style.display = isH ? 'block' : 'none'; if(ic) ic.style.transform = isH ? 'rotate(180deg)' : 'rotate(0deg)'; return false;" style="display: flex; justify-content: space-between; align-items: center;">
+                                <a href="#" class="submenu-link <?php echo $is_reporte_ingresos ? 'active' : ''; ?>" onclick="event.preventDefault(); event.stopPropagation(); const sub = this.nextElementSibling; const ic = this.querySelector('.sub-chevron'); const isH = sub.style.display === 'none' || sub.style.display === ''; sub.style.display = isH ? 'block' : 'none'; if(ic) ic.style.transform = isH ? 'rotate(180deg)' : 'rotate(0deg)'; return false;" style="display: flex; justify-content: space-between; align-items: center;">
                                     <span>Ingresos</span>
-                                    <i class="fa-solid fa-chevron-down sub-chevron" style="font-size: 10px; margin-left: 6px; transition: transform 0.2s;"></i>
+                                    <i class="fa-solid fa-chevron-down sub-chevron" style="font-size: 10px; margin-left: 6px; transition: transform 0.2s; <?php echo $is_reporte_ingresos ? 'transform: rotate(180deg);' : ''; ?>"></i>
                                 </a>
-                                <ul class="nav-nested-submenu" style="list-style: none; padding-left: 12px; margin-top: 4px; display: none;">
+                                <ul class="nav-nested-submenu" style="list-style: none; padding-left: 12px; margin-top: 4px; display: <?php echo $is_reporte_ingresos ? 'block' : 'none'; ?>;">
                                     <li><a href="../Controller/reporte.controller.php?type=pagos_mensualidades" class="submenu-link <?php echo ($is_reporte && $current_report_type == 'pagos_mensualidades') ? 'active' : ''; ?>" style="font-size: 12.5px; padding: 6px 10px;">Mensualidades</a></li>
                                     <li><a href="../Controller/reporte.controller.php?type=pagos_extraordinario" class="submenu-link <?php echo ($is_reporte && $current_report_type == 'pagos_extraordinario') ? 'active' : ''; ?>" style="font-size: 12.5px; padding: 6px 10px;">Extraordinarios</a></li>
                                     <li><a href="../Controller/reporte.controller.php?type=pagos_especiales" class="submenu-link <?php echo ($is_reporte && $current_report_type == 'pagos_especiales') ? 'active' : ''; ?>" style="font-size: 12.5px; padding: 6px 10px;">Especiales</a></li>
@@ -197,11 +196,11 @@ $_SESSION['last_activity'] = time();
                                 </ul>
                             </li>
                             <li class="has-nested-submenu" style="margin-top: 4px;">
-                                <a href="#" class="submenu-link" onclick="event.preventDefault(); event.stopPropagation(); const sub = this.nextElementSibling; const ic = this.querySelector('.sub-chevron'); const isH = sub.style.display === 'none' || sub.style.display === ''; sub.style.display = isH ? 'block' : 'none'; if(ic) ic.style.transform = isH ? 'rotate(180deg)' : 'rotate(0deg)'; return false;" style="display: flex; justify-content: space-between; align-items: center;">
+                                <a href="#" class="submenu-link <?php echo $is_reporte_egresos ? 'active' : ''; ?>" onclick="event.preventDefault(); event.stopPropagation(); const sub = this.nextElementSibling; const ic = this.querySelector('.sub-chevron'); const isH = sub.style.display === 'none' || sub.style.display === ''; sub.style.display = isH ? 'block' : 'none'; if(ic) ic.style.transform = isH ? 'rotate(180deg)' : 'rotate(0deg)'; return false;" style="display: flex; justify-content: space-between; align-items: center;">
                                     <span>Egresos</span>
-                                    <i class="fa-solid fa-chevron-down sub-chevron" style="font-size: 10px; margin-left: 6px; transition: transform 0.2s;"></i>
+                                    <i class="fa-solid fa-chevron-down sub-chevron" style="font-size: 10px; margin-left: 6px; transition: transform 0.2s; <?php echo $is_reporte_egresos ? 'transform: rotate(180deg);' : ''; ?>"></i>
                                 </a>
-                                <ul class="nav-nested-submenu" style="list-style: none; padding-left: 12px; margin-top: 4px; display: none;">
+                                <ul class="nav-nested-submenu" style="list-style: none; padding-left: 12px; margin-top: 4px; display: <?php echo $is_reporte_egresos ? 'block' : 'none'; ?>;">
                                     <li><a href="../Controller/reporte.controller.php?type=egresos_sueldo" class="submenu-link <?php echo ($is_reporte && $current_report_type == 'egresos_sueldo') ? 'active' : ''; ?>" style="font-size: 12.5px; padding: 6px 10px;">Sueldo</a></li>
                                     <li><a href="../Controller/reporte.controller.php?type=egresos_servicios" class="submenu-link <?php echo ($is_reporte && $current_report_type == 'egresos_servicios') ? 'active' : ''; ?>" style="font-size: 12.5px; padding: 6px 10px;">Servicios Básicos</a></li>
                                     <li><a href="../Controller/reporte.controller.php?type=egresos_extraordinario" class="submenu-link <?php echo ($is_reporte && $current_report_type == 'egresos_extraordinario') ? 'active' : ''; ?>" style="font-size: 12.5px; padding: 6px 10px;">Extraordinarios</a></li>
@@ -226,6 +225,30 @@ $_SESSION['last_activity'] = time();
 
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
+                    const sidebarNav = document.querySelector('.sidebar-nav');
+
+                    // 1. Restaurar posición de scroll exacta de la barra de navegación lateral
+                    const savedScroll = sessionStorage.getItem('sidebarNavScrollTop');
+                    if (savedScroll !== null && sidebarNav) {
+                        sidebarNav.scrollTop = parseInt(savedScroll, 10);
+                        requestAnimationFrame(function() {
+                            sidebarNav.scrollTop = parseInt(savedScroll, 10);
+                        });
+                    }
+
+                    // Guardar posición de scroll al desplazarse o hacer clic en cualquier opción
+                    if (sidebarNav) {
+                        sidebarNav.addEventListener('scroll', function() {
+                            sessionStorage.setItem('sidebarNavScrollTop', sidebarNav.scrollTop);
+                        });
+                        sidebarNav.querySelectorAll('a').forEach(link => {
+                            link.addEventListener('click', function() {
+                                sessionStorage.setItem('sidebarNavScrollTop', sidebarNav.scrollTop);
+                            });
+                        });
+                    }
+
+                    // 2. Manejo de submenús principales
                     const submenuToggles = document.querySelectorAll('.has-submenu > .nav-link');
                     submenuToggles.forEach(toggle => {
                         toggle.addEventListener('click', function(e) {
@@ -233,14 +256,17 @@ $_SESSION['last_activity'] = time();
                             const parentLi = this.parentElement;
                             const isOpen = parentLi.classList.contains('open');
                             
-                            // Close others
-                            document.querySelectorAll('.has-submenu').forEach(li => {
-                                li.classList.remove('open');
-                            });
-                            
-                            // Toggle clicked
-                            if (!isOpen) {
+                            if (isOpen) {
+                                parentLi.classList.remove('open');
+                            } else {
+                                document.querySelectorAll('.has-submenu').forEach(li => {
+                                    li.classList.remove('open');
+                                });
                                 parentLi.classList.add('open');
+                            }
+
+                            if (sidebarNav) {
+                                sessionStorage.setItem('sidebarNavScrollTop', sidebarNav.scrollTop);
                             }
                         });
                     });
@@ -256,7 +282,7 @@ $_SESSION['last_activity'] = time();
                 
                 <div class="topbar-actions">
                     <div class="user-profile">
-                        <img src="https://i.pravatar.cc/150?img=11" alt="Perfil">
+                        <img src="../img/avatar.png" alt="Perfil">
                         <div class="user-info">
                             <span class="user-name"><?php echo isset($_SESSION['nombre_usuario']) ? htmlspecialchars($_SESSION['nombre_usuario']) : 'Admin (Desarrollo)'; ?></span>
                             <span class="user-role"><?php echo isset($_SESSION['rol']) ? htmlspecialchars($_SESSION['rol']) : 'Presidente'; ?></span>

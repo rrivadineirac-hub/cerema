@@ -22,7 +22,8 @@ include 'header.php';
                     if(isset($socios) && $socios->rowCount() > 0) {
                         while($row = $socios->fetch(PDO::FETCH_ASSOC)) {
                             $nombre_completo = htmlspecialchars($row['ap_paterno'] . ' ' . $row['ap_materno'] . ' ' . $row['nombre']);
-                            echo "<option value='" . $row['id_socio'] . "'>" . htmlspecialchars($row['ci']) . " - " . $nombre_completo . "</option>";
+                            $ci_full = htmlspecialchars($row['ci']) . (!empty($row['complemento']) ? '-' . htmlspecialchars($row['complemento']) : '');
+                            echo "<option value='" . $row['id_socio'] . "'>" . $ci_full . " - " . $nombre_completo . "</option>";
                         }
                     }
                     ?>

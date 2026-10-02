@@ -308,4 +308,51 @@
         font-size: 10px !important;
         padding: 4px 4px !important;
     }
+
+    /* Reglas de Impresión de Fondos Excel (Imagen 2) */
+    .reporte-excel-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        border: 1.5px solid #2b5797 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .reporte-excel-table th {
+        background-color: #8ea9db !important;
+        color: #000000 !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        border: 1px solid #2b5797 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .reporte-excel-table td {
+        border: 1px solid #2b5797 !important;
+        color: #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .reporte-excel-table .total-label-cell {
+        background-color: #8ea9db !important;
+        color: #000000 !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        text-align: center !important;
+        border: 1px solid #2b5797 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .reporte-excel-table .total-value-cell {
+        background-color: #ffff00 !important;
+        color: #000000 !important;
+        font-weight: 800 !important;
+        text-align: right !important;
+        border: 1.5px solid #2b5797 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
 }

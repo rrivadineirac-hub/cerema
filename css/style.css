@@ -728,14 +728,14 @@ body {
 }
 
 .badge-status.inactivo {
-    background-color: rgba(249, 115, 22, 0.15);
-    color: #ea580c;
+    background-color: rgba(231, 76, 60, 0.12);
+    color: #d32f2f;
 }
 
 .badge-status.moroso,
 .badge-status.pasivo {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger);
+    background-color: rgba(249, 115, 22, 0.15);
+    color: #e65100;
 }
 
 /* Action Buttons */
@@ -972,7 +972,6 @@ body {
 .submenu-link:hover {
     background-color: #FFFFFF;
     color: var(--primary);
-    transform: scale(1.04);
 }
 
 .submenu-link.active {
@@ -1012,4 +1011,11 @@ body {
 .toast-notification.show {
     opacity: 1;
     transform: translateY(0);
+}
+
+.toast-notification.toast-error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-left: 5px solid #ef4444;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15);
 }

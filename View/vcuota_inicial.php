@@ -21,8 +21,9 @@ require_once __DIR__ . '/header.php';
                     <option value="" disabled selected>-- Selecciona un asociado --</option>
                     <?php if (!empty($socios)): ?>
                         <?php foreach ($socios as $s): ?>
+                            <?php $ci_full = $s['ci'] . (!empty($s['complemento']) ? '-' . $s['complemento'] : ''); ?>
                             <option value="<?php echo $s['id_socio']; ?>">
-                                <?php echo htmlspecialchars($s['ci'] . ' - ' . $s['ap_paterno'] . ' ' . $s['ap_materno'] . ' ' . $s['nombre']); ?>
+                                <?php echo htmlspecialchars($ci_full . ' - ' . $s['ap_paterno'] . ' ' . $s['ap_materno'] . ' ' . $s['nombre']); ?>
                             </option>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -41,6 +42,7 @@ $is_cuota_completada = false;
 if ($resumen_socio && $resumen_socio['meta_total'] > 0 && $resumen_socio['saldo_pendiente'] <= 0) {
     $is_cuota_completada = true;
 }
+$ci_socio_full = $socio_actual['ci'] . (!empty($socio_actual['complemento']) ? '-' . $socio_actual['complemento'] : '');
 ?>
 <!-- PANTALLA DEL CRUD DE CUOTA INICIAL -->
 <div class="dashboard-header">
@@ -48,7 +50,7 @@ if ($resumen_socio && $resumen_socio['meta_total'] > 0 && $resumen_socio['saldo_
         <div>
             <a href="../Controller/cuota_inicial.controller.php" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver a selección</a>
             <h1 class="page-title">Gestión de Cuota Inicial</h1>
-            <p class="page-subtitle">Asociado: <strong><?php echo htmlspecialchars($socio_actual['ap_paterno'] . ' ' . $socio_actual['ap_materno'] . ', ' . $socio_actual['nombre'] . ' (CI: ' . $socio_actual['ci'] . ')'); ?></strong></p>
+            <p class="page-subtitle">Asociado: <strong><?php echo htmlspecialchars($socio_actual['ap_paterno'] . ' ' . $socio_actual['ap_materno'] . ', ' . $socio_actual['nombre'] . ' (CI: ' . $ci_socio_full . ')'); ?></strong></p>
         </div>
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <a href="../Controller/cuota_inicial.controller.php" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 600;">

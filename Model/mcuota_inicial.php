@@ -29,7 +29,7 @@ class CuotaInicialModel {
 
     // Obtener todos los pagos de cuota inicial de un socio
     public function getBySocioId($id_socio) {
-        $query = "SELECT c.*, s.nombre, s.ap_paterno, s.ap_materno, s.ci 
+        $query = "SELECT c.*, s.nombre, s.ap_paterno, s.ap_materno, s.ci, s.complemento 
                   FROM " . $this->table_name . " c
                   JOIN asociados s ON c.id_socio = s.id_socio
                   WHERE c.id_socio = ?

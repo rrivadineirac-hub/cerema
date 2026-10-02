@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action == 'get') {
     exit;
 }
 
-// Obtener lista de gestiones para el filtro
+// Obtener lista de gestiones en orden descendente cronológico (gestiones superiores por encima de la actual)
 $queryGestiones = "SELECT * FROM gestiones ORDER BY gestion DESC";
 $stmtGestiones = $db->prepare($queryGestiones);
 $stmtGestiones->execute();

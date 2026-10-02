@@ -23,7 +23,7 @@ include 'header.php';
     <div class="filter-estado-wrapper">
         <select id="filterEstado" onchange="searchSocios()" style="padding: 10px 15px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); outline: none; font-family: inherit; background-color: white; color: var(--text-main); font-weight: 500; height: 42px;">
             <option value="">Todos los Estados</option>
-            <option value="Activo">Activos</option>
+            <option value="Activo" selected>Activos</option>
             <option value="Inactivo">Inactivos</option>
             <option value="Pasivo">Pasivos</option>
         </select>
@@ -40,15 +40,15 @@ include 'header.php';
     <table class="data-table">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>CI</th>
-                <th>Nombre Completo</th>
-                <th>Teléfono</th>
-                <th>Fecha Ingreso</th>
-                <th>Estado</th>
-                <th>Acciones (Cant.)</th>
-                <th>Cuota Inicial (Bs.)</th>
-                <th>Opciones</th>
+                <th style="min-width: 110px; white-space: nowrap;">ID</th>
+                <th style="min-width: 140px; white-space: nowrap;">CI</th>
+                <th style="min-width: 220px; white-space: nowrap;">Nombre Completo</th>
+                <th style="min-width: 120px; white-space: nowrap;">Teléfono</th>
+                <th style="min-width: 130px; white-space: nowrap;">Fecha Ingreso</th>
+                <th style="min-width: 110px; white-space: nowrap;">Estado</th>
+                <th style="min-width: 120px; white-space: nowrap; text-align: center;">Acciones (Cant.)</th>
+                <th style="min-width: 150px; white-space: nowrap;">Cuota Inicial (Bs.)</th>
+                <th style="min-width: 100px; white-space: nowrap; text-align: center;">Opciones</th>
             </tr>
         </thead>
         <tbody>
@@ -62,14 +62,16 @@ include 'header.php';
                     $acciones = isset($row['acciones']) ? (int)$row['acciones'] : 1;
                     $metaTotal = $acciones * $cuotaAsignada;
 
+                    $ciCompleto = htmlspecialchars($row['ci']) . (!empty($row['complemento']) ? '-' . htmlspecialchars($row['complemento']) : '');
+
                     echo "<tr>";
-                    echo "<td>" . sprintf("ASC-%03d", $row['id_socio']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['ci']) . "</td>";
-                    echo "<td><strong>" . htmlspecialchars($row['ap_paterno']) . " " . htmlspecialchars($row['ap_materno']) . "</strong>, " . htmlspecialchars($row['nombre']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['telefono']) . "</td>";
-                    echo "<td>" . date('d/m/Y', strtotime($row['fecha_ingreso'])) . "</td>";
-                    echo "<td><span class='badge-status {$estadoClass}'>" . htmlspecialchars($estadoTexto) . "</span></td>";
-                    echo "<td>" . $acciones . "</td>";
+                    echo "<td style='font-family: monospace; font-size: 13.5px; font-weight: 600; white-space: nowrap;'>" . sprintf("ASC-%03d", $row['id_socio']) . "</td>";
+                    echo "<td style='font-family: monospace; font-size: 13.5px; font-weight: 600; white-space: nowrap; letter-spacing: 0.5px;'>" . $ciCompleto . "</td>";
+                    echo "<td style='white-space: nowrap;'><strong>" . htmlspecialchars($row['ap_paterno']) . " " . htmlspecialchars($row['ap_materno']) . "</strong>, " . htmlspecialchars($row['nombre']) . "</td>";
+                    echo "<td style='white-space: nowrap;'>" . htmlspecialchars($row['telefono']) . "</td>";
+                    echo "<td style='white-space: nowrap;'>" . date('d/m/Y', strtotime($row['fecha_ingreso'])) . "</td>";
+                    echo "<td style='white-space: nowrap;'><span class='badge-status {$estadoClass}'>" . htmlspecialchars($estadoTexto) . "</span></td>";
+                    echo "<td style='white-space: nowrap; text-align: center;'>" . $acciones . "</td>";
 
                     if ($montoPagado > 0) {
                         $isComplete = ($metaTotal > 0 && $montoPagado >= $metaTotal);
@@ -106,14 +108,24 @@ include 'header.php';
             <span class="close-btn" onclick="closeModal()">&times;</span>
         </div>
         <div class="modal-body">
+            <div id="socioModalError" style="display: none; background-color: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px 14px; border-radius: 6px; font-size: 13.5px; font-weight: 500; margin-bottom: 15px; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 16px; color: #ef4444; flex-shrink: 0;"></i>
+                <span id="socioModalErrorText"></span>
+            </div>
             <form id="socioForm">
                 <input type="hidden" name="action" value="save">
                 <input type="hidden" id="id_socio" name="id_socio" value="">
                 
                 <div class="form-row">
-                    <div class="form-group half">
-                        <label for="ci">CI</label>
-                        <input type="text" id="ci" name="ci" required>
+                    <div class="form-group half" style="display: flex; gap: 10px;">
+                        <div style="flex: 2;">
+                            <label for="ci">CI</label>
+                            <input type="text" id="ci" name="ci" required>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="complemento">Compl.</label>
+                            <input type="text" id="complemento" name="complemento" placeholder="Ej: 1A" maxlength="10" style="text-transform: uppercase;">
+                        </div>
                     </div>
                     <div class="form-group half">
                         <label for="ap_paterno">Apellido Paterno</label>
@@ -221,6 +233,9 @@ document.addEventListener("DOMContentLoaded", function() {
             searchSocios();
         }
     });
+
+    // Ejecutar filtro inicial por defecto (Activos)
+    filterTable("");
 });
 
 function searchSocios() {
@@ -231,14 +246,14 @@ function searchSocios() {
 function clearSearch() {
     const searchInput = document.getElementById("searchSocio");
     searchInput.value = "";
-    document.getElementById("filterEstado").value = "";
+    document.getElementById("filterEstado").value = "Activo";
     document.getElementById("btnClearSearch").style.display = "none";
     filterTable("");
 }
 
 function filterTable(query) {
     const rows = document.querySelectorAll(".data-table tbody tr");
-    const estadoFilter = document.getElementById("filterEstado") ? document.getElementById("filterEstado").value.toLowerCase() : "";
+    const estadoFilter = document.getElementById("filterEstado") ? document.getElementById("filterEstado").value.toLowerCase().trim() : "";
     
     rows.forEach(row => {
         // Ignorar fila de "No hay socios registrados" si existe
@@ -251,7 +266,8 @@ function filterTable(query) {
         const estadoText = row.cells[5]?.textContent.trim().toLowerCase() || "";
 
         const matchesQuery = (id.includes(query) || ci.includes(query) || nombre.includes(query));
-        const matchesEstado = (estadoFilter === "" || estadoText.includes(estadoFilter));
+        // Coincidencia exacta para el estado para que 'activo' no coincida con 'inactivo'
+        const matchesEstado = (estadoFilter === "" || estadoText === estadoFilter);
 
         if (matchesQuery && matchesEstado) {
             row.style.display = "";

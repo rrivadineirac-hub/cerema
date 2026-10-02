@@ -38,7 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $data = [
                 'id_gestion' => $id_gestion_activa,
+                'nombre_gasto' => $_POST['nombre_gasto'] ?? $_POST['detalle'] ?? '',
                 'detalle' => $_POST['detalle'] ?? '',
+                'unidad_medida' => $_POST['unidad_medida'] ?? '',
+                'cantidad' => $_POST['cantidad'] ?? 1.00,
+                'precio' => $_POST['precio'] ?? null,
                 'monto' => $_POST['monto'] ?? 0,
                 'fecha_pago' => $_POST['fecha_pago'] ?? date('Y-m-d'),
                 'comprobante' => $_POST['comprobante'] ?? '',

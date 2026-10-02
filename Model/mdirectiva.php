@@ -11,7 +11,7 @@ class DirectivaModel {
     // Obtener toda la mesa directiva con INNER JOINs
     public function getAll() {
         $query = "SELECT m.id_directiva, m.id_socio, m.id_cargo, m.gestion, m.fecha_inicio, m.fecha_fin, 
-                         s.nombre, s.ap_paterno, s.ap_materno, s.ci,
+                         s.nombre, s.ap_paterno, s.ap_materno, s.ci, s.complemento,
                          c.nombre_cargo
                   FROM " . $this->table_name . " m
                   INNER JOIN asociados s ON m.id_socio = s.id_socio

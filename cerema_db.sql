@@ -123,6 +123,7 @@ DROP TABLE IF EXISTS `asociados`;
 CREATE TABLE `asociados` (
   `id_socio` int(11) NOT NULL AUTO_INCREMENT,
   `ci` varchar(20) NOT NULL,
+  `complemento` varchar(10) DEFAULT '',
   `ap_paterno` varchar(25) NOT NULL,
   `ap_materno` varchar(25) NOT NULL,
   `nombre` varchar(50) NOT NULL,
@@ -354,7 +355,11 @@ CREATE TABLE `gestiones` (
 
 LOCK TABLES `gestiones` WRITE;
 /*!40000 ALTER TABLE `gestiones` DISABLE KEYS */;
-INSERT INTO `gestiones` VALUES (1,2024,'2024-01-01','2024-12-31','En Curso','2026-08-25 06:56:22');
+INSERT INTO `gestiones` VALUES 
+(1,2024,'2024-01-01','2024-12-31','Cerrada','2026-08-25 06:56:22'),
+(8,2025,'2025-01-01','2025-12-31','Cerrada','2026-09-09 17:39:33'),
+(9,2026,'2026-01-01','2026-12-31','En Curso','2026-09-09 17:39:33'),
+(10,2027,'2027-01-01','2027-12-31','Planificada','2026-09-09 18:15:26');
 /*!40000 ALTER TABLE `gestiones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -469,7 +474,11 @@ DROP TABLE IF EXISTS `otros_gastos`;
 CREATE TABLE `otros_gastos` (
   `id_otro_gasto` int(11) NOT NULL AUTO_INCREMENT,
   `id_gestion` int(11) DEFAULT NULL,
-  `detalle` varchar(255) NOT NULL,
+  `nombre_gasto` varchar(255) DEFAULT NULL,
+  `detalle` text DEFAULT NULL,
+  `unidad_medida` varchar(50) DEFAULT '',
+  `cantidad` decimal(10,2) DEFAULT 1.00,
+  `precio` decimal(10,2) DEFAULT NULL,
   `monto` decimal(10,2) NOT NULL,
   `fecha_pago` date NOT NULL,
   `comprobante` varchar(100) DEFAULT NULL,

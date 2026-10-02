@@ -79,14 +79,36 @@ include 'header.php';
 
                 <div class="form-row">
                     <div class="form-group half" style="width:100%">
-                        <label for="detalle">Detalle o Motivo del Gasto</label>
-                        <input type="text" id="detalle" name="detalle" placeholder="Ej: COMPRA DE MATERIAL DE LIMPIEZA" required>
+                        <label for="nombre_gasto">Nombre del Gasto</label>
+                        <input type="text" id="nombre_gasto" name="nombre_gasto" placeholder="Ej: COMPRA DE MATERIAL DE LIMPIEZA" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half" style="width:100%">
+                        <label for="detalle">Detalle o Descripción del Gasto</label>
+                        <input type="text" id="detalle" name="detalle" placeholder="Ej: Descripción o especificaciones adicionales del gasto">
+                    </div>
+                </div>
+
+                <div class="form-row" style="display: flex; gap: 12px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="unidad_medida">Unidad de Medida</label>
+                        <input type="text" id="unidad_medida" name="unidad_medida" placeholder="Ej: Glb, Unid, Kg, Mts" value="">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="cantidad">Cantidad</label>
+                        <input type="number" step="0.01" min="0.01" id="cantidad" name="cantidad" value="1.00" oninput="calcularTotalOtroGasto();" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="precio">Precio Unitario (Bs.)</label>
+                        <input type="number" step="0.01" min="0.00" id="precio" name="precio" placeholder="0.00" oninput="calcularTotalOtroGasto();">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group half">
-                        <label for="monto">Monto (Bs.)</label>
+                        <label for="monto">Total / Monto (Bs.)</label>
                         <input type="number" step="0.01" min="0.01" id="monto" name="monto" placeholder="0.00" required
                                oninvalid="this.setCustomValidity('El monto tiene que ser mayor a cero')"
                                oninput="this.setCustomValidity('')">

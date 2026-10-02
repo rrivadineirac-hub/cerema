@@ -67,8 +67,9 @@ $current_filter = $estado_filter ?? 'Activo';
                     <option value="all">-- Todos los Asociados --</option>
                     <?php if (!empty($todos_socios)): ?>
                         <?php foreach ($todos_socios as $s): ?>
+                            <?php $ci_full = $s['ci'] . (!empty($s['complemento']) ? '-' . $s['complemento'] : ''); ?>
                             <option value="<?php echo $s['id_socio']; ?>">
-                                <?php echo htmlspecialchars($s['ap_paterno'] . ' ' . $s['ap_materno'] . ' ' . $s['nombre'] . ' (' . $s['ci'] . ')'); ?>
+                                <?php echo htmlspecialchars($s['ap_paterno'] . ' ' . $s['ap_materno'] . ' ' . $s['nombre'] . ' (' . $ci_full . ')'); ?>
                             </option>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -161,7 +162,7 @@ $current_filter = $estado_filter ?? 'Activo';
                 ?>
                     <tr data-id-socio="<?php echo $row['id_socio']; ?>" data-mes="<?php echo htmlspecialchars($rowMes); ?>" data-anio="<?php echo htmlspecialchars($rowAnio); ?>">
                         <td style="text-align: center; font-weight: 500;"><?php echo $count++; ?></td>
-                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci']); ?></td>
+                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')); ?></td>
                         <td style="font-weight: 600; color: var(--text-main); white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                         <td style="text-align: center; font-weight: 700; color: var(--primary);"><?php echo htmlspecialchars($row['acciones']); ?></td>
                         <td style="white-space: nowrap;"><?php echo !empty($row['telefono']) ? htmlspecialchars($row['telefono']) : '-'; ?></td>
@@ -230,7 +231,7 @@ $current_filter = $estado_filter ?? 'Activo';
                     ?>
                         <tr>
                             <td style="text-align: center; font-weight: 500;"><?php echo $globalCount; ?></td>
-                            <td style="font-weight: 600; font-family: monospace; font-size: 12px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci']); ?></td>
+                            <td style="font-weight: 600; font-family: monospace; font-size: 12px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')); ?></td>
                             <td style="font-weight: 600; color: #000; white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                             <td style="text-align: center; font-weight: 700; color: #000;"><?php echo htmlspecialchars($row['acciones']); ?></td>
                             <td style="white-space: nowrap; font-size: 11.5px;"><?php echo !empty($row['telefono']) ? htmlspecialchars($row['telefono']) : '-'; ?></td>

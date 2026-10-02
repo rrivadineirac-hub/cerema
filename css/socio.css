@@ -1,1 +1,36 @@
-/* css/socio.css - Estilos generales movidos a style.css */
+/* css/socio.css */
+.table-container .data-table th,
+.table-container .data-table td {
+    white-space: nowrap !important;
+}
+
+/* Columna ID */
+.table-container .data-table th:nth-child(1),
+.table-container .data-table td:nth-child(1) {
+    min-width: 110px;
+    font-family: monospace;
+    font-size: 13.5px;
+    font-weight: 600;
+}
+
+/* Columna CI */
+.table-container .data-table th:nth-child(2),
+.table-container .data-table td:nth-child(2) {
+    min-width: 140px;
+    font-family: monospace;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Estado Badges */
+.badge-status.inactivo {
+    background-color: #ffebee !important;
+    color: #c62828 !important;
+}
+
+.badge-status.pasivo,
+.badge-status.moroso {
+    background-color: #fff3e0 !important;
+    color: #e65100 !important;
+}

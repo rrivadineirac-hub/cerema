@@ -6,13 +6,22 @@ class SocioModel {
 
     public function __construct($db) {
         $this->conn = $db;
-        // Configurar el tipo ENUM exacto para los tres estados: Activo, Inactivo y Pasivo y asegurar columna cuota_inicial
+        // Configurar el tipo ENUM exacto para los tres estados: Activo, Inactivo y Pasivo y asegurar columna cuota_inicial y complemento
         try {
             $this->conn->exec("ALTER TABLE asociados MODIFY COLUMN estado ENUM('Activo', 'Inactivo', 'Pasivo') NOT NULL DEFAULT 'Activo'");
             $this->conn->exec("UPDATE asociados SET estado = 'Pasivo' WHERE estado = 'Moroso'");
             $this->conn->exec("ALTER TABLE asociados ADD COLUMN cuota_inicial DECIMAL(10,2) NOT NULL DEFAULT 0.00 AFTER acciones");
+            $this->conn->exec("ALTER TABLE asociados ADD COLUMN complemento VARCHAR(10) DEFAULT '' AFTER ci");
         } catch (Exception $e) {
             // Silencioso si ya está configurado
+        }
+
+        try {
+            // Actualizar la restricción UNIQUE para que contemple (ci, complemento) juntos
+            $this->conn->exec("ALTER TABLE asociados DROP INDEX ci");
+            $this->conn->exec("ALTER TABLE asociados ADD UNIQUE KEY ci_comp (ci, complemento)");
+        } catch (Exception $e) {
+            // Silencioso si ya fue actualizada o no aplica
         }
     }
 
@@ -55,13 +64,14 @@ class SocioModel {
     // Crear un nuevo socio
     public function create($data) {
         $query = "INSERT INTO " . $this->table_name . " 
-                  (ci, ap_paterno, ap_materno, nombre, telefono, correo, fecha_ingreso, estado, acciones, cuota_inicial, fechaRegistro) 
-                  VALUES (:ci, :ap_paterno, :ap_materno, :nombre, :telefono, :correo, :fecha_ingreso, :estado, :acciones, :cuota_inicial, :fechaRegistro)";
+                  (ci, complemento, ap_paterno, ap_materno, nombre, telefono, correo, fecha_ingreso, estado, acciones, cuota_inicial, fechaRegistro) 
+                  VALUES (:ci, :complemento, :ap_paterno, :ap_materno, :nombre, :telefono, :correo, :fecha_ingreso, :estado, :acciones, :cuota_inicial, :fechaRegistro)";
         
         $stmt = $this->conn->prepare($query);
 
         // Sanitize
         $ci = htmlspecialchars(strip_tags($data['ci']));
+        $complemento = strtoupper(trim(htmlspecialchars(strip_tags($data['complemento'] ?? ''))));
         $ap_paterno = htmlspecialchars(strip_tags($data['ap_paterno']));
         $ap_materno = htmlspecialchars(strip_tags($data['ap_materno']));
         $nombre = htmlspecialchars(strip_tags($data['nombre']));
@@ -74,6 +84,7 @@ class SocioModel {
 
         // Bind parameters
         $stmt->bindParam(":ci", $ci);
+        $stmt->bindParam(":complemento", $complemento);
         $stmt->bindParam(":ap_paterno", $ap_paterno);
         $stmt->bindParam(":ap_materno", $ap_materno);
         $stmt->bindParam(":nombre", $nombre);
@@ -87,16 +98,25 @@ class SocioModel {
         $fechaRegistro = date('Y-m-d H:i:s');
         $stmt->bindParam(":fechaRegistro", $fechaRegistro);
 
-        if($stmt->execute()) {
-            return true;
+        try {
+            if($stmt->execute()) {
+                return ['success' => true];
+            }
+            return ['success' => false, 'message' => 'No se pudo guardar el registro del asociado.'];
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000 || strpos($e->getMessage(), '1062') !== false || strpos($e->getMessage(), 'Duplicate') !== false) {
+                $ciLabel = $ci . ($complemento !== '' ? '-' . $complemento : '');
+                return ['success' => false, 'message' => 'El Carnet de Identidad (CI: ' . $ciLabel . ') ya pertenece a otro asociado registrado.'];
+            }
+            return ['success' => false, 'message' => 'Error de Base de Datos: ' . $e->getMessage()];
         }
-        return false;
     }
 
     // Actualizar un socio
     public function update($data) {
         $query = "UPDATE " . $this->table_name . " 
                   SET ci = :ci, 
+                      complemento = :complemento,
                       ap_paterno = :ap_paterno, 
                       ap_materno = :ap_materno, 
                       nombre = :nombre, 
@@ -114,6 +134,7 @@ class SocioModel {
         // Sanitize
         $id_socio = htmlspecialchars(strip_tags($data['id_socio']));
         $ci = htmlspecialchars(strip_tags($data['ci']));
+        $complemento = strtoupper(trim(htmlspecialchars(strip_tags($data['complemento'] ?? ''))));
         $ap_paterno = htmlspecialchars(strip_tags($data['ap_paterno']));
         $ap_materno = htmlspecialchars(strip_tags($data['ap_materno']));
         $nombre = htmlspecialchars(strip_tags($data['nombre']));
@@ -127,6 +148,7 @@ class SocioModel {
         // Bind parameters
         $stmt->bindParam(":id_socio", $id_socio);
         $stmt->bindParam(":ci", $ci);
+        $stmt->bindParam(":complemento", $complemento);
         $stmt->bindParam(":ap_paterno", $ap_paterno);
         $stmt->bindParam(":ap_materno", $ap_materno);
         $stmt->bindParam(":nombre", $nombre);
@@ -140,10 +162,18 @@ class SocioModel {
         $fechaEdicion = date('Y-m-d H:i:s');
         $stmt->bindParam(":fechaEdicion", $fechaEdicion);
 
-        if($stmt->execute()) {
-            return true;
+        try {
+            if($stmt->execute()) {
+                return ['success' => true];
+            }
+            return ['success' => false, 'message' => 'No se pudo actualizar el registro del asociado.'];
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000 || strpos($e->getMessage(), '1062') !== false || strpos($e->getMessage(), 'Duplicate') !== false) {
+                $ciLabel = $ci . ($complemento !== '' ? '-' . $complemento : '');
+                return ['success' => false, 'message' => 'El Carnet de Identidad (CI: ' . $ciLabel . ') ya pertenece a otro asociado registrado.'];
+            }
+            return ['success' => false, 'message' => 'Error de Base de Datos: ' . $e->getMessage()];
         }
-        return false;
     }
 
     // Eliminar un socio
@@ -154,10 +184,17 @@ class SocioModel {
         $id = htmlspecialchars(strip_tags($id));
         $stmt->bindParam(1, $id);
         
-        if($stmt->execute()) {
-            return true;
+        try {
+            if($stmt->execute()) {
+                return ['success' => true, 'message' => 'Socio eliminado.'];
+            }
+            return ['success' => false, 'message' => 'No se pudo eliminar el socio.'];
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000 || strpos($e->getMessage(), 'Constraint') !== false || strpos($e->getMessage(), 'foreign key') !== false) {
+                return ['success' => false, 'message' => 'No se puede eliminar el asociado porque tiene pagos o registros vinculados.'];
+            }
+            return ['success' => false, 'message' => 'Error de Base de Datos: ' . $e->getMessage()];
         }
-        return false;
     }
 }
 ?>

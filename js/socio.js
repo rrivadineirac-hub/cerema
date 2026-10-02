@@ -3,10 +3,29 @@
 const modal = document.getElementById('socioModal');
 const form = document.getElementById('socioForm');
 const modalTitle = document.getElementById('modalTitle');
+const modalErrorDiv = document.getElementById('socioModalError');
+const modalErrorText = document.getElementById('socioModalErrorText');
+
+function showModalError(msg) {
+    if (modalErrorDiv && modalErrorText) {
+        modalErrorText.textContent = msg;
+        modalErrorDiv.style.display = 'flex';
+    }
+}
+
+function hideModalError() {
+    if (modalErrorDiv) {
+        modalErrorDiv.style.display = 'none';
+    }
+}
 
 function openModal() {
     form.reset();
+    hideModalError();
     document.getElementById('id_socio').value = '';
+    if (document.getElementById('complemento')) {
+        document.getElementById('complemento').value = '';
+    }
     modalTitle.textContent = 'Nuevo Socio';
     
     // Set today as default date for new socio
@@ -25,6 +44,7 @@ function openModal() {
 }
 
 function closeModal() {
+    hideModalError();
     modal.style.display = 'none';
 }
 
@@ -36,12 +56,16 @@ window.onclick = function(event) {
 }
 
 function editSocio(id) {
+    hideModalError();
     fetch(`socio.controller.php?action=get_socio&id=${id}`)
         .then(response => response.json())
         .then(data => {
             if(data) {
                 document.getElementById('id_socio').value = data.id_socio;
                 document.getElementById('ci').value = data.ci;
+                if (document.getElementById('complemento')) {
+                    document.getElementById('complemento').value = data.complemento || '';
+                }
                 document.getElementById('nombre').value = data.nombre;
                 document.getElementById('ap_paterno').value = data.ap_paterno;
                 document.getElementById('ap_materno').value = data.ap_materno;
@@ -62,14 +86,19 @@ function editSocio(id) {
         })
         .catch(error => {
             console.error('Error fetching socio details:', error);
-            alert('No se pudo obtener la información del socio.');
+            showToast('No se pudo obtener la información del socio.', 'error');
         });
 }
 
-function showToast(message) {
+function showToast(message, type = 'success') {
     const toast = document.createElement('div');
-    toast.className = 'toast-notification';
-    toast.innerText = message;
+    toast.className = 'toast-notification' + (type === 'error' ? ' toast-error' : '');
+    
+    const icon = type === 'error' 
+        ? '<i class="fa-solid fa-circle-exclamation" style="margin-right: 8px;"></i>' 
+        : '<i class="fa-solid fa-circle-check" style="margin-right: 8px;"></i>';
+        
+    toast.innerHTML = icon + message;
     document.body.appendChild(toast);
     
     // Animar entrada
@@ -87,6 +116,7 @@ function showToast(message) {
 }
 
 function saveSocio() {
+    hideModalError();
     if(!form.checkValidity()) {
         form.reportValidity();
         return;
@@ -102,7 +132,12 @@ function saveSocio() {
             'X-Requested-With': 'XMLHttpRequest'
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Respuesta del servidor no válida (código ' + response.status + ')');
+        }
+        return response.json();
+    })
     .then(data => {
         if(data.success) {
             closeModal();
@@ -113,14 +148,18 @@ function saveSocio() {
             }
             setTimeout(() => {
                 location.reload();
-            }, 3000);
+            }, 1500);
         } else {
-            alert('Error: ' + data.message);
+            const errorMsg = data.message || 'Error al guardar los datos del asociado.';
+            showModalError(errorMsg);
+            showToast(errorMsg, 'error');
         }
     })
     .catch(error => {
         console.error('Error saving socio:', error);
-        alert('Ocurrió un error al guardar. Verifica la consola.');
+        const errStr = error.message || 'Ocurrió un error inesperado al guardar.';
+        showModalError(errStr);
+        showToast(errStr, 'error');
     });
 }
 
@@ -149,7 +188,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             fetch('socio.controller.php', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             })
             .then(response => response.json())
             .then(data => {
@@ -158,14 +200,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     showToast('Asociado eliminado exitosamente');
                     setTimeout(() => {
                         location.reload();
-                    }, 2000);
+                    }, 1500);
                 } else {
-                    alert('No se pudo eliminar el socio. Es posible que tenga registros financieros vinculados.');
+                    const msg = data.message || 'No se pudo eliminar el socio. Es posible que tenga registros financieros vinculados.';
+                    showToast(msg, 'error');
                 }
             })
             .catch(error => {
                 console.error('Error deleting socio:', error);
-                alert('Ocurrió un error al eliminar. Verifica la consola.');
+                showToast('Ocurrió un error al intentar eliminar el socio.', 'error');
             });
         });
     }
