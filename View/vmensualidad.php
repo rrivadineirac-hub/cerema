@@ -227,77 +227,74 @@ include 'header.php';
                 <button type="button" style="background-color: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" id="btnConfirmDelete">Borrar registro</button>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Modal Carga Masiva por Rango & Multiaño (2018 - 2029) -->
+   <!-- Modal Carga Masiva por Rango & Multiaño (2018 - 2029) -->
 <div id="rangeModal" class="modal">
-    <div class="modal-content" style="max-width: 850px; padding: 0; overflow: hidden; border-radius: 12px;">
-        <div class="modal-header" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin: 0; font-size: 18px; font-weight: 700; color: #fff;">
-                <i class="fa-solid fa-calendar-days" style="color: #FF7A00; margin-right: 8px;"></i>
-                Carga Masiva de Mensualidades (2018 - 2029)
-            </h2>
-            <span class="close-btn" onclick="closeRangeModal()" style="color: #fff; font-size: 24px; cursor: pointer;">&times;</span>
-        </div>
+    <div class="modal-content" style="max-width: 850px; height: 90vh; max-height: 880px; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-radius: 12px; background: #ffffff;">
         
-        <div class="modal-body" style="padding: 20px 24px; background: #ffffff; max-height: 80vh; overflow-y: auto;">
-            
-            <!-- Selector de Socio y Acción Común -->
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 10px; margin-bottom: 20px;">
-                <div class="form-row" style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <div style="flex: 2; min-width: 250px;">
-                        <label style="font-weight: 600; font-size: 13px; margin-bottom: 6px; display: block; color: #334155;">Socio a Cargar:</label>
-                        <select name="id_socio" id="range_id_socio" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 14px; background: #fff;">
-                            <?php if (isset($socio_actual)): ?>
-                                <option value="<?php echo $socio_actual['id_socio']; ?>" selected>
-                                    <?php echo htmlspecialchars($socio_actual['ci'] . ' - ' . $socio_actual['ap_paterno'] . ' ' . $socio_actual['nombre']); ?>
-                                </option>
-                                <option value="all">-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
-                            <?php else: ?>
-                                <option value="all" selected>-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
-                                <?php 
-                                if(isset($socios) && $socios->rowCount() > 0) {
-                                    while($sRow = $socios->fetch(PDO::FETCH_ASSOC)) {
-                                        echo "<option value='" . $sRow['id_socio'] . "'>" . htmlspecialchars($sRow['ci']) . " - " . htmlspecialchars($sRow['ap_paterno'] . ' ' . $sRow['ap_materno'] . ' ' . $sRow['nombre']) . "</option>";
+        <!-- HEADER Y CONTROLES SUPERIORES (SIEMPRE FIJOS ARRIBA) -->
+        <div style="flex-shrink: 0; background: #ffffff; border-bottom: 1px solid #e2e8f0; z-index: 10;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; font-size: 18px; font-weight: 700; color: #fff;">
+                    <i class="fa-solid fa-calendar-days" style="color: #FF7A00; margin-right: 8px;"></i>
+                    Carga Masiva de Mensualidades (2018 - 2029)
+                </h2>
+                <span class="close-btn" onclick="closeRangeModal()" style="color: #fff; font-size: 24px; cursor: pointer;">&times;</span>
+            </div>
+
+            <div style="padding: 16px 24px 0 24px;">
+                <!-- Selector de Socio y Acción Común -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 16px; border-radius: 10px; margin-bottom: 12px;">
+                    <div class="form-row" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <div style="flex: 2; min-width: 250px;">
+                            <label style="font-weight: 600; font-size: 12px; margin-bottom: 4px; display: block; color: #334155;">Socio a Cargar:</label>
+                            <select name="id_socio" id="range_id_socio" required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; background: #fff;">
+                                <?php if (isset($socio_actual)): ?>
+                                    <option value="<?php echo $socio_actual['id_socio']; ?>" selected>
+                                        <?php echo htmlspecialchars($socio_actual['ci'] . ' - ' . $socio_actual['ap_paterno'] . ' ' . $socio_actual['nombre']); ?>
+                                    </option>
+                                    <option value="all">-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
+                                <?php else: ?>
+                                    <option value="all" selected>-- TODOS LOS SOCIOS (Carga Global Masiva) --</option>
+                                    <?php 
+                                    if(isset($socios) && $socios->rowCount() > 0) {
+                                        while($sRow = $socios->fetch(PDO::FETCH_ASSOC)) {
+                                            echo "<option value='" . $sRow['id_socio'] . "'>" . htmlspecialchars($sRow['ci']) . " - " . htmlspecialchars($sRow['ap_paterno'] . ' ' . $sRow['ap_materno'] . ' ' . $sRow['nombre']) . "</option>";
+                                        }
                                     }
-                                }
-                                ?>
-                            <?php endif; ?>
-                        </select>
-                    </div>
-                    <div style="flex: 1; min-width: 150px;">
-                        <label style="font-weight: 600; font-size: 13px; margin-bottom: 6px; display: block; color: #334155;">Acción:</label>
-                        <select name="numero_accion" id="range_numero_accion" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff;">
-                            <option value="all">Todas las Acciones</option>
-                            <option value="1" selected>Acción 1</option>
-                            <option value="2">Acción 2</option>
-                            <option value="3">Acción 3</option>
-                            <option value="4">Acción 4</option>
-                            <option value="5">Acción 5</option>
-                        </select>
-                    </div>
-                    <div style="flex: 1; min-width: 150px;">
-                        <label style="font-weight: 600; font-size: 13px; margin-bottom: 6px; display: block; color: #334155;">Nº Recibo (Opcional):</label>
-                        <input type="text" id="range_numero_recibo" placeholder="Ej: REC-2018-2029" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff;">
+                                    ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                        <div style="flex: 1; min-width: 130px;">
+                            <label style="font-weight: 600; font-size: 12px; margin-bottom: 4px; display: block; color: #334155;">Acción:</label>
+                            <select name="numero_accion" id="range_numero_accion" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; font-size: 13px;">
+                                <option value="all">Todas las Acciones</option>
+                                <option value="1" selected>Acción 1</option>
+                                <option value="2">Acción 2</option>
+                                <option value="3">Acción 3</option>
+                                <option value="4">Acción 4</option>
+                                <option value="5">Acción 5</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1; min-width: 130px;">
+                            <label style="font-weight: 600; font-size: 12px; margin-bottom: 4px; display: block; color: #334155;">Nº Recibo (Opcional):</label>
+                            <input type="text" id="range_numero_recibo" placeholder="Ej: REC-2018-2029" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; font-size: 13px;">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Pestañas de Modo de Carga -->
-            <div style="display: flex; gap: 8px; background: #f1f5f9; padding: 5px; border-radius: 10px; margin-bottom: 20px;">
-                <button type="button" id="tabBtnMulti" class="modal-tab-btn active" onclick="switchRangeTab('multi')" style="flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; background: #ffffff; color: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <i class="fa-solid fa-sliders"></i> Configurar Montos y Meses por Año (Multiaño)
-                </button>
-                <button type="button" id="tabBtnRange" class="modal-tab-btn" onclick="switchRangeTab('range')" style="flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; background: transparent; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <i class="fa-solid fa-arrows-left-right"></i> Rango Continuo (Desde - Hasta)
-                </button>
-            </div>
+                <!-- Pestañas de Modo de Carga -->
+                <div style="display: flex; gap: 8px; background: #f1f5f9; padding: 4px; border-radius: 8px; margin-bottom: 12px;">
+                    <button type="button" id="tabBtnMulti" class="modal-tab-btn active" onclick="switchRangeTab('multi')" style="flex: 1; padding: 8px; border: none; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; background: #ffffff; color: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i class="fa-solid fa-sliders"></i> Configurar Montos y Meses por Año (Multiaño)
+                    </button>
+                    <button type="button" id="tabBtnRange" class="modal-tab-btn" onclick="switchRangeTab('range')" style="flex: 1; padding: 8px; border: none; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; background: transparent; color: #64748b; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i class="fa-solid fa-arrows-left-right"></i> Rango Continuo (Desde - Hasta)
+                    </button>
+                </div>
 
-            <!-- TAB 1: CONFIGURACIÓN MULTIAÑO PERSONALIZADA POR AÑO -->
-            <div id="tabContentMulti" style="display: block;">
                 <!-- Barra de Acciones Rápidas Globales -->
-                <div style="background: #e0f2fe; border: 1px solid #bae6fd; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div id="globalActionsBar" style="background: #e0f2fe; border: 1px solid #bae6fd; padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                     <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                         <span style="font-weight: 700; font-size: 13px; color: #0369a1;">Monto Global:</span>
                         <input type="number" step="0.01" id="globalMontoInput" value="50.00" style="width: 75px; padding: 5px 8px; border-radius: 6px; border: 1px solid #7dd3fc; font-weight: 700; text-align: center;">
@@ -315,7 +312,14 @@ include 'header.php';
                         </button>
                     </div>
                 </div>
-
+            </div>
+        </div>
+        
+        <!-- BODY CON SCROLL INDEPENDIENTE (SOLO SCROLIAN LOS AÑOS) -->
+        <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 16px 24px; background: #ffffff;">
+            
+            <!-- TAB 1: CONFIGURACIÓN MULTIAÑO PERSONALIZADA POR AÑO -->
+            <div id="tabContentMulti" style="display: block;">
                 <!-- Lista de Tarjetas por Año (2018 a 2029) -->
                 <div id="yearsContainer" style="display: flex; flex-direction: column; gap: 12px;">
                     <?php 
