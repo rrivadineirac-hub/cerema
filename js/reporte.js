@@ -645,10 +645,16 @@ function printAllSociosIndividualSheets() {
         const key = `${idSocio}_acc_${numAccion}`;
 
         if (!groupsMap.has(key)) {
+            const apPaterno = tr.dataset.paterno || '';
+            const apMaterno = tr.dataset.materno || '';
+            const nombre = tr.dataset.nombre || '';
             const nombreCompleto = tr.cells[3] ? tr.cells[3].innerText.trim() : 'Asociado';
             groupsMap.set(key, {
                 idSocio: idSocio,
                 numAccion: numAccion,
+                apPaterno: apPaterno,
+                apMaterno: apMaterno,
+                nombre: nombre,
                 nombreCompleto: nombreCompleto,
                 rows: []
             });
@@ -661,6 +667,26 @@ function printAllSociosIndividualSheets() {
         alert("No se encontraron asociados para generar el reporte.");
         return;
     }
+
+    // Ordenar estrictamente en orden ascendente por Apellido Paterno, Apellido Materno, Nombre y N° de Acción
+    groups.sort((a, b) => {
+        const patA = a.apPaterno || '';
+        const patB = b.apPaterno || '';
+        const resPat = patA.localeCompare(patB, 'es', { sensitivity: 'base' });
+        if (resPat !== 0) return resPat;
+
+        const matA = a.apMaterno || '';
+        const matB = b.apMaterno || '';
+        const resMat = matA.localeCompare(matB, 'es', { sensitivity: 'base' });
+        if (resMat !== 0) return resMat;
+
+        const nomA = a.nombre || '';
+        const nomB = b.nombre || '';
+        const resNom = nomA.localeCompare(nomB, 'es', { sensitivity: 'base' });
+        if (resNom !== 0) return resNom;
+
+        return (parseInt(a.numAccion, 10) || 1) - (parseInt(b.numAccion, 10) || 1);
+    });
 
     const filterMes = document.getElementById('filterMes');
     const filterGestion = document.getElementById('filterGestion');

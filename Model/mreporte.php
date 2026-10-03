@@ -184,7 +184,7 @@ class ReporteModel {
                     s.nombre
                   FROM mensualidad m
                   JOIN asociados s ON m.id_socio = s.id_socio
-                  ORDER BY m.fecha_pago DESC, m.id_mensualidad DESC";
+                  ORDER BY s.ap_paterno ASC, s.ap_materno ASC, s.nombre ASC, m.numero_accion ASC, m.anio ASC, m.id_mensualidad ASC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
@@ -217,7 +217,7 @@ class ReporteModel {
                     s.nombre
                   FROM aporte_extraordinario a
                   JOIN asociados s ON a.id_socio = s.id_socio
-                  ORDER BY a.fecha_aporte DESC, a.id_aporte DESC";
+                  ORDER BY s.ap_paterno ASC, s.ap_materno ASC, s.nombre ASC, a.numero_accion ASC, a.fecha_aporte ASC, a.id_aporte ASC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;
@@ -250,7 +250,7 @@ class ReporteModel {
                     s.nombre
                   FROM aportes_especiales e
                   JOIN asociados s ON e.id_socio = s.id_socio
-                  ORDER BY e.fecha_aporte DESC, e.id_aporte_esp DESC";
+                  ORDER BY s.ap_paterno ASC, s.ap_materno ASC, s.nombre ASC, e.numero_accion ASC, e.fecha_aporte ASC, e.id_aporte_esp ASC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt;

@@ -182,7 +182,7 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                         $rowAnio = !empty($row['anio']) ? $row['anio'] : (!empty($row['fecha_pago']) ? date('Y', strtotime($row['fecha_pago'])) : '');
                         $rowMes = !empty($row['mes']) ? $row['mes'] : '';
                 ?>
-                    <tr data-id-socio="<?php echo $row['id_socio']; ?>" data-mes="<?php echo htmlspecialchars($rowMes); ?>" data-anio="<?php echo htmlspecialchars($rowAnio); ?>">
+                    <tr data-id-socio="<?php echo $row['id_socio']; ?>" data-paterno="<?php echo htmlspecialchars($row['ap_paterno']); ?>" data-materno="<?php echo htmlspecialchars($row['ap_materno']); ?>" data-nombre="<?php echo htmlspecialchars($row['nombre']); ?>" data-mes="<?php echo htmlspecialchars($rowMes); ?>" data-anio="<?php echo htmlspecialchars($rowAnio); ?>">
                         <td style="text-align: center; font-weight: 500;"><?php echo $count++; ?></td>
                         <td style="font-weight: 600; font-family: monospace; font-size: 13px; color: var(--primary);"></td>
                         <td style="font-weight: 600; font-family: monospace; font-size: 13px; white-space: nowrap;"></td>
