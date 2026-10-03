@@ -628,3 +628,248 @@ window.addEventListener('beforeprint', function() {
 window.addEventListener('afterprint', function() {
     document.title = originalDocTitle;
 });
+
+function printAllSociosIndividualSheets() {
+    const allRows = getTableRows();
+    const rowsToProcess = (filteredRows && filteredRows.length > 0 && hasSearched) ? filteredRows : allRows;
+
+    if (rowsToProcess.length === 0) {
+        alert("No hay registros para imprimir.");
+        return;
+    }
+
+    const groupsMap = new Map();
+    rowsToProcess.forEach(tr => {
+        const idSocio = tr.dataset.idSocio || '0';
+        const numAccion = tr.cells[4] ? tr.cells[4].innerText.trim() : '1';
+        const key = `${idSocio}_acc_${numAccion}`;
+
+        if (!groupsMap.has(key)) {
+            const nombreCompleto = tr.cells[3] ? tr.cells[3].innerText.trim() : 'Asociado';
+            groupsMap.set(key, {
+                idSocio: idSocio,
+                numAccion: numAccion,
+                nombreCompleto: nombreCompleto,
+                rows: []
+            });
+        }
+        groupsMap.get(key).rows.push(tr);
+    });
+
+    const groups = Array.from(groupsMap.values());
+    if (groups.length === 0) {
+        alert("No se encontraron asociados para generar el reporte.");
+        return;
+    }
+
+    const filterMes = document.getElementById('filterMes');
+    const filterGestion = document.getElementById('filterGestion');
+    let mesText = filterMes && filterMes.selectedIndex >= 0 ? filterMes.options[filterMes.selectedIndex].text : 'Todos';
+    let gestionText = filterGestion && filterGestion.selectedIndex >= 0 ? filterGestion.options[filterGestion.selectedIndex].text : 'Todas';
+
+    const mainTableHead = document.querySelector('.data-table thead tr');
+    let headerHTML = mainTableHead ? mainTableHead.innerHTML : '';
+    const pageTitle = document.querySelector('.page-title');
+    let titleText = pageTitle ? pageTitle.innerText.toUpperCase() : 'REPORTE OFICIAL DE PAGOS';
+
+    let html = '';
+    const totalSheets = groups.length;
+
+    groups.forEach((group, groupIdx) => {
+        const isLast = (groupIdx === totalSheets - 1);
+        const pageBreakClass = !isLast ? 'page-break' : '';
+        const chunk = group.rows;
+        const maxRowsInChunk = chunk.length;
+
+        let fontSize = '10px';
+        let paddingTd = '3.5px 4px';
+        let paddingTh = '4px 4px';
+        let lineHeight = '1.18';
+        let logoHeight = '32px';
+        let titleH2 = '13.5px';
+        let titleH3 = '10.5px';
+        let headerMarginBottom = '4px';
+
+        if (maxRowsInChunk > 40 && maxRowsInChunk <= 55) {
+            fontSize = '9px';
+            paddingTd = '2.2px 3.5px';
+            paddingTh = '3px 3.5px';
+            lineHeight = '1.1';
+            logoHeight = '28px';
+            titleH2 = '12px';
+            titleH3 = '9.5px';
+            headerMarginBottom = '3px';
+        } else if (maxRowsInChunk > 55 && maxRowsInChunk <= 75) {
+            fontSize = '8.2px';
+            paddingTd = '1.6px 3px';
+            paddingTh = '2px 3px';
+            lineHeight = '1.05';
+            logoHeight = '24px';
+            titleH2 = '11px';
+            titleH3 = '9px';
+            headerMarginBottom = '2px';
+        } else if (maxRowsInChunk > 75 && maxRowsInChunk <= 95) {
+            fontSize = '7.5px';
+            paddingTd = '1.1px 2.5px';
+            paddingTh = '1.5px 2.5px';
+            lineHeight = '1.02';
+            logoHeight = '22px';
+            titleH2 = '10.5px';
+            titleH3 = '8.5px';
+            headerMarginBottom = '2px';
+        } else if (maxRowsInChunk > 95) {
+            fontSize = '6.8px';
+            paddingTd = '0.5px 2px';
+            paddingTh = '1px 2px';
+            lineHeight = '1.0';
+            logoHeight = '20px';
+            titleH2 = '10px';
+            titleH3 = '8px';
+            headerMarginBottom = '1px';
+        }
+
+        let socioLabel = `${group.nombreCompleto} (Acción N° ${group.numAccion})`;
+
+        html += `
+            <div class="print-page-block ${pageBreakClass}">
+                <div class="print-header" style="display: block !important; text-align: center; margin-bottom: ${headerMarginBottom}; border-bottom: 2px solid #27AE60; padding-bottom: 2px;">
+                    <div class="print-header-top" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
+                        <img src="../imagenes/institucinal/logo.png" alt="CEREMA Logo" class="print-logo" style="height: ${logoHeight}; width: auto;">
+                        <div class="print-title-group" style="text-align: center; flex-grow: 1;">
+                            <h2 style="font-size: ${titleH2}; margin: 0; color: #1a252f; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.1;">CENTRO DE RESIDENTES MAIRANEÑOS - CEREMA</h2>
+                            <h3 style="font-size: ${titleH3}; margin: 1px 0 0 0; color: #27AE60; font-weight: 600; line-height: 1.1;">${titleText}</h3>
+                        </div>
+                        <div style="width: 60px;"></div>
+                    </div>
+                    <div class="print-meta" style="font-size: ${titleH3}; display: flex; justify-content: space-between; margin-top: 2px; line-height: 1.1; color: #333;">
+                        <span><strong>Asociado:</strong> ${socioLabel} | <strong>Mes:</strong> ${mesText} | <strong>Gestión:</strong> ${gestionText}</span>
+                        <span><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES')} | <strong>Hoja ${groupIdx + 1} de ${totalSheets}</strong></span>
+                    </div>
+                </div>
+
+                <table class="data-table print-table" style="font-size: ${fontSize}; width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f1f5f9; font-size: ${fontSize};">${headerHTML}</tr>
+                    </thead>
+                    <tbody>`;
+
+        let groupTotalMonto = 0;
+
+        chunk.forEach((tr, rowIdx) => {
+            const rowNum = rowIdx + 1;
+            let cells = Array.from(tr.cells);
+            let rowHTML = '';
+
+            let cellMontoVal = 0;
+            if (cells[6]) {
+                let textMonto = cells[6].innerText.replace(/,/g, '').trim();
+                cellMontoVal = parseFloat(textMonto) || 0;
+            }
+            groupTotalMonto += cellMontoVal;
+
+            cells.forEach((cell, cellIdx) => {
+                let cellContent = cell.innerHTML;
+                if (cellIdx === 0) {
+                    cellContent = rowNum;
+                } else if (cellIdx === 1 || cellIdx === 2 || cellIdx === 7) {
+                    cellContent = '';
+                }
+                let cellStyle = cell.getAttribute('style') || '';
+                cellStyle = cellStyle.replace(/font-size:[^;]+;?/gi, '').replace(/font-weight:\s*(700|800|bold)[^;]*;?/gi, 'font-weight: 600;');
+                rowHTML += `<td style="padding: ${paddingTd}; line-height: ${lineHeight}; font-size: ${fontSize}; border: 1px solid #cbd5e1; ${cellStyle}">${cellContent}</td>`;
+            });
+            html += `<tr style="border-bottom: 1px solid #cbd5e1 !important;">${rowHTML}</tr>`;
+        });
+
+        if (chunk.length > 0) {
+            html += `
+                <tr style="background-color: #f8fafc; font-weight: bold; border-top: 2px solid #334155;">
+                    <td colspan="6" style="text-align: right; padding: ${paddingTd}; font-weight: 700; text-transform: uppercase; font-size: ${fontSize}; color: #000;">Total Recaudado:</td>
+                    <td style="text-align: right; padding: ${paddingTd}; font-weight: 800; color: #000; font-size: ${fontSize};">Bs. ${groupTotalMonto.toLocaleString('es-BO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td style="padding: ${paddingTd};"></td>
+                </tr>`;
+        }
+
+        html += `
+                    </tbody>
+                </table>
+            </div>`;
+    });
+
+    let iframe = document.getElementById('printReportIframe');
+    if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.id = 'printReportIframe';
+        iframe.style.position = 'fixed';
+        iframe.style.right = '0';
+        iframe.style.bottom = '0';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = '0';
+        document.body.appendChild(iframe);
+    }
+
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <title></title>
+            <style>
+                @page {
+                    size: letter portrait;
+                    margin: 0mm !important;
+                }
+                @page :left { margin: 0mm !important; }
+                @page :right { margin: 0mm !important; }
+                @page :first { margin: 0mm !important; }
+
+                html, body {
+                    background: #ffffff !important;
+                    color: #000000 !important;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+                    margin: 0 !important;
+                    padding: 0.15cm 0.5cm 0.15cm 0.5cm !important;
+                }
+                .print-page-block {
+                    box-sizing: border-box;
+                    width: 100% !important;
+                    page-break-after: always !important;
+                    break-after: page !important;
+                }
+                .print-page-block:last-child {
+                    page-break-after: auto !important;
+                    break-after: auto !important;
+                }
+                .print-table {
+                    width: 100% !important;
+                    border-collapse: collapse !important;
+                    margin-bottom: 0px !important;
+                }
+                .print-table th, .print-table td {
+                    border: 1px solid #cbd5e1 !important;
+                    color: #000000 !important;
+                    white-space: nowrap !important;
+                }
+                .print-table th {
+                    background-color: #f1f5f9 !important;
+                    font-weight: 700 !important;
+                    text-transform: uppercase !important;
+                    padding: 3px 4px !important;
+                }
+            </style>
+        </head>
+        <body>
+            ${html}
+        </body>
+        </html>
+    `);
+    doc.close();
+
+    setTimeout(function() {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+    }, 350);
+}

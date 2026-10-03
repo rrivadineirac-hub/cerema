@@ -137,15 +137,20 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
             </div>
         </div>
 
-        <!-- Botones de Acción a la Derecha (Imprimir en PDF & Imprimir Planilla Anual) -->
-        <div style="display: flex; gap: 10px; align-items: center;">
+        <!-- Botones de Acción a la Derecha (Imprimir en PDF, Imprimir Todos 1 Hoja/Socio & Imprimir Planilla Anual) -->
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <!-- Botón 1: Imprimir en PDF (Deshabilitado inicialmente, se habilita al elegir algún filtro) -->
-            <button type="button" id="btnImprimirFiltrado" onclick="printReport();" class="btn-primary" disabled style="background-color: #0284c7; border: none; cursor: not-allowed; opacity: 0.4; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 13.5px; color: #ffffff; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); height: 42px; transition: all 0.2s ease;" title="Imprimir los resultados filtrados en PDF">
+            <button type="button" id="btnImprimirFiltrado" onclick="printReport();" class="btn-primary" disabled style="background-color: #0284c7; border: none; cursor: not-allowed; opacity: 0.4; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 13.5px; color: #ffffff; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); height: 42px; transition: all 0.2s ease;" title="Imprimir los resultados filtrados en PDF">
                 <i class="fa-solid fa-print"></i> Imprimir en PDF
             </button>
 
-            <!-- Botón 2: Imprimir Planilla Anual (Habilitado inicialmente, se deshabilita al elegir algún filtro) -->
-            <button type="button" id="btnPlanillaAnual" onclick="imprimirPlanillaAnualDirecto('<?php echo $tipo_cat; ?>');" class="btn-export" style="background-color: #0d9488; border: none; cursor: pointer; opacity: 1; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 13.5px; color: #ffffff; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); height: 42px; transition: all 0.2s ease;" title="<?php echo htmlspecialchars($btn_planilla_label); ?>">
+            <!-- Botón 2: Imprimir Todos los Socios (1 Hoja por Socio/Acción) -->
+            <button type="button" id="btnImprimirTodosSocios" onclick="printAllSociosIndividualSheets();" class="btn-primary" style="background-color: #8e44ad; border: none; cursor: pointer; opacity: 1; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 13.5px; color: #ffffff; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); height: 42px; transition: all 0.2s ease;" title="Imprimir el reporte de pago de TODOS los asociados, cada uno en 1 hoja independiente manteniendo el formato">
+                <i class="fa-solid fa-users-rectangle"></i> Imprimir Todos (1 Hoja/Socio)
+            </button>
+
+            <!-- Botón 3: Imprimir Planilla Anual (Habilitado inicialmente, se deshabilita al elegir algún filtro) -->
+            <button type="button" id="btnPlanillaAnual" onclick="imprimirPlanillaAnualDirecto('<?php echo $tipo_cat; ?>');" class="btn-export" style="background-color: #0d9488; border: none; cursor: pointer; opacity: 1; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 13.5px; color: #ffffff; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); height: 42px; transition: all 0.2s ease;" title="<?php echo htmlspecialchars($btn_planilla_label); ?>">
                 <i class="fa-solid fa-table-cells"></i> <?php echo htmlspecialchars($btn_planilla_label); ?>
             </button>
         </div>
