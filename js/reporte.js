@@ -409,6 +409,8 @@ function generateDynamicPrintHTML() {
                     cellContent = '';
                 }
                 let cellStyle = cell.getAttribute('style') || '';
+                // Limpiar font-size y font-weight excesivos heredados de la pantalla para que los números de Monto sean mas pequeños y uniformes
+                cellStyle = cellStyle.replace(/font-size:[^;]+;?/gi, '').replace(/font-weight:\s*(700|800|bold)[^;]*;?/gi, 'font-weight: 600;');
                 rowHTML += `<td style="padding: ${paddingTd}; line-height: ${lineHeight}; font-size: ${fontSize}; border: 1px solid #cbd5e1; ${cellStyle}">${cellContent}</td>`;
             });
             html += `<tr style="border-bottom: 1px solid #cbd5e1 !important;">${rowHTML}</tr>`;

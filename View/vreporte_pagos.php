@@ -184,7 +184,7 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                         <td style="font-weight: 600; color: var(--text-main); white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                         <td style="text-align: center; font-weight: 700; color: var(--text-main);"><?php echo htmlspecialchars($row['numero_accion'] ?? 1); ?></td>
                         <td><?php echo $detalle; ?></td>
-                        <td style="text-align: right; font-weight: 700; color: #27ae60; font-size: 13.5px;"><?php echo number_format($row['monto'], 2); ?></td>
+                        <td style="text-align: right; font-weight: 600; color: #27ae60;"><?php echo number_format($row['monto'], 2); ?></td>
                         <td style="text-align: center; font-size: 13px; white-space: nowrap;"></td>
                     </tr>
                 <?php 
@@ -256,7 +256,7 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                             <td style="font-weight: 600; color: #000; white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                             <td style="text-align: center; font-weight: 700; color: #000;"><?php echo htmlspecialchars($row['numero_accion'] ?? 1); ?></td>
                             <td style="font-size: 10.5px;"><?php echo $detalle; ?></td>
-                            <td style="text-align: right; font-weight: 700; color: #000; font-size: 11px;"><?php echo number_format($row['monto'], 2); ?></td>
+                            <td style="text-align: right; font-weight: 600; color: #000;"><?php echo number_format($row['monto'], 2); ?></td>
                             <td style="text-align: center; font-size: 10.5px; white-space: nowrap;"></td>
                         </tr>
                     <?php endforeach; ?>
