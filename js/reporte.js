@@ -698,129 +698,227 @@ function printAllSociosIndividualSheets() {
     const pageTitle = document.querySelector('.page-title');
     let titleText = pageTitle ? pageTitle.innerText.toUpperCase() : 'REPORTE OFICIAL DE PAGOS';
 
+    const isExtraordinarios = titleText.includes('EXTRAORDINARIO');
+
     let html = '';
-    const totalSheets = groups.length;
 
-    groups.forEach((group, groupIdx) => {
-        const isLast = (groupIdx === totalSheets - 1);
-        const pageBreakClass = !isLast ? 'page-break' : '';
-        const chunk = group.rows;
-        const maxRowsInChunk = chunk.length;
-
-        let fontSize = '10px';
-        let paddingTd = '3.5px 4px';
-        let paddingTh = '4px 4px';
-        let lineHeight = '1.18';
-        let logoHeight = '32px';
-        let titleH2 = '13.5px';
-        let titleH3 = '10.5px';
-        let headerMarginBottom = '4px';
-
-        if (maxRowsInChunk > 40 && maxRowsInChunk <= 55) {
-            fontSize = '9px';
-            paddingTd = '2.2px 3.5px';
-            paddingTh = '3px 3.5px';
-            lineHeight = '1.1';
-            logoHeight = '28px';
-            titleH2 = '12px';
-            titleH3 = '9.5px';
-            headerMarginBottom = '3px';
-        } else if (maxRowsInChunk > 55 && maxRowsInChunk <= 75) {
-            fontSize = '8.2px';
-            paddingTd = '1.6px 3px';
-            paddingTh = '2px 3px';
-            lineHeight = '1.05';
-            logoHeight = '24px';
-            titleH2 = '11px';
-            titleH3 = '9px';
-            headerMarginBottom = '2px';
-        } else if (maxRowsInChunk > 75 && maxRowsInChunk <= 95) {
-            fontSize = '7.5px';
-            paddingTd = '1.1px 2.5px';
-            paddingTh = '1.5px 2.5px';
-            lineHeight = '1.02';
-            logoHeight = '22px';
-            titleH2 = '10.5px';
-            titleH3 = '8.5px';
-            headerMarginBottom = '2px';
-        } else if (maxRowsInChunk > 95) {
-            fontSize = '6.8px';
-            paddingTd = '0.5px 2px';
-            paddingTh = '1px 2px';
-            lineHeight = '1.0';
-            logoHeight = '20px';
-            titleH2 = '10px';
-            titleH3 = '8px';
-            headerMarginBottom = '1px';
+    if (isExtraordinarios) {
+        // EN REPORTES EXTRAORDINARIOS: Poner 4 ASOCIADOS POR HOJA
+        const sociosPerSheet = 4;
+        let socioChunks = [];
+        for (let i = 0; i < groups.length; i += sociosPerSheet) {
+            socioChunks.push(groups.slice(i, i + sociosPerSheet));
         }
 
-        let socioLabel = `${group.nombreCompleto} (Acción N° ${group.numAccion})`;
+        const totalSheets = socioChunks.length;
 
-        html += `
-            <div class="print-page-block ${pageBreakClass}">
-                <div class="print-header" style="display: block !important; text-align: center; margin-bottom: ${headerMarginBottom}; border-bottom: 2px solid #27AE60; padding-bottom: 2px;">
-                    <div class="print-header-top" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
-                        <img src="../imagenes/institucinal/logo.png" alt="CEREMA Logo" class="print-logo" style="height: ${logoHeight}; width: auto;">
-                        <div class="print-title-group" style="text-align: center; flex-grow: 1;">
-                            <h2 style="font-size: ${titleH2}; margin: 0; color: #1a252f; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.1;">CENTRO DE RESIDENTES MAIRANEÑOS - CEREMA</h2>
-                            <h3 style="font-size: ${titleH3}; margin: 1px 0 0 0; color: #27AE60; font-weight: 600; line-height: 1.1;">${titleText}</h3>
+        socioChunks.forEach((sheetGroups, sheetIdx) => {
+            const isLast = (sheetIdx === totalSheets - 1);
+            const pageBreakClass = !isLast ? 'page-break' : '';
+
+            let subBlocksHTML = '';
+
+            sheetGroups.forEach(group => {
+                const chunk = group.rows;
+                let groupTotalMonto = 0;
+                let rowsHTML = '';
+
+                chunk.forEach((tr, rowIdx) => {
+                    const rowNum = rowIdx + 1;
+                    let cells = Array.from(tr.cells);
+                    let cellRowHTML = '';
+
+                    let cellMontoVal = 0;
+                    if (cells[6]) {
+                        let textMonto = cells[6].innerText.replace(/,/g, '').trim();
+                        cellMontoVal = parseFloat(textMonto) || 0;
+                    }
+                    groupTotalMonto += cellMontoVal;
+
+                    cells.forEach((cell, cellIdx) => {
+                        let cellContent = cell.innerHTML;
+                        if (cellIdx === 0) {
+                            cellContent = rowNum;
+                        } else if (cellIdx === 1 || cellIdx === 2 || cellIdx === 7) {
+                            cellContent = '';
+                        }
+                        let cellStyle = cell.getAttribute('style') || '';
+                        cellStyle = cellStyle.replace(/font-size:[^;]+;?/gi, '').replace(/font-weight:\s*(700|800|bold)[^;]*;?/gi, 'font-weight: 600;');
+                        cellRowHTML += `<td style="padding: 2.2px 3.5px; line-height: 1.1; font-size: 8.5px; border: 1px solid #cbd5e1; ${cellStyle}">${cellContent}</td>`;
+                    });
+                    rowsHTML += `<tr style="border-bottom: 1px solid #cbd5e1 !important;">${cellRowHTML}</tr>`;
+                });
+
+                subBlocksHTML += `
+                    <div style="margin-bottom: 8px; border: 1.5px solid #cbd5e1; border-radius: 5px; padding: 4px; background: #ffffff; page-break-inside: avoid; break-inside: avoid;">
+                        <div style="background-color: #f1f5f9; padding: 3px 6px; border-radius: 4px; margin-bottom: 3px; font-size: 9px; font-weight: 700; color: #0f172a; display: flex; justify-content: space-between; border-bottom: 1px solid #cbd5e1;">
+                            <span><strong>Asociado:</strong> ${group.nombreCompleto} (Acción N° ${group.numAccion})</span>
+                            <span><strong>Gestión:</strong> ${gestionText}</span>
                         </div>
-                        <div style="width: 60px;"></div>
+
+                        <table class="data-table print-table" style="font-size: 8.5px; width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background-color: #f8fafc; font-size: 8.5px;">${headerHTML}</tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHTML}
+                                <tr style="background-color: #f8fafc; font-weight: bold; border-top: 1.5px solid #334155;">
+                                    <td colspan="6" style="text-align: right; padding: 2.5px 4px; font-weight: 700; text-transform: uppercase; font-size: 8.5px; color: #000;">Total Recaudado:</td>
+                                    <td style="text-align: right; padding: 2.5px 4px; font-weight: 800; color: #000; font-size: 8.5px;">Bs. ${groupTotalMonto.toLocaleString('es-BO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    <td style="padding: 2.5px 4px;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="print-meta" style="font-size: ${titleH3}; display: flex; justify-content: space-between; margin-top: 2px; line-height: 1.1; color: #333;">
-                        <span><strong>Asociado:</strong> ${socioLabel} | <strong>Mes:</strong> ${mesText} | <strong>Gestión:</strong> ${gestionText}</span>
-                        <span><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES')} | <strong>Hoja ${groupIdx + 1} de ${totalSheets}</strong></span>
-                    </div>
-                </div>
-
-                <table class="data-table print-table" style="font-size: ${fontSize}; width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background-color: #f1f5f9; font-size: ${fontSize};">${headerHTML}</tr>
-                    </thead>
-                    <tbody>`;
-
-        let groupTotalMonto = 0;
-
-        chunk.forEach((tr, rowIdx) => {
-            const rowNum = rowIdx + 1;
-            let cells = Array.from(tr.cells);
-            let rowHTML = '';
-
-            let cellMontoVal = 0;
-            if (cells[6]) {
-                let textMonto = cells[6].innerText.replace(/,/g, '').trim();
-                cellMontoVal = parseFloat(textMonto) || 0;
-            }
-            groupTotalMonto += cellMontoVal;
-
-            cells.forEach((cell, cellIdx) => {
-                let cellContent = cell.innerHTML;
-                if (cellIdx === 0) {
-                    cellContent = rowNum;
-                } else if (cellIdx === 1 || cellIdx === 2 || cellIdx === 7) {
-                    cellContent = '';
-                }
-                let cellStyle = cell.getAttribute('style') || '';
-                cellStyle = cellStyle.replace(/font-size:[^;]+;?/gi, '').replace(/font-weight:\s*(700|800|bold)[^;]*;?/gi, 'font-weight: 600;');
-                rowHTML += `<td style="padding: ${paddingTd}; line-height: ${lineHeight}; font-size: ${fontSize}; border: 1px solid #cbd5e1; ${cellStyle}">${cellContent}</td>`;
+                `;
             });
-            html += `<tr style="border-bottom: 1px solid #cbd5e1 !important;">${rowHTML}</tr>`;
-        });
 
-        if (chunk.length > 0) {
             html += `
-                <tr style="background-color: #f8fafc; font-weight: bold; border-top: 2px solid #334155;">
-                    <td colspan="6" style="text-align: right; padding: ${paddingTd}; font-weight: 700; text-transform: uppercase; font-size: ${fontSize}; color: #000;">Total Recaudado:</td>
-                    <td style="text-align: right; padding: ${paddingTd}; font-weight: 800; color: #000; font-size: ${fontSize};">Bs. ${groupTotalMonto.toLocaleString('es-BO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    <td style="padding: ${paddingTd};"></td>
-                </tr>`;
-        }
+                <div class="print-page-block ${pageBreakClass}">
+                    <div class="print-header" style="display: block !important; text-align: center; margin-bottom: 4px; border-bottom: 2px solid #27AE60; padding-bottom: 2px;">
+                        <div class="print-header-top" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
+                            <img src="../imagenes/institucinal/logo.png" alt="CEREMA Logo" class="print-logo" style="height: 26px; width: auto;">
+                            <div class="print-title-group" style="text-align: center; flex-grow: 1;">
+                                <h2 style="font-size: 11.5px; margin: 0; color: #1a252f; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.1;">CENTRO DE RESIDENTES MAIRANEÑOS - CEREMA</h2>
+                                <h3 style="font-size: 9px; margin: 1px 0 0 0; color: #27AE60; font-weight: 600; line-height: 1.1;">${titleText}</h3>
+                            </div>
+                            <div style="width: 60px;"></div>
+                        </div>
+                        <div class="print-meta" style="font-size: 8px; display: flex; justify-content: space-between; margin-top: 2px; line-height: 1.1; color: #333;">
+                            <span><strong>Reporte General de Aportes Extraordinarios (4 Asociados por Hoja)</strong></span>
+                            <span><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES')} | <strong>Hoja ${sheetIdx + 1} de ${totalSheets}</strong></span>
+                        </div>
+                    </div>
 
-        html += `
-                    </tbody>
-                </table>
-            </div>`;
-    });
+                    ${subBlocksHTML}
+                </div>
+            `;
+        });
+    } else {
+        // EN REPORTES DE MENSUALIDADES: 1 Hoja Completa por Asociado
+        const totalSheets = groups.length;
+
+        groups.forEach((group, groupIdx) => {
+            const isLast = (groupIdx === totalSheets - 1);
+            const pageBreakClass = !isLast ? 'page-break' : '';
+            const chunk = group.rows;
+            const maxRowsInChunk = chunk.length;
+
+            let fontSize = '10px';
+            let paddingTd = '3.5px 4px';
+            let paddingTh = '4px 4px';
+            let lineHeight = '1.18';
+            let logoHeight = '32px';
+            let titleH2 = '13.5px';
+            let titleH3 = '10.5px';
+            let headerMarginBottom = '4px';
+
+            if (maxRowsInChunk > 40 && maxRowsInChunk <= 55) {
+                fontSize = '9px';
+                paddingTd = '2.2px 3.5px';
+                paddingTh = '3px 3.5px';
+                lineHeight = '1.1';
+                logoHeight = '28px';
+                titleH2 = '12px';
+                titleH3 = '9.5px';
+                headerMarginBottom = '3px';
+            } else if (maxRowsInChunk > 55 && maxRowsInChunk <= 75) {
+                fontSize = '8.2px';
+                paddingTd = '1.6px 3px';
+                paddingTh = '2px 3px';
+                lineHeight = '1.05';
+                logoHeight = '24px';
+                titleH2 = '11px';
+                titleH3 = '9px';
+                headerMarginBottom = '2px';
+            } else if (maxRowsInChunk > 75 && maxRowsInChunk <= 95) {
+                fontSize = '7.5px';
+                paddingTd = '1.1px 2.5px';
+                paddingTh = '1.5px 2.5px';
+                lineHeight = '1.02';
+                logoHeight = '22px';
+                titleH2 = '10.5px';
+                titleH3 = '8.5px';
+                headerMarginBottom = '2px';
+            } else if (maxRowsInChunk > 95) {
+                fontSize = '6.8px';
+                paddingTd = '0.5px 2px';
+                paddingTh = '1px 2px';
+                lineHeight = '1.0';
+                logoHeight = '20px';
+                titleH2 = '10px';
+                titleH3 = '8px';
+                headerMarginBottom = '1px';
+            }
+
+            let socioLabel = `${group.nombreCompleto} (Acción N° ${group.numAccion})`;
+
+            html += `
+                <div class="print-page-block ${pageBreakClass}">
+                    <div class="print-header" style="display: block !important; text-align: center; margin-bottom: ${headerMarginBottom}; border-bottom: 2px solid #27AE60; padding-bottom: 2px;">
+                        <div class="print-header-top" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
+                            <img src="../imagenes/institucinal/logo.png" alt="CEREMA Logo" class="print-logo" style="height: ${logoHeight}; width: auto;">
+                            <div class="print-title-group" style="text-align: center; flex-grow: 1;">
+                                <h2 style="font-size: ${titleH2}; margin: 0; color: #1a252f; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.1;">CENTRO DE RESIDENTES MAIRANEÑOS - CEREMA</h2>
+                                <h3 style="font-size: ${titleH3}; margin: 1px 0 0 0; color: #27AE60; font-weight: 600; line-height: 1.1;">${titleText}</h3>
+                            </div>
+                            <div style="width: 60px;"></div>
+                        </div>
+                        <div class="print-meta" style="font-size: ${titleH3}; display: flex; justify-content: space-between; margin-top: 2px; line-height: 1.1; color: #333;">
+                            <span><strong>Asociado:</strong> ${socioLabel} | <strong>Mes:</strong> ${mesText} | <strong>Gestión:</strong> ${gestionText}</span>
+                            <span><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES')} | <strong>Hoja ${groupIdx + 1} de ${totalSheets}</strong></span>
+                        </div>
+                    </div>
+
+                    <table class="data-table print-table" style="font-size: ${fontSize}; width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background-color: #f1f5f9; font-size: ${fontSize};">${headerHTML}</tr>
+                        </thead>
+                        <tbody>`;
+
+            let groupTotalMonto = 0;
+
+            chunk.forEach((tr, rowIdx) => {
+                const rowNum = rowIdx + 1;
+                let cells = Array.from(tr.cells);
+                let rowHTML = '';
+
+                let cellMontoVal = 0;
+                if (cells[6]) {
+                    let textMonto = cells[6].innerText.replace(/,/g, '').trim();
+                    cellMontoVal = parseFloat(textMonto) || 0;
+                }
+                groupTotalMonto += cellMontoVal;
+
+                cells.forEach((cell, cellIdx) => {
+                    let cellContent = cell.innerHTML;
+                    if (cellIdx === 0) {
+                        cellContent = rowNum;
+                    } else if (cellIdx === 1 || cellIdx === 2 || cellIdx === 7) {
+                        cellContent = '';
+                    }
+                    let cellStyle = cell.getAttribute('style') || '';
+                    cellStyle = cellStyle.replace(/font-size:[^;]+;?/gi, '').replace(/font-weight:\s*(700|800|bold)[^;]*;?/gi, 'font-weight: 600;');
+                    rowHTML += `<td style="padding: ${paddingTd}; line-height: ${lineHeight}; font-size: ${fontSize}; border: 1px solid #cbd5e1; ${cellStyle}">${cellContent}</td>`;
+                });
+                html += `<tr style="border-bottom: 1px solid #cbd5e1 !important;">${rowHTML}</tr>`;
+            });
+
+            if (chunk.length > 0) {
+                html += `
+                    <tr style="background-color: #f8fafc; font-weight: bold; border-top: 2px solid #334155;">
+                        <td colspan="6" style="text-align: right; padding: ${paddingTd}; font-weight: 700; text-transform: uppercase; font-size: ${fontSize}; color: #000;">Total Recaudado:</td>
+                        <td style="text-align: right; padding: ${paddingTd}; font-weight: 800; color: #000; font-size: ${fontSize};">Bs. ${groupTotalMonto.toLocaleString('es-BO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td style="padding: ${paddingTd};"></td>
+                    </tr>`;
+            }
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>`;
+        });
+    }
 
     let iframe = document.getElementById('printReportIframe');
     if (!iframe) {
