@@ -21,15 +21,11 @@ $stmt_g->execute();
 $gestion_activa = $stmt_g->fetch(PDO::FETCH_ASSOC);
 $id_gestion_activa = $gestion_activa ? $gestion_activa['id_gestion'] : null;
 
-// Obtener categorías de Aporte Extraordinario para esta gestión
-$categorias = [];
-if ($id_gestion_activa) {
-    $query_cat = "SELECT nombre, monto_sugerido FROM categorias_ingreso WHERE id_gestion = ? AND requiere_socio = 1";
-    $stmt_c = $db->prepare($query_cat);
-    $stmt_c->bindParam(1, $id_gestion_activa);
-    $stmt_c->execute();
-    $categorias = $stmt_c->fetchAll(PDO::FETCH_ASSOC);
-}
+// Obtener categorías de Aporte Extraordinario configuradas para los asociados
+$query_cat = "SELECT id_cat_ingreso, nombre, monto_sugerido, monto_mensual, monto_total FROM categorias_ingreso WHERE requiere_socio = 1 ORDER BY id_cat_ingreso DESC";
+$stmt_c = $db->prepare($query_cat);
+$stmt_c->execute();
+$categorias = $stmt_c->fetchAll(PDO::FETCH_ASSOC);
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 
@@ -143,12 +139,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
 
-            // 1. Obtener el Total (monto_sugerido) de categorias_ingreso
-            $query_total = "SELECT monto_sugerido FROM categorias_ingreso WHERE nombre = ? AND (id_gestion = ? OR id_gestion IS NULL) LIMIT 1";
+            // 1. Obtener el Total (monto_total o monto_sugerido) y monto_mensual de categorias_ingreso
+            $query_total = "SELECT monto_total, monto_sugerido, monto_mensual FROM categorias_ingreso WHERE nombre = ? LIMIT 1";
             $stmt_tot = $db->prepare($query_total);
-            $stmt_tot->execute([$motivo, $id_gestion_activa]);
+            $stmt_tot->execute([$motivo]);
             $row_tot = $stmt_tot->fetch(PDO::FETCH_ASSOC);
-            $total = $row_tot ? (float)$row_tot['monto_sugerido'] : 0.00;
+            $total = $row_tot ? (float)(!empty($row_tot['monto_total']) && $row_tot['monto_total'] > 0 ? $row_tot['monto_total'] : $row_tot['monto_sugerido']) : 0.00;
+            $monto_mensual = $row_tot ? (float)($row_tot['monto_mensual'] ?? 0.00) : 0.00;
 
             // 2. Obtener lo Ya Pagado de aporte_extraordinario
             $query_pagado = "SELECT SUM(monto) as total_pagado FROM aporte_extraordinario WHERE id_socio = ? AND motivo = ? AND id_aporte != ?";
@@ -164,7 +161,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 "status" => "success",
                 "total" => $total,
                 "pagado" => $pagado,
-                "saldo" => $saldo
+                "saldo" => $saldo,
+                "monto_mensual" => $monto_mensual
             ]);
             exit();
         } elseif ($action == 'get_all_paid_months_aporte') {
@@ -349,7 +347,7 @@ if (isset($_GET['id_socio']) && !empty($_GET['id_socio'])) {
     
     // Verificar el saldo pendiente de cada categoría para este socio
     foreach ($categorias as &$cat) {
-        $monto_sugerido = (float)($cat['monto_sugerido'] ?? 0);
+        $monto_objetivo = (float)(!empty($cat['monto_total']) && $cat['monto_total'] > 0 ? $cat['monto_total'] : ($cat['monto_sugerido'] ?? 0));
         
         $query_pag = "SELECT COALESCE(SUM(monto), 0) as total_pagado FROM aporte_extraordinario WHERE id_socio = ? AND motivo = ?";
         $stmt_p = $db->prepare($query_pag);
@@ -357,8 +355,8 @@ if (isset($_GET['id_socio']) && !empty($_GET['id_socio'])) {
         $row_p = $stmt_p->fetch(PDO::FETCH_ASSOC);
         $total_pagado = $row_p && $row_p['total_pagado'] ? (float)$row_p['total_pagado'] : 0.00;
 
-        $saldo = $monto_sugerido - $total_pagado;
-        if ($monto_sugerido > 0 && round($saldo, 2) <= 0) {
+        $saldo = $monto_objetivo - $total_pagado;
+        if ($monto_objetivo > 0 && round($saldo, 2) <= 0) {
             $cat['completado'] = true;
         } else {
             $cat['completado'] = false;

@@ -252,7 +252,10 @@ function updatePaymentInfo(motivo, autoFillMonto = true) {
             infoBox.style.display = 'block';
             
             if (autoFillMonto) {
-                document.getElementById('monto').value = parseFloat(data.saldo).toFixed(2);
+                let defaultMonto = (data.monto_mensual && parseFloat(data.monto_mensual) > 0 && parseFloat(data.monto_mensual) <= parseFloat(data.saldo))
+                    ? parseFloat(data.monto_mensual)
+                    : parseFloat(data.saldo);
+                document.getElementById('monto').value = defaultMonto.toFixed(2);
             }
             // Add native HTML validation constraint for max amount
             document.getElementById('monto').max = parseFloat(data.saldo).toFixed(2);
