@@ -334,6 +334,8 @@ function generateDynamicPrintHTML() {
                 let cellContent = cell.innerHTML;
                 if (cellIdx === 0) {
                     cellContent = globalNum;
+                } else if (cellIdx === 1 || cellIdx === 2 || cellIdx === 7) {
+                    cellContent = '';
                 }
                 let cellStyle = cell.getAttribute('style') || '';
                 rowHTML += `<td style="${cellStyle}">${cellContent}</td>`;

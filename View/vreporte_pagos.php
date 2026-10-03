@@ -174,13 +174,13 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                 ?>
                     <tr data-id-socio="<?php echo $row['id_socio']; ?>" data-mes="<?php echo htmlspecialchars($rowMes); ?>" data-anio="<?php echo htmlspecialchars($rowAnio); ?>">
                         <td style="text-align: center; font-weight: 500;"><?php echo $count++; ?></td>
-                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; color: var(--primary);"><?php echo !empty($row['numero_recibo']) ? htmlspecialchars($row['numero_recibo']) : '-'; ?></td>
-                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')); ?></td>
+                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; color: var(--primary);"></td>
+                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; white-space: nowrap;"></td>
                         <td style="font-weight: 600; color: var(--text-main); white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                         <td style="text-align: center; font-weight: 700; color: var(--text-main);"><?php echo htmlspecialchars($row['numero_accion'] ?? 1); ?></td>
                         <td><?php echo $detalle; ?></td>
                         <td style="text-align: right; font-weight: 700; color: #27ae60; font-size: 13.5px;"><?php echo number_format($row['monto'], 2); ?></td>
-                        <td style="text-align: center; font-size: 13px; white-space: nowrap;"><?php echo $fechaPago; ?></td>
+                        <td style="text-align: center; font-size: 13px; white-space: nowrap;"></td>
                     </tr>
                 <?php 
                     endforeach;
@@ -246,13 +246,13 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                     ?>
                         <tr>
                             <td style="text-align: center; font-weight: 500;"><?php echo $globalCount; ?></td>
-                            <td style="font-weight: 600; font-family: monospace; font-size: 11px;"><?php echo !empty($row['numero_recibo']) ? htmlspecialchars($row['numero_recibo']) : '-'; ?></td>
-                            <td style="font-weight: 600; font-family: monospace; font-size: 11px; white-space: nowrap;"><?php echo htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')); ?></td>
+                            <td style="font-weight: 600; font-family: monospace; font-size: 11px;"></td>
+                            <td style="font-weight: 600; font-family: monospace; font-size: 11px; white-space: nowrap;"></td>
                             <td style="font-weight: 600; color: #000; white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                             <td style="text-align: center; font-weight: 700; color: #000;"><?php echo htmlspecialchars($row['numero_accion'] ?? 1); ?></td>
                             <td style="font-size: 10.5px;"><?php echo $detalle; ?></td>
                             <td style="text-align: right; font-weight: 700; color: #000; font-size: 11px;"><?php echo number_format($row['monto'], 2); ?></td>
-                            <td style="text-align: center; font-size: 10.5px; white-space: nowrap;"><?php echo $fechaPago; ?></td>
+                            <td style="text-align: center; font-size: 10.5px; white-space: nowrap;"></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
