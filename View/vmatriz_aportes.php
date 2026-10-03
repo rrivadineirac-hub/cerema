@@ -82,7 +82,7 @@ $meses_nombres_view = [
                         <?php foreach ($anos_rango as $y): ?>
                             <th style="padding: 10px 8px; text-align: center; min-width: 130px; border-bottom: 2px solid #334155; border-left: 1px solid #334155;">
                                 <div><?php echo $y; ?></div>
-                                <div style="font-size: 11px; font-weight: normal; color: #94A3B8;">
+                                <div style="font-size: 9.5px; font-weight: normal; color: #94A3B8; opacity: 0.85;">
                                     <?php echo number_format($monto_mensual_cat, 2) . ' Bs/mes'; ?>
                                 </div>
                             </th>

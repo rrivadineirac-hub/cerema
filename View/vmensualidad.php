@@ -198,8 +198,8 @@ include 'header.php';
                 
                 <div class="form-row">
                     <div class="form-group half">
-                        <label for="monto_unitario">Monto por Mes (Bs)</label>
-                        <input type="number" step="0.01" id="monto_unitario" name="monto_unitario" required value="<?php echo number_format($monto_mensualidad_sugerido ?? 50.00, 2, '.', ''); ?>" oninput="updateCalculatedTotal()">
+                        <label for="monto_unitario" style="font-size: 11.5px; font-weight: 600; color: #475569;">Monto por Mes (Bs)</label>
+                        <input type="number" step="0.01" id="monto_unitario" name="monto_unitario" required value="<?php echo number_format($monto_mensualidad_sugerido ?? 50.00, 2, '.', ''); ?>" oninput="updateCalculatedTotal()" style="font-size: 12.5px; font-weight: 600; padding: 7px 10px;">
                     </div>
                     <div class="form-group half">
                         <label for="monto">Monto Total Calculado (Bs)</label>
@@ -300,8 +300,8 @@ include 'header.php';
                 <!-- Barra de Acciones Rápidas Globales -->
                 <div id="globalActionsBar" style="background: #e0f2fe; border: 1px solid #bae6fd; padding: 10px 14px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                     <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <span style="font-weight: 700; font-size: 13px; color: #0369a1;">Monto Global:</span>
-                        <input type="number" step="0.01" id="globalMontoInput" value="50.00" style="width: 75px; padding: 5px 8px; border-radius: 6px; border: 1px solid #7dd3fc; font-weight: 700; text-align: center;">
+                        <span style="font-weight: 600; font-size: 11.5px; color: #0369a1;">Monto Global:</span>
+                        <input type="number" step="0.01" id="globalMontoInput" value="50.00" style="width: 60px; padding: 3px 5px; border-radius: 5px; border: 1px solid #7dd3fc; font-weight: 600; font-size: 11.5px; text-align: center; height: 26px;">
                         <button type="button" class="btn-xs" onclick="applyGlobalMonto()" style="background: #0284c7; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-weight: 600; cursor: pointer;">Aplicar a Todos</button>
                         <button type="button" class="btn-xs" onclick="applyDefaultRates()" style="background: #FF7A00; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; cursor: pointer;" title="Fijar 30 Bs para 2018-2024 y 50 Bs para 2025+">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> Tarifas 2018-24 (30 Bs) / 2025+ (50 Bs)
@@ -336,14 +336,14 @@ include 'header.php';
                                 <label style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #1e293b; cursor: pointer;">
                                     <input type="checkbox" class="year-enable-cb" data-year="<?php echo $y; ?>" onchange="toggleYearCard(<?php echo $y; ?>)" style="width: 18px; height: 18px; accent-color: #0284c7; cursor: pointer;">
                                     <i class="fa-solid fa-calendar-day" style="color: #0284c7;"></i> Gestión <?php echo $y; ?>
-                                    <span style="font-size: 11px; font-weight: 600; color: #64748b; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; margin-left: 4px;">
+                                    <span style="font-size: 9.5px; font-weight: 500; color: #64748b; background: #e2e8f0; padding: 1px 5px; border-radius: 3px; margin-left: 4px;">
                                         (<?php echo $y <= 2024 ? '30 Bs/mes' : '50 Bs/mes'; ?>)
                                     </span>
                                 </label>
 
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <span style="font-size: 12px; font-weight: 600; color: #64748b;">Monto/Mes (Bs):</span>
-                                    <input type="number" step="0.01" class="year-monto-input" id="ymonto_<?php echo $y; ?>" data-year="<?php echo $y; ?>" value="<?php echo number_format($montoDefaultAno, 2, '.', ''); ?>" oninput="updateMultiYearTotals()" style="width: 85px; padding: 6px 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: #27AE60; text-align: center;">
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                    <span style="font-size: 10.5px; font-weight: 600; color: #64748b;">Monto/Mes (Bs):</span>
+                                    <input type="number" step="0.01" class="year-monto-input" id="ymonto_<?php echo $y; ?>" data-year="<?php echo $y; ?>" value="<?php echo number_format($montoDefaultAno, 2, '.', ''); ?>" oninput="updateMultiYearTotals()" style="width: 65px; padding: 3px 5px; border-radius: 5px; border: 1px solid #cbd5e1; font-weight: 600; font-size: 11.5px; color: #27AE60; text-align: center; height: 26px;">
                                     <div style="display: flex; gap: 4px;">
                                         <button type="button" class="btn-xs" onclick="setYearMonths(<?php echo $y; ?>, 'all')" style="background: #e2e8f0; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;">12 Meses</button>
                                         <button type="button" class="btn-xs" onclick="setYearMonths(<?php echo $y; ?>, 'clear')" style="background: #f1f5f9; color: #64748b; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer;">Limpiar</button>

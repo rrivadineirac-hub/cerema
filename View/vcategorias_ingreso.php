@@ -76,7 +76,7 @@
                         }
                         ?>
                     </td>
-                    <td style="font-weight: bold; color: #0284c7;">Bs. <?php echo number_format($cat['monto_mensual'] > 0 ? $cat['monto_mensual'] : $cat['monto_sugerido'], 2); ?> / mes</td>
+                    <td style="font-weight: 600; font-size: 11.5px; color: #0284c7;">Bs. <?php echo number_format($cat['monto_mensual'] > 0 ? $cat['monto_mensual'] : $cat['monto_sugerido'], 2); ?> / mes</td>
                     <td style="font-weight: 800; color: #27AE60;">Bs. <?php echo number_format($cat['monto_total'] > 0 ? $cat['monto_total'] : $cat['monto_sugerido'], 2); ?></td>
                     <td>
                         <div class="action-buttons">
@@ -199,10 +199,9 @@
                         </div>
                     </div>
 
-                    <!-- Monto Mensual -->
                     <div class="form-group">
-                        <label for="monto_mensual" style="font-weight: 600; font-size: 13px; color: #334155; margin-bottom: 4px; display: block;">Monto Mensual por Cuota (Bs./mes)</label>
-                        <input type="number" step="0.01" id="monto_mensual" name="monto_mensual" placeholder="Ej: 50.00" oninput="calculateIncomeTotals()" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-weight: 700; color: #27AE60;">
+                        <label for="monto_mensual" style="font-weight: 600; font-size: 11.5px; color: #334155; margin-bottom: 4px; display: block;">Monto Mensual por Cuota (Bs./mes)</label>
+                        <input type="number" step="0.01" id="monto_mensual" name="monto_mensual" placeholder="Ej: 50.00" oninput="calculateIncomeTotals()" required style="width: 100%; padding: 7px 10px; border-radius: 6px; border: 1.5px solid #cbd5e1; font-weight: 600; font-size: 12.5px; color: #27AE60;">
                     </div>
 
                 </div>
