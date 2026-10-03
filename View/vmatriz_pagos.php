@@ -34,7 +34,7 @@ $meses_nombres_view = [
     <div style="background: white; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
         <div style="flex: 1; min-width: 280px; max-width: 500px; position: relative;">
             <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94A3B8;"></i>
-            <input type="text" id="matrixSearchInput" placeholder="Buscar por nombre de asociado o N° Acción..." style="width: 100%; padding: 10px 14px 10px 40px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s;">
+            <input type="text" id="matrixSearchInput" placeholder="Buscar por nombre de asociado..." style="width: 100%; padding: 10px 14px 10px 40px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s;">
         </div>
         <div style="display: flex; gap: 15px; align-items: center; font-size: 13px; color: #475569;">
             <div style="display: flex; align-items: center; gap: 6px;">
@@ -47,7 +47,7 @@ $meses_nombres_view = [
                 <span style="display: inline-block; width: 12px; height: 12px; background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 3px;"></span> Sin Pago
             </div>
             <div style="font-weight: 700; color: #1E293B; margin-left: 10px;">
-                Total Asociados: <span style="color: #2563EB;"><?php echo count($socios); ?></span>
+                Total Registros: <span style="color: #2563EB;"><?php echo count($rows_matrix); ?></span>
             </div>
         </div>
     </div>
@@ -59,8 +59,7 @@ $meses_nombres_view = [
                 <thead>
                     <tr style="background: #1E293B; color: white; position: sticky; top: 0; z-index: 10;">
                         <th style="padding: 12px 10px; width: 45px; text-align: center; border-bottom: 2px solid #334155; position: sticky; left: 0; background: #1E293B; z-index: 12;">#</th>
-                        <th style="padding: 12px 12px; min-width: 90px; border-bottom: 2px solid #334155; position: sticky; left: 45px; background: #1E293B; z-index: 12;">Acción</th>
-                        <th style="padding: 12px 15px; min-width: 220px; border-bottom: 2px solid #334155; position: sticky; left: 135px; background: #1E293B; z-index: 12; box-shadow: 4px 0 6px -2px rgba(0,0,0,0.2);">Asociado</th>
+                        <th style="padding: 12px 15px; min-width: 250px; border-bottom: 2px solid #334155; position: sticky; left: 45px; background: #1E293B; z-index: 12; box-shadow: 4px 0 6px -2px rgba(0,0,0,0.2);">Asociado</th>
                         <?php foreach ($anos as $y): ?>
                             <th style="padding: 10px 8px; text-align: center; min-width: 130px; border-bottom: 2px solid #334155; border-left: 1px solid #334155;">
                                 <div><?php echo $y; ?></div>
@@ -75,27 +74,25 @@ $meses_nombres_view = [
                 <tbody>
                     <?php 
                     $index = 1;
-                    foreach ($socios as $soc): 
-                        $s_id = $soc['id_socio'];
-                        $nombre_completo = trim($soc['ap_paterno'] . ' ' . $soc['ap_materno'] . ' ' . $soc['nombre']);
-                        $nro_accion = !empty($soc['nro_accion']) ? $soc['nro_accion'] : $soc['id_socio'];
+                    foreach ($rows_matrix as $r): 
+                        $s_id = $r['id_socio'];
+                        $n_acc = $r['numero_accion'];
+                        $display_name = $r['display_name'];
+                        $search_text = $r['search_text'];
+                        $paid_years = $r['paid_years'];
                     ?>
-                        <tr class="socio-row" data-id="<?php echo $s_id; ?>" data-search="<?php echo htmlspecialchars(strtolower($nro_accion . ' ' . $nombre_completo)); ?>" style="border-bottom: 1px solid #E2E8F0; transition: background 0.15s;">
+                        <tr class="socio-row" data-id="<?php echo $s_id; ?>" data-accion="<?php echo $n_acc; ?>" data-search="<?php echo htmlspecialchars($search_text); ?>" style="border-bottom: 1px solid #E2E8F0; transition: background 0.15s;">
                             <td style="padding: 10px; text-align: center; color: #64748B; font-weight: 600; position: sticky; left: 0; background: white; z-index: 5; border-bottom: 1px solid #E2E8F0; border-right: 1px solid #F1F5F9;">
                                 <?php echo $index++; ?>
                             </td>
-                            <td style="padding: 10px 12px; font-weight: 700; color: #2563EB; position: sticky; left: 45px; background: white; z-index: 5; border-bottom: 1px solid #E2E8F0; border-right: 1px solid #F1F5F9;">
-                                N° <?php echo $nro_accion; ?>
-                            </td>
-                            <td style="padding: 10px 15px; font-weight: 600; color: #1E293B; position: sticky; left: 135px; background: white; z-index: 5; border-bottom: 1px solid #E2E8F0; box-shadow: 4px 0 6px -2px rgba(0,0,0,0.06);">
-                                <?php echo htmlspecialchars($nombre_completo); ?>
+                            <td style="padding: 10px 15px; font-weight: 600; color: #1E293B; position: sticky; left: 45px; background: white; z-index: 5; border-bottom: 1px solid #E2E8F0; box-shadow: 4px 0 6px -2px rgba(0,0,0,0.06);">
+                                <?php echo htmlspecialchars($display_name); ?>
                             </td>
 
                             <?php foreach ($anos as $y): 
-                                $selected_m_idx = $paidMap[$s_id][$y] ?? 0;
+                                $selected_m_idx = $paid_years[$y] ?? 0;
                                 $min_m_idx = ($y == 2018) ? 5 : 1;
                                 
-                                // Determinar color de estilo inicial según mes seleccionado
                                 $bgColor = "#F1F5F9";
                                 $textColor = "#64748B";
                                 $borderColor = "#CBD5E1";
@@ -122,7 +119,7 @@ $meses_nombres_view = [
                             <?php endforeach; ?>
 
                             <td style="padding: 8px 10px; text-align: center; position: sticky; right: 0; background: white; z-index: 5; border-bottom: 1px solid #E2E8F0; box-shadow: -4px 0 6px -2px rgba(0,0,0,0.06);">
-                                <button class="btn-save-row" data-id="<?php echo $s_id; ?>" style="background: #2563EB; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;">
+                                <button class="btn-save-row" data-id="<?php echo $s_id; ?>" data-accion="<?php echo $n_acc; ?>" style="background: #2563EB; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;">
                                     <i class="fa-solid fa-floppy-disk"></i> Guardar
                                 </button>
                             </td>
@@ -136,7 +133,6 @@ $meses_nombres_view = [
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Aplicar estilos dinámicos a los selects según la opción elegida
     function updateSelectStyle(select) {
         const val = parseInt(select.value);
         const year = parseInt(select.dataset.year);
@@ -162,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 2. Buscador en tiempo real de asociados
+    // Buscador en tiempo real
     const searchInput = document.getElementById('matrixSearchInput');
     searchInput.addEventListener('input', function() {
         const query = this.value.toLowerCase().trim();
@@ -176,11 +172,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 3. Guardar cambios por fila de asociado
+    // Guardar cambios por fila
     document.querySelectorAll('.btn-save-row').forEach(btn => {
         btn.addEventListener('click', function() {
             const row = this.closest('.socio-row');
             const socioId = this.dataset.id;
+            const numeroAccion = this.dataset.accion;
             const originalBtnText = this.innerHTML;
 
             const matrixData = {};
@@ -190,11 +187,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             this.disabled = true;
-            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>...';
 
             const formData = new FormData();
             formData.append('action', 'save_socio_matrix');
             formData.append('id_socio', socioId);
+            formData.append('numero_accion', numeroAccion);
             formData.append('matrix_json', JSON.stringify(matrixData));
 
             fetch('../Controller/matriz_pagos.controller.php', {
@@ -221,10 +219,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 4. Guardar todos los asociados a la vez
+    // Guardar todos los asociados a la vez
     const btnSaveAll = document.getElementById('btnSaveAllMatrix');
     btnSaveAll.addEventListener('click', function() {
-        if (!confirm('¿Estás seguro de que deseas guardar los cambios para TODOS los asociados mostrados en la matriz?')) {
+        if (!confirm('¿Estás seguro de que deseas guardar los cambios para TODOS los registros mostrados en la matriz?')) {
             return;
         }
 
@@ -235,10 +233,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const globalMatrix = {};
         document.querySelectorAll('.socio-row').forEach(row => {
             const socioId = row.dataset.id;
-            globalMatrix[socioId] = {};
+            const numeroAccion = row.dataset.accion;
+            const key = socioId + '_' + numeroAccion;
+
+            globalMatrix[key] = {};
             row.querySelectorAll('.year-select').forEach(sel => {
                 const y = sel.dataset.year;
-                globalMatrix[socioId][y] = parseInt(sel.value);
+                globalMatrix[key][y] = parseInt(sel.value);
             });
         });
 
