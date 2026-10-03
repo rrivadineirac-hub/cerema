@@ -82,6 +82,7 @@ $_SESSION['last_activity'] = time();
                 $current_page = basename($_SERVER['PHP_SELF']); 
                 $is_socios = ($current_page == 'socio.controller.php');
                 $is_mensualidad = ($current_page == 'mensualidad.controller.php');
+                $is_matriz_pagos = ($current_page == 'matriz_pagos.controller.php');
                 $is_aporte = ($current_page == 'aporte.controller.php');
                 $is_aporte_especial = ($current_page == 'aporte_especial.controller.php');
                 $is_cuota_inicial = ($current_page == 'cuota_inicial.controller.php');
@@ -108,7 +109,7 @@ $_SESSION['last_activity'] = time();
                             <span class="nav-text">Inicio</span>
                         </a>
                     </li>
-                    <li class="nav-item has-submenu <?php echo ($is_socios || $is_mensualidad || $is_aporte || $is_aporte_especial || $is_cuota_inicial) ? 'active open' : ''; ?>">
+                    <li class="nav-item has-submenu <?php echo ($is_socios || $is_mensualidad || $is_matriz_pagos || $is_aporte || $is_aporte_especial || $is_cuota_inicial) ? 'active open' : ''; ?>">
                         <a href="#" class="nav-link">
                             <i class="fa-solid fa-users"></i>
                             <span class="nav-text">Asociados</span>
@@ -117,6 +118,7 @@ $_SESSION['last_activity'] = time();
                         <ul class="nav-submenu">
                             <li><a href="../Controller/socio.controller.php" class="submenu-link <?php echo $is_socios ? 'active' : ''; ?>">Listas</a></li>
                             <li><a href="../Controller/mensualidad.controller.php" class="submenu-link <?php echo $is_mensualidad ? 'active' : ''; ?>">Aporte Mensual</a></li>
+                            <li><a href="../Controller/matriz_pagos.controller.php" class="submenu-link <?php echo $is_matriz_pagos ? 'active' : ''; ?>">Matriz de Pagos Anual</a></li>
                             <li><a href="../Controller/aporte.controller.php" class="submenu-link <?php echo $is_aporte ? 'active' : ''; ?>">Aporte Extraordinario</a></li>
                             <li><a href="../Controller/aporte_especial.controller.php" class="submenu-link <?php echo $is_aporte_especial ? 'active' : ''; ?>">Aportes Especiales</a></li>
                             <li><a href="../Controller/cuota_inicial.controller.php" class="submenu-link <?php echo $is_cuota_inicial ? 'active' : ''; ?>">Cuota Inicial</a></li>

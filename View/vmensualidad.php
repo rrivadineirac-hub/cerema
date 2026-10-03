@@ -30,13 +30,16 @@ include 'header.php';
                     ?>
                 </select>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
                 <button type="submit" class="btn-primary" style="flex: 1;">
                     Continuar <i class="fa-solid fa-arrow-right"></i>
                 </button>
                 <button type="button" class="btn-secondary" onclick="openRangeModal()" style="background-color: #0284c7; color: white; border: none; padding: 12px;">
                     <i class="fa-solid fa-calendar-days"></i> Carga Masiva Rango
                 </button>
+                <a href="../Controller/matriz_pagos.controller.php" class="btn-secondary" style="background-color: #2563eb; color: white; border: none; padding: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-table-cells"></i> Matriz Rápida
+                </a>
             </div>
         </form>
     </div>
@@ -54,6 +57,9 @@ include 'header.php';
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <a href="../Controller/mensualidad.controller.php" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
                 <i class="fa-solid fa-users"></i> Otro Asociado
+            </a>
+            <a href="../Controller/matriz_pagos.controller.php" class="btn-secondary" style="background-color: #2563eb; color: white; border: none; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
+                <i class="fa-solid fa-table-cells"></i> Matriz Rápida
             </a>
             <button class="btn-secondary" onclick="openRangeModal()" style="background-color: #0284c7; color: white; border: none; display: inline-flex; align-items: center; gap: 8px;">
                 <i class="fa-solid fa-calendar-days"></i> Cargar Rango (2018-2029)
