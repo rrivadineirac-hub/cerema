@@ -280,7 +280,19 @@ function generateDynamicPrintHTML() {
     let mesText = filterMes && filterMes.selectedIndex >= 0 ? filterMes.options[filterMes.selectedIndex].text : 'Todos';
     let gestionText = filterGestion && filterGestion.selectedIndex >= 0 ? filterGestion.options[filterGestion.selectedIndex].text : 'Todas';
 
-    const recordsPerPage = 45;
+    let isSingleActionOrSocio = (filterSocio && filterSocio.value !== 'all');
+    if (!isSingleActionOrSocio && rowsToPrint.length > 0) {
+        const firstSocioId = rowsToPrint[0].dataset.idSocio;
+        if (firstSocioId && rowsToPrint.every(r => r.dataset.idSocio === firstSocioId)) {
+            isSingleActionOrSocio = true;
+        }
+    }
+
+    let recordsPerPage = 45;
+    if (isSingleActionOrSocio) {
+        recordsPerPage = Math.max(rowsToPrint.length, 1);
+    }
+
     let chunks = [];
     for (let i = 0; i < rowsToPrint.length; i += recordsPerPage) {
         chunks.push(rowsToPrint.slice(i, i + recordsPerPage));
@@ -303,33 +315,92 @@ function generateDynamicPrintHTML() {
         const isLastPage = (pageIdx === totalPages - 1);
         const pageBreakClass = !isLastPage ? 'page-break' : '';
 
+        const maxRowsInChunk = chunk.length;
+
+        let fontSize = '10px';
+        let paddingTd = '3.5px 4px';
+        let paddingTh = '4px 4px';
+        let lineHeight = '1.18';
+        let logoHeight = '32px';
+        let titleH2 = '13.5px';
+        let titleH3 = '10.5px';
+        let headerMarginBottom = '4px';
+
+        if (maxRowsInChunk > 40 && maxRowsInChunk <= 55) {
+            fontSize = '9px';
+            paddingTd = '2.2px 3.5px';
+            paddingTh = '3px 3.5px';
+            lineHeight = '1.1';
+            logoHeight = '28px';
+            titleH2 = '12px';
+            titleH3 = '9.5px';
+            headerMarginBottom = '3px';
+        } else if (maxRowsInChunk > 55 && maxRowsInChunk <= 75) {
+            fontSize = '8.2px';
+            paddingTd = '1.6px 3px';
+            paddingTh = '2px 3px';
+            lineHeight = '1.05';
+            logoHeight = '24px';
+            titleH2 = '11px';
+            titleH3 = '9px';
+            headerMarginBottom = '2px';
+        } else if (maxRowsInChunk > 75 && maxRowsInChunk <= 95) {
+            fontSize = '7.5px';
+            paddingTd = '1.1px 2.5px';
+            paddingTh = '1.5px 2.5px';
+            lineHeight = '1.02';
+            logoHeight = '22px';
+            titleH2 = '10.5px';
+            titleH3 = '8.5px';
+            headerMarginBottom = '2px';
+        } else if (maxRowsInChunk > 95) {
+            fontSize = '6.8px';
+            paddingTd = '0.5px 2px';
+            paddingTh = '1px 2px';
+            lineHeight = '1.0';
+            logoHeight = '20px';
+            titleH2 = '10px';
+            titleH3 = '8px';
+            headerMarginBottom = '1px';
+        }
+
         html += `
             <div class="print-page-block ${pageBreakClass}">
-                <div class="print-header">
-                    <div class="print-header-top">
-                        <img src="../imagenes/institucinal/logo.png" alt="CEREMA Logo" class="print-logo">
+                <div class="print-header" style="display: block !important; text-align: center; margin-bottom: ${headerMarginBottom}; border-bottom: 2px solid #27AE60; padding-bottom: 2px;">
+                    <div class="print-header-top" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
+                        <img src="../imagenes/institucinal/logo.png" alt="CEREMA Logo" class="print-logo" style="height: ${logoHeight}; width: auto;">
                         <div class="print-title-group" style="text-align: center; flex-grow: 1;">
-                            <h2>CENTRO DE RESIDENTES MAIRANEÑOS - CEREMA</h2>
-                            <h3>${titleText}</h3>
+                            <h2 style="font-size: ${titleH2}; margin: 0; color: #1a252f; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.1;">CENTRO DE RESIDENTES MAIRANEÑOS - CEREMA</h2>
+                            <h3 style="font-size: ${titleH3}; margin: 1px 0 0 0; color: #27AE60; font-weight: 600; line-height: 1.1;">${titleText}</h3>
                         </div>
                         <div style="width: 60px;"></div>
                     </div>
-                    <div class="print-meta" style="font-size: 10.5px; display: flex; justify-content: space-between; margin-top: 4px;">
+                    <div class="print-meta" style="font-size: ${titleH3}; display: flex; justify-content: space-between; margin-top: 2px; line-height: 1.1; color: #333;">
                         <span><strong>Asociado:</strong> ${socioText} | <strong>Mes:</strong> ${mesText} | <strong>Gestión:</strong> ${gestionText}</span>
                         <span><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES')} | <strong>Hoja ${pageIdx + 1} de ${totalPages}</strong></span>
                     </div>
                 </div>
 
-                <table class="data-table print-table" style="font-size: 11px; width: 100%; border-collapse: collapse;">
+                <table class="data-table print-table" style="font-size: ${fontSize}; width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr>${headerHTML}</tr>
+                        <tr style="background-color: #f1f5f9; font-size: ${fontSize};">${headerHTML}</tr>
                     </thead>
                     <tbody>`;
+
+        let chunkTotalMonto = 0;
 
         chunk.forEach((tr, rowIdx) => {
             const globalNum = (pageIdx * recordsPerPage) + rowIdx + 1;
             let cells = Array.from(tr.cells);
             let rowHTML = '';
+
+            let cellMontoVal = 0;
+            if (cells[6]) {
+                let textMonto = cells[6].innerText.replace(/,/g, '').trim();
+                cellMontoVal = parseFloat(textMonto) || 0;
+            }
+            chunkTotalMonto += cellMontoVal;
+
             cells.forEach((cell, cellIdx) => {
                 let cellContent = cell.innerHTML;
                 if (cellIdx === 0) {
@@ -338,10 +409,19 @@ function generateDynamicPrintHTML() {
                     cellContent = '';
                 }
                 let cellStyle = cell.getAttribute('style') || '';
-                rowHTML += `<td style="${cellStyle}">${cellContent}</td>`;
+                rowHTML += `<td style="padding: ${paddingTd}; line-height: ${lineHeight}; font-size: ${fontSize}; border: 1px solid #cbd5e1; ${cellStyle}">${cellContent}</td>`;
             });
             html += `<tr style="border-bottom: 1px solid #cbd5e1 !important;">${rowHTML}</tr>`;
         });
+
+        if (chunk.length > 0) {
+            html += `
+                <tr style="background-color: #f8fafc; font-weight: bold; border-top: 2px solid #334155;">
+                    <td colspan="6" style="text-align: right; padding: ${paddingTd}; font-weight: 700; text-transform: uppercase; font-size: ${fontSize}; color: #000;">Total Recaudado:</td>
+                    <td style="text-align: right; padding: ${paddingTd}; font-weight: 800; color: #000; font-size: ${fontSize};">Bs. ${chunkTotalMonto.toLocaleString('es-BO', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td style="padding: ${paddingTd};"></td>
+                </tr>`;
+        }
 
         html += `
                     </tbody>
@@ -390,7 +470,7 @@ function printReport() {
                     color: #000000 !important;
                     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
                     margin: 0 !important;
-                    padding: 0.25cm 0.6cm 0.25cm 0.6cm !important;
+                    padding: 0.15cm 0.5cm 0.15cm 0.5cm !important;
                 }
                 .print-page-block {
                     box-sizing: border-box;
@@ -402,66 +482,21 @@ function printReport() {
                     page-break-after: auto !important;
                     break-after: auto !important;
                 }
-                .print-header {
-                    display: block !important;
-                    text-align: center;
-                    margin-bottom: 4px;
-                    border-bottom: 2px solid #27AE60;
-                    padding-bottom: 2px;
-                }
-                .print-header-top {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    margin-bottom: 2px;
-                }
-                .print-logo {
-                    height: 32px;
-                    width: auto;
-                }
-                .print-title-group h2 {
-                    font-size: 13.5px;
-                    margin: 0;
-                    color: #1a252f;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                    line-height: 1.1;
-                }
-                .print-title-group h3 {
-                    font-size: 10.5px;
-                    margin: 1px 0 0 0;
-                    color: #27AE60;
-                    font-weight: 600;
-                    line-height: 1.1;
-                }
-                .print-meta {
-                    font-size: 9.5px;
-                    color: #333;
-                    display: flex;
-                    justify-content: space-between;
-                    margin-top: 2px;
-                    line-height: 1.1;
-                }
                 .print-table {
                     width: 100% !important;
                     border-collapse: collapse !important;
-                    font-size: 10px !important;
                     margin-bottom: 0px !important;
                 }
                 .print-table th, .print-table td {
                     border: 1px solid #cbd5e1 !important;
-                    padding: 3.8px 4px !important;
                     color: #000000 !important;
                     white-space: nowrap !important;
-                    line-height: 1.18 !important;
-                    font-size: 10px !important;
                 }
                 .print-table th {
                     background-color: #f1f5f9 !important;
                     font-weight: 700 !important;
                     text-transform: uppercase !important;
-                    font-size: 10px !important;
-                    padding: 4px 4px !important;
+                    padding: 3px 4px !important;
                 }
             </style>
         </head>

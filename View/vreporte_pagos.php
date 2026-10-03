@@ -2,12 +2,17 @@
 // View/vreporte_pagos.php
 require_once __DIR__ . '/header.php';
 
-// Obtener todos los registros en array para el chunking de impresión (40 registros por hoja llenando la página hasta abajo)
+// Obtener todos los registros en array para el chunking de impresión
 $pagos_rows = [];
 if (isset($pagos) && $pagos->rowCount() > 0) {
     $pagos_rows = $pagos->fetchAll(PDO::FETCH_ASSOC);
 }
-$records_per_print_page = 40;
+$filter_socio_get = $_GET['id_socio'] ?? 'all';
+if ($filter_socio_get !== 'all') {
+    $records_per_print_page = max(count($pagos_rows), 1);
+} else {
+    $records_per_print_page = 45;
+}
 $chunks = array_chunk($pagos_rows, $records_per_print_page);
 $categoria_nombre = $pago_categoria ?? 'Pagos';
 
