@@ -102,5 +102,46 @@ class AporteModel {
         }
         return false;
     }
+
+    // Verificar si existe un aporte para socio, accion, motivo, año y mes
+    public function checkExistsMonth($id_socio, $numero_accion, $motivo, $anio, $mes_num) {
+        $query = "SELECT id_aporte FROM " . $this->table_name . " 
+                  WHERE id_socio = :id_socio AND motivo = :motivo 
+                  AND YEAR(fecha_aporte) = :anio AND MONTH(fecha_aporte) = :mes_num";
+        if ($numero_accion !== 'all' && !empty($numero_accion)) {
+            $query .= " AND numero_accion = :numero_accion";
+        }
+        $query .= " LIMIT 1";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id_socio", $id_socio);
+        $stmt->bindParam(":motivo", $motivo);
+        $stmt->bindParam(":anio", $anio);
+        $stmt->bindParam(":mes_num", $mes_num);
+        if ($numero_accion !== 'all' && !empty($numero_accion)) {
+            $stmt->bindParam(":numero_accion", $numero_accion);
+        }
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Eliminar aporte por socio, accion, motivo, año y mes (para desmarcado multiaño)
+    public function deleteBySocioAccionMotivoMesAnio($id_socio, $numero_accion, $motivo, $anio, $mes_num) {
+        $query = "DELETE FROM " . $this->table_name . " 
+                  WHERE id_socio = :id_socio AND motivo = :motivo 
+                  AND YEAR(fecha_aporte) = :anio AND MONTH(fecha_aporte) = :mes_num";
+        if ($numero_accion !== 'all' && !empty($numero_accion)) {
+            $query .= " AND numero_accion = :numero_accion";
+        }
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id_socio", $id_socio);
+        $stmt->bindParam(":motivo", $motivo);
+        $stmt->bindParam(":anio", $anio);
+        $stmt->bindParam(":mes_num", $mes_num);
+        if ($numero_accion !== 'all' && !empty($numero_accion)) {
+            $stmt->bindParam(":numero_accion", $numero_accion);
+        }
+        return $stmt->execute();
+    }
 }
 ?>
