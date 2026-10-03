@@ -45,9 +45,12 @@ include 'header.php';
             <h1 class="page-title">Aportes Extraordinarios</h1>
             <p class="page-subtitle">Socio: <strong><?php echo htmlspecialchars($socio_actual['ap_paterno'] . ' ' . $socio_actual['ap_materno'] . ', ' . $socio_actual['nombre']); ?></strong></p>
         </div>
-        <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <a href="../Controller/aporte.controller.php" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
                 <i class="fa-solid fa-users"></i> Otro Asociado
+            </a>
+            <a href="../Controller/matriz_aportes.controller.php" class="btn-secondary" style="background-color: #2563eb; color: white; border: none; padding: 10px 16px; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-table-cells"></i> Matriz Rápida
             </a>
             <button class="btn-primary" onclick="openAporteModal()">
                 <i class="fa-solid fa-plus"></i> Registrar Aporte
