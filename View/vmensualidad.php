@@ -214,16 +214,19 @@ include 'header.php';
 
 <!-- Modal de Confirmación de Eliminación -->
 <div id="deleteModal" class="modal">
-    <div class="modal-content" style="max-width: 450px; text-align: center; overflow: hidden; padding: 0;">
-        <div style="background-color: #dc3545; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="margin: 0; font-size: 16px; font-weight: 600; letter-spacing: 1px;">ELIMINAR REGISTRO</h3>
+    <div class="modal-content" style="max-width: 450px; text-align: center; overflow: hidden; padding: 0; border-radius: 12px; background: #ffffff;">
+        <div style="background-color: #dc3545; color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px;">ELIMINAR REGISTRO</h3>
             <span onclick="closeDeleteModal()" style="color: white; font-size: 24px; cursor: pointer; line-height: 1;">&times;</span>
         </div>
-        <div class="modal-body" style="padding: 40px 20px; background-color: white;">
-            <p style="margin-bottom: 30px; font-size: 16px; color: #444;">
-                ¿Está seguro de que desea eliminar el pago de: <br><strong id="deleteDesc" style="font-size: 18px; color: #222; display: inline-block; margin-top: 10px;"></strong>?
+        <div class="modal-body" style="padding: 30px 20px; background-color: white;">
+            <p style="margin-bottom: 10px; font-size: 15px; color: #444;">
+                ¿Está seguro de que desea eliminar el pago de: <br><strong id="deleteDesc" style="font-size: 17px; color: #111; display: inline-block; margin-top: 10px;"></strong>?
             </p>
-            </div>
+        </div>
+        <div class="modal-footer" style="padding: 14px 20px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" class="btn-secondary" onclick="closeDeleteModal()" style="padding: 9px 18px; border-radius: 6px; font-weight: 600; cursor: pointer;">Cancelar</button>
+            <button type="button" class="btn-primary" id="btnConfirmDelete" style="background-color: #dc3545; border: none; padding: 9px 20px; border-radius: 6px; font-weight: 700; color: white; cursor: pointer;">Eliminar</button>
         </div>
     </div>
 </div>
