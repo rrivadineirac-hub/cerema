@@ -58,17 +58,13 @@ include 'header.php';
         </div>
     </div>
 </div>
-                <i class="fa-solid fa-plus"></i> Registrar Aporte
-            </button>
-        </div>
-    </div>
-</div>
 
 <div class="table-container">
     <table class="data-table">
         <thead>
             <tr>
                 <th>Motivo del Aporte</th>
+                <th>N° Recibo</th>
                 <th>Monto (Bs)</th>
                 <th>Fecha del Aporte</th>
                 <th>Acciones</th>
@@ -80,6 +76,7 @@ include 'header.php';
                 while($row = $aportes->fetch(PDO::FETCH_ASSOC)) {
                     echo "<tr>";
                     echo "<td><strong>" . htmlspecialchars($row['motivo']) . "</strong></td>";
+                    echo "<td><span style='background:#f1f5f9; color:#475569; font-weight:600; padding:3px 8px; border-radius:4px; font-size:12px;'>" . htmlspecialchars(!empty($row['numero_recibo']) ? $row['numero_recibo'] : '-') . "</span></td>";
                     echo "<td>Bs. " . number_format($row['monto'], 2) . "</td>";
                     echo "<td>" . date('d/m/Y', strtotime($row['fecha_aporte'])) . "</td>";
                     echo "<td class='actions-col'>
@@ -89,7 +86,7 @@ include 'header.php';
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='4' style='text-align: center; padding: 20px;'>No hay aportes extraordinarios registrados para este socio.</td></tr>";
+                echo "<tr><td colspan='5' style='text-align: center; padding: 20px;'>No hay aportes extraordinarios registrados para este socio.</td></tr>";
             }
             ?>
         </tbody>
