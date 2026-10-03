@@ -382,27 +382,25 @@ function loadAllPaidMonthsMultiYear() {
                 const lbl = document.getElementById(`ymlabel_${y}_${val}`);
                 const isPaid = paidMonthsForYear.includes(val);
 
+                mcb.disabled = false; // Permitir interactuar para marcar o desmarcar
+
                 if (isPaid) {
                     mcb.checked = true;
-                    mcb.disabled = true;
+                    mcb.dataset.originallyPaid = "1";
                     if (lbl) {
                         lbl.style.borderColor = '#16a34a';
                         lbl.style.background = '#dcfce7';
                         lbl.style.color = '#15803d';
-                        lbl.title = 'Mes ya pagado en la base de datos';
+                        lbl.title = 'Mes pagado en BD (Desmarca si deseas eliminarlo)';
                     }
                 } else {
-                    if (mcb.disabled) {
-                        mcb.checked = false;
-                        mcb.disabled = false;
-                    }
-                    if (!mcb.checked) {
-                        if (lbl) {
-                            lbl.style.borderColor = '#cbd5e1';
-                            lbl.style.background = '#ffffff';
-                            lbl.style.color = '#1e293b';
-                            lbl.title = '';
-                        }
+                    mcb.checked = false;
+                    mcb.dataset.originallyPaid = "0";
+                    if (lbl) {
+                        lbl.style.borderColor = '#cbd5e1';
+                        lbl.style.background = '#ffffff';
+                        lbl.style.color = '#1e293b';
+                        lbl.title = '';
                     }
                 }
             });
@@ -420,6 +418,7 @@ function resetMultiYearPaidStyles() {
         monthCbs.forEach(mcb => {
             mcb.disabled = false;
             mcb.checked = false;
+            mcb.dataset.originallyPaid = "0";
             const val = mcb.value;
             const lbl = document.getElementById(`ymlabel_${y}_${val}`);
             if (lbl) {
@@ -485,15 +484,7 @@ function toggleYearCard(year) {
             card.style.background = '#f0f9ff';
         }
         monthCbs.forEach(mcb => {
-            if (!mcb.disabled) {
-                mcb.checked = true;
-                const lbl = document.getElementById(`ymlabel_${year}_${mcb.value}`);
-                if (lbl) {
-                    lbl.style.borderColor = '#27AE60';
-                    lbl.style.background = '#e8f5e9';
-                    lbl.style.color = '#1e293b';
-                }
-            }
+            mcb.checked = true;
         });
     } else {
         if (card) {
@@ -501,15 +492,7 @@ function toggleYearCard(year) {
             card.style.background = '#f8fafc';
         }
         monthCbs.forEach(mcb => {
-            if (!mcb.disabled) {
-                mcb.checked = false;
-                const lbl = document.getElementById(`ymlabel_${year}_${mcb.value}`);
-                if (lbl) {
-                    lbl.style.borderColor = '#cbd5e1';
-                    lbl.style.background = '#ffffff';
-                    lbl.style.color = '#1e293b';
-                }
-            }
+            mcb.checked = false;
         });
     }
     updateMultiYearTotals();
@@ -522,16 +505,12 @@ function setYearMonths(year, mode) {
     if (mode === 'all') {
         if (yearCb) yearCb.checked = true;
         monthCbs.forEach(mcb => {
-            if (!mcb.disabled) {
-                mcb.checked = true;
-            }
+            mcb.checked = true;
         });
     } else if (mode === 'clear') {
         if (yearCb) yearCb.checked = false;
         monthCbs.forEach(mcb => {
-            if (!mcb.disabled) {
-                mcb.checked = false;
-            }
+            mcb.checked = false;
         });
     }
     toggleYearCard(year);
@@ -543,15 +522,7 @@ function selectAllMonthsGlobal(enable) {
         if (yearCb) yearCb.checked = enable;
         const monthCbs = document.querySelectorAll(`.ymonth-cb-${y}`);
         monthCbs.forEach(mcb => {
-            if (!mcb.disabled) {
-                mcb.checked = enable;
-                const lbl = document.getElementById(`ymlabel_${y}_${mcb.value}`);
-                if (lbl) {
-                    lbl.style.borderColor = enable ? '#27AE60' : '#cbd5e1';
-                    lbl.style.background = enable ? '#e8f5e9' : '#ffffff';
-                    lbl.style.color = '#1e293b';
-                }
-            }
+            mcb.checked = enable;
         });
         const card = document.getElementById(`ycard_${y}`);
         if (card) {
@@ -593,8 +564,9 @@ function selectAllYears(enable) {
 
 function updateMultiYearTotals() {
     if (activeRangeTab === 'multi') {
-        let totalYears = 0;
-        let totalMonths = 0;
+        let totalYearsCount = 0;
+        let totalNewMonths = 0;
+        let totalDeletedMonths = 0;
         let totalMontoSum = 0;
 
         for (let y = 2018; y <= 2029; y++) {
@@ -604,37 +576,64 @@ function updateMultiYearTotals() {
             const monthCbs = document.querySelectorAll(`.ymonth-cb-${y}`);
             const card = document.getElementById(`ycard_${y}`);
             
-            let checkedNewMonths = 0;
+            let yearNewMonths = 0;
+            let yearDeletedMonths = 0;
+            let totalCheckedThisYear = 0;
+
             monthCbs.forEach(mcb => {
-                const lbl = document.getElementById(`ymlabel_${y}_${mcb.value}`);
-                if (mcb.disabled) {
-                    if (lbl) {
-                        lbl.style.borderColor = '#16a34a';
-                        lbl.style.background = '#dcfce7';
-                        lbl.style.color = '#15803d';
-                    }
-                } else if (mcb.checked) {
-                    checkedNewMonths++;
-                    if (lbl) {
-                        lbl.style.borderColor = '#27AE60';
-                        lbl.style.background = '#e8f5e9';
-                        lbl.style.color = '#1e293b';
+                const val = mcb.value;
+                const lbl = document.getElementById(`ymlabel_${y}_${val}`);
+                const wasOriginallyPaid = (mcb.dataset.originallyPaid === "1");
+
+                if (wasOriginallyPaid) {
+                    if (mcb.checked) {
+                        // Pagado mantenido (verde suave)
+                        totalCheckedThisYear++;
+                        if (lbl) {
+                            lbl.style.borderColor = '#16a34a';
+                            lbl.style.background = '#dcfce7';
+                            lbl.style.color = '#15803d';
+                            lbl.title = 'Mes ya pagado en BD (Desmarca si deseas eliminarlo)';
+                        }
+                    } else {
+                        // Pagado desmarcado (rojo suave - pendiente de eliminación al guardar)
+                        yearDeletedMonths++;
+                        if (lbl) {
+                            lbl.style.borderColor = '#ef4444';
+                            lbl.style.background = '#fee2e2';
+                            lbl.style.color = '#b91c1c';
+                            lbl.title = 'Mes desmarcado: se eliminará de la base de datos al guardar';
+                        }
                     }
                 } else {
-                    if (lbl) {
-                        lbl.style.borderColor = '#cbd5e1';
-                        lbl.style.background = '#ffffff';
-                        lbl.style.color = '#1e293b';
+                    if (mcb.checked) {
+                        // Nuevo mes a registrar (verde selección)
+                        yearNewMonths++;
+                        totalCheckedThisYear++;
+                        if (lbl) {
+                            lbl.style.borderColor = '#27AE60';
+                            lbl.style.background = '#e8f5e9';
+                            lbl.style.color = '#1e293b';
+                            lbl.title = 'Nuevo mes a registrar';
+                        }
+                    } else {
+                        // No pagado no marcado (blanco normal)
+                        if (lbl) {
+                            lbl.style.borderColor = '#cbd5e1';
+                            lbl.style.background = '#ffffff';
+                            lbl.style.color = '#1e293b';
+                            lbl.title = '';
+                        }
                     }
                 }
             });
 
             if (yearCb) {
-                if (checkedNewMonths > 0) {
+                if (totalCheckedThisYear > 0 || yearDeletedMonths > 0) {
                     yearCb.checked = true;
                     if (card) {
-                        card.style.borderColor = '#0284c7';
-                        card.style.background = '#f0f9ff';
+                        card.style.borderColor = yearDeletedMonths > 0 ? '#ef4444' : '#0284c7';
+                        card.style.background = yearDeletedMonths > 0 ? '#fff5f5' : '#f0f9ff';
                     }
                 } else {
                     yearCb.checked = false;
@@ -645,22 +644,33 @@ function updateMultiYearTotals() {
                 }
             }
 
-            const yearSubtotal = checkedNewMonths * montoVal;
+            const yearSubtotal = yearNewMonths * montoVal;
             const subtotalEl = document.getElementById(`ysubtotal_${y}`);
             if (subtotalEl) {
-                subtotalEl.innerText = `Subtotal ${checkedNewMonths} meses = Bs. ${yearSubtotal.toFixed(2)}`;
+                let subText = `Subtotal ${yearNewMonths} nuevos = Bs. ${yearSubtotal.toFixed(2)}`;
+                if (yearDeletedMonths > 0) {
+                    subText += ` | <span style="color:#dc2626; font-weight:700;">${yearDeletedMonths} a eliminar</span>`;
+                }
+                subtotalEl.innerHTML = subText;
             }
 
-            if (checkedNewMonths > 0) {
-                totalYears++;
-                totalMonths += checkedNewMonths;
+            if (yearNewMonths > 0 || yearDeletedMonths > 0) {
+                totalYearsCount++;
+                totalNewMonths += yearNewMonths;
+                totalDeletedMonths += yearDeletedMonths;
                 totalMontoSum += yearSubtotal;
             }
         }
 
         const textEl = document.getElementById('summaryTotalText');
         const montoEl = document.getElementById('summaryTotalMonto');
-        if (textEl) textEl.innerText = `${totalYears} Años a registrar | ${totalMonths} Meses Nuevos`;
+        if (textEl) {
+            let summaryStr = `${totalNewMonths} Meses Nuevos a Registrar`;
+            if (totalDeletedMonths > 0) {
+                summaryStr += ` | <span style="color:#f87171; font-weight:800;">${totalDeletedMonths} Meses a Eliminar</span>`;
+            }
+            textEl.innerHTML = summaryStr;
+        }
         if (montoEl) montoEl.innerText = `Bs. ${totalMontoSum.toFixed(2)}`;
 
     } else {
@@ -680,7 +690,7 @@ function submitRangeLoad() {
     const btn = document.getElementById('btnSubmitRange');
     if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando Carga...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando Cambios...';
     }
 
     const formData = new FormData();
@@ -692,29 +702,44 @@ function submitRangeLoad() {
         formData.append('numero_recibo', numero_recibo);
 
         const yearsData = [];
+        let hasAnyChange = false;
+
         for (let y = 2018; y <= 2029; y++) {
             const monthCbs = document.querySelectorAll(`.ymonth-cb-${y}`);
-            const selectedMonths = [];
+            const selectedNewMonths = [];
+            const deletedPaidMonths = [];
+
             monthCbs.forEach(mcb => {
-                if (mcb.checked) selectedMonths.push(mcb.value);
+                const wasOriginallyPaid = (mcb.dataset.originallyPaid === "1");
+                if (wasOriginallyPaid) {
+                    if (!mcb.checked) {
+                        deletedPaidMonths.push(mcb.value);
+                    }
+                } else {
+                    if (mcb.checked) {
+                        selectedNewMonths.push(mcb.value);
+                    }
+                }
             });
 
-            if (selectedMonths.length > 0) {
+            if (selectedNewMonths.length > 0 || deletedPaidMonths.length > 0) {
+                hasAnyChange = true;
                 const montoInput = document.getElementById(`ymonto_${y}`);
                 const montoVal = parseFloat(montoInput ? montoInput.value : 50) || 50;
                 yearsData.push({
                     anio: y,
                     monto: montoVal,
-                    meses: selectedMonths
+                    meses: selectedNewMonths,
+                    meses_eliminar: deletedPaidMonths
                 });
             }
         }
 
-        if (yearsData.length === 0) {
-            alert('Por favor selecciona al menos un año y los meses a registrar.');
+        if (!hasAnyChange) {
+            alert('No has realizado cambios (no hay meses nuevos marcados ni meses pagados desmarcados para eliminar).');
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Registrar Pagos Multiaño';
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Cambios Multiaño';
             }
             return;
         }

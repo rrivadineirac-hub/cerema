@@ -459,7 +459,7 @@ include 'header.php';
             <div style="display: flex; justify-content: flex-end; gap: 12px; width: 100%;">
                 <button type="button" class="btn-secondary" onclick="closeRangeModal()">Cancelar</button>
                 <button type="button" class="btn-primary" id="btnSubmitRange" onclick="submitRangeLoad()" style="background-color: #FF7A00; border: none; padding: 12px 24px; font-weight: 700; font-size: 14px;">
-                    <i class="fa-solid fa-floppy-disk"></i> Registrar Pagos Multiaño
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios Multiaño
                 </button>
             </div>
         </div>

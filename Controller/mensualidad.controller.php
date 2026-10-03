@@ -211,6 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $count_added = 0;
+            $count_deleted = 0;
             $count_skipped = 0;
 
             foreach ($socios_lista as $soc) {
@@ -230,36 +231,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $anio_val = intval($yConfig['anio'] ?? 0);
                         $monto_val = floatval($yConfig['monto'] ?? 50.00);
                         $meses_list = isset($yConfig['meses']) && is_array($yConfig['meses']) ? $yConfig['meses'] : [];
+                        $meses_eliminar = isset($yConfig['meses_eliminar']) && is_array($yConfig['meses_eliminar']) ? $yConfig['meses_eliminar'] : [];
 
-                        if ($anio_val <= 0 || empty($meses_list)) continue;
+                        if ($anio_val <= 0) continue;
 
-                        foreach ($meses_list as $nombre_mes) {
-                            $existing = $mensualidadModel->checkExists($s_id, $acc, $nombre_mes, $anio_val);
-                            if (!$existing) {
-                                $data_ins = [
-                                    'id_socio' => $s_id,
-                                    'numero_accion' => $acc,
-                                    'numero_recibo' => $numero_recibo,
-                                    'mes' => $nombre_mes,
-                                    'anio' => $anio_val,
-                                    'monto' => $monto_val,
-                                    'fecha_pago' => date('Y-m-d H:i:s'),
-                                    'estado' => 'Pagado'
-                                ];
-                                if ($mensualidadModel->create($data_ins)) {
-                                    $count_added++;
+                        // 1. Procesar eliminación de meses desmarcados que ya existían
+                        if (!empty($meses_eliminar)) {
+                            foreach ($meses_eliminar as $nombre_mes_del) {
+                                if ($mensualidadModel->deleteBySocioAccionMesAnio($s_id, $acc, $nombre_mes_del, $anio_val)) {
+                                    $count_deleted++;
                                 }
-                            } else {
-                                $count_skipped++;
+                            }
+                        }
+
+                        // 2. Procesar registro de meses marcados
+                        if (!empty($meses_list)) {
+                            foreach ($meses_list as $nombre_mes) {
+                                $existing = $mensualidadModel->checkExists($s_id, $acc, $nombre_mes, $anio_val);
+                                if (!$existing) {
+                                    $data_ins = [
+                                        'id_socio' => $s_id,
+                                        'numero_accion' => $acc,
+                                        'numero_recibo' => $numero_recibo,
+                                        'mes' => $nombre_mes,
+                                        'anio' => $anio_val,
+                                        'monto' => $monto_val,
+                                        'fecha_pago' => date('Y-m-d H:i:s'),
+                                        'estado' => 'Pagado'
+                                    ];
+                                    if ($mensualidadModel->create($data_ins)) {
+                                        $count_added++;
+                                    }
+                                } else {
+                                    $count_skipped++;
+                                }
                             }
                         }
                     }
                 }
             }
 
+            $msgParts = [];
+            if ($count_added > 0) $msgParts[] = "Nuevas registradas: $count_added";
+            if ($count_deleted > 0) $msgParts[] = "Eliminadas (desmarcadas): $count_deleted";
+            if ($count_skipped > 0 && $count_added === 0 && $count_deleted === 0) $msgParts[] = "Sin cambios";
+            if (empty($msgParts)) $msgParts[] = "Procesado correctamente";
+
             echo json_encode([
                 "status" => "success", 
-                "message" => "Carga multiaño completada. Registrados: $count_added mensualidades. Ya existían: $count_skipped mensualidades."
+                "message" => "Matriz multiaño guardada exitosamente. " . implode(" | ", $msgParts) . "."
             ]);
             exit();
         } elseif ($action == 'delete') {

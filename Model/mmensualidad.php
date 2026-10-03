@@ -176,5 +176,21 @@ class MensualidadModel {
         }
         return false;
     }
+
+    // Eliminar mensualidad por socio, accion, mes y anio (para desmarcado multiaño)
+    public function deleteBySocioAccionMesAnio($id_socio, $numero_accion, $mes, $anio) {
+        $query = "DELETE FROM " . $this->table_name . " WHERE id_socio = :id_socio AND mes = :mes AND anio = :anio";
+        if ($numero_accion !== 'all' && !empty($numero_accion)) {
+            $query .= " AND numero_accion = :numero_accion";
+        }
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id_socio", $id_socio);
+        $stmt->bindParam(":mes", $mes);
+        $stmt->bindParam(":anio", $anio);
+        if ($numero_accion !== 'all' && !empty($numero_accion)) {
+            $stmt->bindParam(":numero_accion", $numero_accion);
+        }
+        return $stmt->execute();
+    }
 }
 ?>
