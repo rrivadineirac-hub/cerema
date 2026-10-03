@@ -184,9 +184,63 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function saveRow(row) {
+        if (!row) return;
+        const btn = row.querySelector('.btn-save-row');
+        const socioId = row.dataset.id;
+        const numeroAccion = row.dataset.accion;
+        const originalBtnText = btn ? btn.innerHTML : '';
+
+        const matrixData = {};
+        row.querySelectorAll('.year-select').forEach(sel => {
+            const y = sel.dataset.year;
+            matrixData[y] = parseInt(sel.value);
+        });
+
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>...';
+        }
+
+        const formData = new FormData();
+        formData.append('action', 'save_socio_matrix');
+        formData.append('id_socio', socioId);
+        formData.append('numero_accion', numeroAccion);
+        formData.append('motivo', motivoActual);
+        formData.append('matrix_json', JSON.stringify(matrixData));
+
+        return fetch('../Controller/matriz_aportes.controller.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Guardado';
+                setTimeout(() => { btn.innerHTML = originalBtnText || '<i class="fa-solid fa-floppy-disk"></i> Guardar'; }, 2000);
+            }
+
+            if (data.status === 'success') {
+                showToast('✅ ' + data.message);
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(err => {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = originalBtnText;
+            }
+            console.error(err);
+            alert('Error al conectar con el servidor.');
+        });
+    }
+
     document.querySelectorAll('.year-select').forEach(select => {
         select.addEventListener('change', function() {
             updateSelectStyle(this);
+            saveRow(this.closest('.socio-row'));
         });
     });
 
@@ -206,51 +260,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Guardar cambios por fila
+    // Guardar cambios por fila al hacer click en el botón
     document.querySelectorAll('.btn-save-row').forEach(btn => {
         btn.addEventListener('click', function() {
             const row = this.closest('.socio-row');
-            const socioId = this.dataset.id;
-            const numeroAccion = this.dataset.accion;
-            const originalBtnText = this.innerHTML;
-
-            const matrixData = {};
-            row.querySelectorAll('.year-select').forEach(sel => {
-                const y = sel.dataset.year;
-                matrixData[y] = parseInt(sel.value);
-            });
-
-            this.disabled = true;
-            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>...';
-
-            const formData = new FormData();
-            formData.append('action', 'save_socio_matrix');
-            formData.append('id_socio', socioId);
-            formData.append('numero_accion', numeroAccion);
-            formData.append('motivo', motivoActual);
-            formData.append('matrix_json', JSON.stringify(matrixData));
-
-            fetch('../Controller/matriz_aportes.controller.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                this.disabled = false;
-                this.innerHTML = originalBtnText;
-
-                if (data.status === 'success') {
-                    showToast('✅ ' + data.message);
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(err => {
-                this.disabled = false;
-                this.innerHTML = originalBtnText;
-                console.error(err);
-                alert('Error al conectar con el servidor.');
-            });
+            saveRow(row);
         });
     });
 
