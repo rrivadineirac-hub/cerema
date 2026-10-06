@@ -362,7 +362,11 @@ $_SESSION['last_activity'] = time();
                 
                 <div class="topbar-actions">
                     <div class="user-profile">
-                        <img src="../img/avatar.png" alt="Perfil">
+                        <?php 
+                            $currUser = $_SESSION['username'] ?? $_SESSION['nombre_usuario'] ?? '';
+                            $userAvatar = (strcasecmp($currUser, 'Infoser76') === 0 || strcasecmp($_SESSION['username'] ?? '', 'Infoser76') === 0) ? '../img/circular.png' : '../img/avatar.png';
+                        ?>
+                        <img src="<?php echo $userAvatar; ?>" alt="Perfil">
                         <div class="user-info">
                             <span class="user-name"><?php echo isset($_SESSION['nombre_usuario']) ? htmlspecialchars($_SESSION['nombre_usuario']) : 'Usuario'; ?></span>
                             <span class="user-role"><?php echo htmlspecialchars(get_user_role()); ?></span>
