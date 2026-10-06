@@ -50,10 +50,13 @@ include 'header.php';
 <div class="dashboard-header">
     <div class="header-actions" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
+            <?php if (!is_socio()): ?>
             <a href="../Controller/mensualidad.controller.php" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver a selección</a>
+            <?php endif; ?>
             <h1 class="page-title">Aportes Mensuales</h1>
             <p class="page-subtitle">Socio: <strong><?php echo htmlspecialchars($socio_actual['ap_paterno'] . ' ' . $socio_actual['ap_materno'] . ', ' . $socio_actual['nombre']); ?></strong></p>
         </div>
+        <?php if (!is_socio()): ?>
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <a href="../Controller/mensualidad.controller.php" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
                 <i class="fa-solid fa-users"></i> Otro Asociado
@@ -68,6 +71,7 @@ include 'header.php';
                 <i class="fa-solid fa-plus"></i> Registrar Pago
             </button>
         </div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -82,7 +86,9 @@ include 'header.php';
                 <th>Monto (Bs)</th>
                 <th>Fecha de Pago</th>
                 <th>Estado</th>
+                <?php if (!is_socio()): ?>
                 <th>Acciones</th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -101,14 +107,17 @@ include 'header.php';
                     $nombreSocio = $socio_actual['nombre'] . ' ' . $socio_actual['ap_paterno'];
                     $descEliminar = $row['mes'] . ' ' . $row['anio'] . ' de ' . $nombreSocio;
                     
-                    echo "<td class='actions-col'>
-                            <button class='btn-icon edit-btn' onclick='editMensualidad(" . $row['id_mensualidad'] . ")' title='Editar'><i class='fa-solid fa-pen'></i></button>
-                            <button class='btn-icon delete-btn' onclick='deleteMensualidad(" . $row['id_mensualidad'] . ", \"" . htmlspecialchars($descEliminar, ENT_QUOTES) . "\")' title='Eliminar'><i class='fa-solid fa-trash'></i></button>
-                          </td>";
+                    if (!is_socio()) {
+                        echo "<td class='actions-col'>
+                                <button class='btn-icon edit-btn' onclick='editMensualidad(" . $row['id_mensualidad'] . ")' title='Editar'><i class='fa-solid fa-pen'></i></button>
+                                <button class='btn-icon delete-btn' onclick='deleteMensualidad(" . $row['id_mensualidad'] . ", \"" . htmlspecialchars($descEliminar, ENT_QUOTES) . "\")' title='Eliminar'><i class='fa-solid fa-trash'></i></button>
+                              </td>";
+                    }
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='8' style='text-align: center; padding: 20px;'>No hay pagos registrados para este socio.</td></tr>";
+                $cols = is_socio() ? 7 : 8;
+                echo "<tr><td colspan='{$cols}' style='text-align: center; padding: 20px;'>No hay pagos registrados para este socio.</td></tr>";
             }
             ?>
         </tbody>

@@ -41,10 +41,13 @@ include 'header.php';
 <div class="dashboard-header">
     <div class="header-actions" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
+            <?php if (!is_socio()): ?>
             <a href="../Controller/aporte.controller.php" class="back-link"><i class="fa-solid fa-arrow-left"></i> Volver a selección</a>
+            <?php endif; ?>
             <h1 class="page-title">Aportes Extraordinarios</h1>
             <p class="page-subtitle">Socio: <strong><?php echo htmlspecialchars($socio_actual['ap_paterno'] . ' ' . $socio_actual['ap_materno'] . ', ' . $socio_actual['nombre']); ?></strong></p>
         </div>
+        <?php if (!is_socio()): ?>
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <a href="../Controller/aporte.controller.php" class="btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
                 <i class="fa-solid fa-users"></i> Otro Asociado
@@ -56,6 +59,7 @@ include 'header.php';
                 <i class="fa-solid fa-plus"></i> Registrar Aporte
             </button>
         </div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -67,7 +71,9 @@ include 'header.php';
                 <th>N° Recibo</th>
                 <th>Monto (Bs)</th>
                 <th>Fecha del Aporte</th>
+                <?php if (!is_socio()): ?>
                 <th>Acciones</th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -79,14 +85,17 @@ include 'header.php';
                     echo "<td><span style='background:#f1f5f9; color:#475569; font-weight:600; padding:3px 8px; border-radius:4px; font-size:12px;'>" . htmlspecialchars(!empty($row['numero_recibo']) ? $row['numero_recibo'] : '-') . "</span></td>";
                     echo "<td>Bs. " . number_format($row['monto'], 2) . "</td>";
                     echo "<td>" . date('d/m/Y', strtotime($row['fecha_aporte'])) . "</td>";
-                    echo "<td class='actions-col'>
-                            <button class='btn-icon edit-btn' onclick='editAporte(" . $row['id_aporte'] . ")' title='Editar'><i class='fa-solid fa-pen'></i></button>
-                            <button class='btn-icon delete-btn' onclick='deleteAporte(" . $row['id_aporte'] . ", \"" . htmlspecialchars($row['motivo']) . "\")' title='Eliminar'><i class='fa-solid fa-trash'></i></button>
-                          </td>";
+                    if (!is_socio()) {
+                        echo "<td class='actions-col'>
+                                <button class='btn-icon edit-btn' onclick='editAporte(" . $row['id_aporte'] . ")' title='Editar'><i class='fa-solid fa-pen'></i></button>
+                                <button class='btn-icon delete-btn' onclick='deleteAporte(" . $row['id_aporte'] . ", \"" . htmlspecialchars($row['motivo']) . "\")' title='Eliminar'><i class='fa-solid fa-trash'></i></button>
+                              </td>";
+                    }
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='5' style='text-align: center; padding: 20px;'>No hay aportes extraordinarios registrados para este socio.</td></tr>";
+                $cols = is_socio() ? 4 : 5;
+                echo "<tr><td colspan='{$cols}' style='text-align: center; padding: 20px;'>No hay aportes extraordinarios registrados para este socio.</td></tr>";
             }
             ?>
         </tbody>
