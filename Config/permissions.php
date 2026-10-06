@@ -10,6 +10,37 @@ if (session_status() === PHP_SESSION_NONE) {
  */
 function get_user_role() {
     $rol = $_SESSION['rol'] ?? 'Socio';
+
+    // Verificación dinámica si la sesión indica 'Socio' pero la persona tiene cargo en la Mesa Directiva
+    if ($rol === 'Socio' && !empty($_SESSION['id_socio'])) {
+        try {
+            require_once __DIR__ . '/database.php';
+            $database = new Database();
+            $db = $database->getConnection();
+            if ($db) {
+                $queryDir = "SELECT c.nombre_cargo 
+                             FROM mesa_directiva md 
+                             INNER JOIN cargos c ON md.id_cargo = c.id_cargo 
+                             WHERE md.id_socio = :id_socio 
+                             ORDER BY md.gestion DESC, md.id_directiva DESC LIMIT 1";
+                $stmtDir = $db->prepare($queryDir);
+                $stmtDir->bindParam(":id_socio", $_SESSION['id_socio'], PDO::PARAM_INT);
+                $stmtDir->execute();
+                if ($stmtDir->rowCount() > 0) {
+                    $cargoData = $stmtDir->fetch(PDO::FETCH_ASSOC);
+                    $cargoNombre = mb_strtolower(trim($cargoData['nombre_cargo']), 'UTF-8');
+                    if (strpos($cargoNombre, 'presidente') !== false) {
+                        $rol = 'Presidente';
+                        $_SESSION['rol'] = 'Presidente';
+                    } elseif (strpos($cargoNombre, 'contador') !== false || strpos($cargoNombre, 'tesorero') !== false || strpos($cargoNombre, 'hacienda') !== false) {
+                        $rol = 'Contador';
+                        $_SESSION['rol'] = 'Contador';
+                    }
+                }
+            }
+        } catch (Exception $e) {}
+    }
+
     if (in_array($rol, ['Administrador', 'Infoser 76', 'Super Usuario'])) {
         return 'Super Usuario';
     }
@@ -23,7 +54,7 @@ function get_user_role() {
  * Verificar si el usuario es Super Usuario (Infoser 76)
  */
 function is_super_user() {
-    $rol = $_SESSION['rol'] ?? '';
+    $rol = get_user_role();
     return in_array($rol, ['Super Usuario', 'Infoser 76', 'Administrador']);
 }
 
@@ -31,14 +62,14 @@ function is_super_user() {
  * Verificar si el usuario es el Presidente
  */
 function is_presidente() {
-    return ($_SESSION['rol'] ?? '') === 'Presidente';
+    return get_user_role() === 'Presidente';
 }
 
 /**
  * Verificar si el usuario es Contador / Tesorero
  */
 function is_contador() {
-    $rol = $_SESSION['rol'] ?? '';
+    $rol = get_user_role();
     return in_array($rol, ['Contador', 'Tesorero']);
 }
 
@@ -46,7 +77,7 @@ function is_contador() {
  * Verificar si el usuario es un Socio miembro
  */
 function is_socio() {
-    return ($_SESSION['rol'] ?? '') === 'Socio';
+    return get_user_role() === 'Socio';
 }
 
 /**
@@ -88,7 +119,8 @@ function check_permission($module) {
             'otros_gastos', 
             'activos', 
             'eventos', 
-            'reportes'
+            'reportes',
+            'directiva'
         ];
         return in_array($module, $allowed_modules);
     }
