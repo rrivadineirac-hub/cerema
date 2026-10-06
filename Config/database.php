@@ -3,12 +3,26 @@
 date_default_timezone_set('America/La_Paz');
 
 class Database {
+    // Entorno local (XAMPP) por defecto
     private $host = "localhost";
     private $db_name = "cerema_db";
-    private $username = "root"; // Ajustar si es diferente en tu XAMPP
-    private $password = "";     // Ajustar si tiene contraseña en XAMPP
+    private $username = "root";
+    private $password = "";
     public $conn;
     public $error = null;
+
+    public function __construct() {
+        // Detectar si la aplicación se ejecuta en hosting remoto (ej: cerema.free.je / InfinityFree)
+        $httpHost = $_SERVER['HTTP_HOST'] ?? '';
+        if (strpos($httpHost, 'free.je') !== false || strpos($httpHost, 'infinityfree') !== false) {
+            // CREDENCIALES INFINITYFREE (Ajustar con tus datos de cPanel / MySQL Databases)
+            // Ejemplo: sql123.infinityfree.com / if0_12345678 / if0_12345678_cerema_db
+            $this->host = getenv('DB_HOST') ?: "sql123.infinityfree.com"; // Cambiar por tu MySQL Hostname de InfinityFree
+            $this->db_name = getenv('DB_NAME') ?: "if0_38400000_cerema_db"; // Cambiar por tu nombre de BD en cPanel
+            $this->username = getenv('DB_USER') ?: "if0_38400000";         // Cambiar por tu usuario MySQL
+            $this->password = getenv('DB_PASS') ?: "TuPasswordcPanel";      // Cambiar por tu contraseña de cPanel
+        }
+    }
 
     public function getConnection() {
         $this->conn = null;

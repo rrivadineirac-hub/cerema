@@ -36,27 +36,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const formData = new FormData(loginForm);
 
-        fetch('../Controller/login.controller.php', {
+        // Determinar URL relativa al controlador
+        const targetUrl = window.location.pathname.includes('/Controller/') 
+            ? 'login.controller.php' 
+            : 'Controller/login.controller.php';
+
+        fetch(targetUrl, {
             method: 'POST',
             body: formData,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-        .then(response => response.json())
+        .then(async response => {
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch(err) {
+                throw new Error('Respuesta del servidor no es JSON: ' + text.substring(0, 150));
+            }
+        })
         .then(data => {
             if(data.success) {
                 // Redirect on success
                 window.location.href = data.redirect;
             } else {
-                showAlert(data.message, 'alert-error');
+                showAlert(data.message || 'Credenciales incorrectas o error en el sistema.', 'alert-error');
                 submitBtn.innerHTML = originalBtnHtml;
                 submitBtn.disabled = false;
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            showAlert('Ocurrió un error inesperado.', 'alert-error');
+            console.error('Error en Login:', error);
+            showAlert('Error: ' + error.message, 'alert-error');
             submitBtn.innerHTML = originalBtnHtml;
             submitBtn.disabled = false;
         });

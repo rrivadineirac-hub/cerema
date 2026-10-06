@@ -18,7 +18,11 @@ elseif ($action == 'login') {
     $db = $database->getConnection();
     
     if (!$db) {
-        echo json_encode(['success' => false, 'message' => 'Error de conexión a la BD.']);
+        $msg = 'Error de conexión a la BD';
+        if (!empty($database->error)) {
+            $msg .= ': ' . $database->error;
+        }
+        echo json_encode(['success' => false, 'message' => $msg]);
         exit();
     }
 

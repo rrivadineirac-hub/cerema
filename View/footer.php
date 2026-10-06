@@ -5,7 +5,7 @@
         </main> <!-- End of main-content -->
     </div> <!-- End of app-container -->
 
-    <!-- Custom JS -->
-    <script src="../js/script.js"></script>
+    <!-- Custom JS (con cache-busting automático para móviles) -->
+    <script src="../js/script.js?v=<?php echo filemtime(__DIR__ . '/../js/script.js'); ?>"></script>
 </body>
 </html>

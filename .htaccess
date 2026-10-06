@@ -1,0 +1,11 @@
+DirectoryIndex index.php index.html
+Options -Indexes
+
+# Prevenir el listado directo de directorios
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Redirigir la raíz a index.php si no hay archivo especificado
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^$ index.php [L]
+</IfModule>

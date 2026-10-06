@@ -32,8 +32,29 @@ $_SESSION['last_activity'] = time();
     <!-- Local Fonts & Icons -->
     <link rel="stylesheet" href="../css/outfit.css">
     <link rel="stylesheet" href="../css/font-awesome/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/style.css">
+    <!-- Custom CSS (con cache-busting automático para móviles) -->
+    <link rel="stylesheet" href="../css/style.css?v=<?php echo filemtime(__DIR__ . '/../css/style.css'); ?>">
+    <script>
+        function toggleMobileSidebarDirect(e) {
+            if (e) {
+                if (e.cancelable) e.preventDefault();
+                e.stopPropagation();
+            }
+            var sb = document.getElementById('sidebar');
+            var ov = document.getElementById('sidebar-overlay');
+            if (!sb) return;
+            var isOpen = sb.classList.contains('mobile-open');
+            if (isOpen) {
+                sb.classList.remove('mobile-open');
+                if (ov) ov.classList.remove('active');
+                document.body.style.overflow = '';
+            } else {
+                sb.classList.add('mobile-open');
+                if (ov) ov.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+    </script>
     <script>
         // Funciones Globales
         function showToast(message) {
@@ -88,6 +109,7 @@ $_SESSION['last_activity'] = time();
                 $is_aporte_especial = ($current_page == 'aporte_especial.controller.php');
                 $is_cuota_inicial = ($current_page == 'cuota_inicial.controller.php');
                 $is_directiva = ($current_page == 'directiva.controller.php');
+                $is_usuario = ($current_page == 'usuario.controller.php');
                 $is_evento = ($current_page == 'evento.controller.php');
                 $is_categorias_ingreso = ($current_page == 'categorias_ingreso.controller.php');
                 $is_otro_ingreso = ($current_page == 'otro_ingreso.controller.php');
@@ -130,6 +152,12 @@ $_SESSION['last_activity'] = time();
                         <a href="../Controller/directiva.controller.php" class="nav-link">
                             <i class="fa-solid fa-user-tie"></i>
                             <span class="nav-text">Directiva</span>
+                        </a>
+                    </li>
+                    <li class="nav-item <?php echo ($is_usuario) ? 'active' : ''; ?>">
+                        <a href="../Controller/usuario.controller.php" class="nav-link">
+                            <i class="fa-solid fa-user-gear"></i>
+                            <span class="nav-text">Usuarios</span>
                         </a>
                     </li>
                     <li class="nav-item <?php echo ($is_evento) ? 'active' : ''; ?>">
@@ -278,10 +306,16 @@ $_SESSION['last_activity'] = time();
             </script>
         </aside>
 
+        <!-- Mobile Overlay -->
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileSidebarDirect(event)"></div>
+
         <!-- Main Content Area -->
         <main class="main-content">
             <!-- Topbar -->
             <header class="topbar">
+                <button class="mobile-toggle-btn" id="mobile-toggle-btn" onclick="toggleMobileSidebarDirect(event)" aria-label="Abrir Menú">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
                 <div style="flex: 1;"></div>
                 
                 <div class="topbar-actions">
