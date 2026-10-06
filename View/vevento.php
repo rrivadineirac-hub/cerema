@@ -19,58 +19,81 @@ ob_start();
     <?php endif; ?>
 </div>
 
-<div class="table-container">
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Tipo de Evento</th>
-                <th>Fecha y Hora</th>
-                <th>Lugar</th>
-                <th>Estado</th>
-                <?php if (!is_socio()): ?>
-                <th>Acciones</th>
-                <?php endif; ?>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if(isset($eventos) && (is_array($eventos) || $eventos instanceof Traversable)): ?>
-                <?php foreach($eventos as $evento): ?>
-                    <tr>
-                        <td><span class="badge-status badge-tipo"><?php echo htmlspecialchars($evento['tipo_evento']); ?></span></td>
-                        <td>
-                            <?php 
-                                $fecha = date('d/m/Y', strtotime($evento['fecha_evento']));
-                                $hora = $evento['hora_evento'] ? date('H:i', strtotime($evento['hora_evento'])) : '--:--';
-                                echo $fecha . ' ' . $hora;
-                            ?>
-                        </td>
-                        <td><?php echo htmlspecialchars(mb_strtoupper($evento['lugar'] ?: 'NO ESPECIFICADO', 'UTF-8')); ?></td>
-                        <td>
-                            <?php 
-                                $estadoClass = '';
-                                switch($evento['estado']) {
-                                    case 'Programado': $estadoClass = 'estado-programado'; break;
-                                    case 'Realizado': $estadoClass = 'estado-realizado'; break;
-                                    case 'Cancelado': $estadoClass = 'estado-cancelado'; break;
-                                }
-                            ?>
-                            <span class="badge-status <?php echo $estadoClass; ?>"><?php echo htmlspecialchars($evento['estado']); ?></span>
-                        </td>
-                        <?php if (!is_socio()): ?>
-                        <td class="actions">
-                            <button class="btn-icon edit-btn" onclick="editEvento(<?php echo $evento['id_evento']; ?>)" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-icon delete-btn" onclick="deleteEvento(<?php echo $evento['id_evento']; ?>, '<?php echo addslashes($evento['tipo_evento']); ?>')" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                        <?php endif; ?>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="<?php echo is_socio() ? '4' : '5'; ?>" style="text-align:center;">No hay eventos registrados en esta gestión o no hay gestión activa.</td>
-                </tr>
+<div class="events-cards-grid">
+    <?php 
+    $eventos_array = [];
+    if (isset($eventos)) {
+        if (is_array($eventos)) {
+            $eventos_array = $eventos;
+        } elseif ($eventos instanceof Traversable) {
+            $eventos_array = iterator_to_array($eventos);
+        }
+    }
+    ?>
+    <?php if(!empty($eventos_array)): ?>
+        <?php foreach($eventos_array as $evento): 
+            $fecha = date('d/m/Y', strtotime($evento['fecha_evento']));
+            $hora = !empty($evento['hora_evento']) ? date('H:i', strtotime($evento['hora_evento'])) : '--:--';
+            $lugar = !empty($evento['lugar']) ? mb_strtoupper($evento['lugar'], 'UTF-8') : 'NO ESPECIFICADO';
+            
+            $nombreEvento = !empty($evento['titulo']) ? $evento['titulo'] : $evento['tipo_evento'];
+            
+            $estadoClass = '';
+            switch($evento['estado']) {
+                case 'Programado': $estadoClass = 'estado-programado'; break;
+                case 'Realizado': $estadoClass = 'estado-realizado'; break;
+                case 'Cancelado': $estadoClass = 'estado-cancelado'; break;
+            }
+        ?>
+        <div class="event-card">
+            <div class="event-card-header">
+                <div class="event-card-icon">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <div class="event-card-details">
+                    <span class="event-card-subtitle"><?php echo htmlspecialchars($evento['tipo_evento']); ?></span>
+                    <h3 class="event-card-title"><?php echo htmlspecialchars($nombreEvento); ?></h3>
+                    <p class="event-card-org">Organizados por CEREMA</p>
+                </div>
+            </div>
+            
+            <?php if (!empty($evento['descripcion'])): ?>
+            <div class="event-card-desc">
+                <?php echo htmlspecialchars($evento['descripcion']); ?>
+            </div>
             <?php endif; ?>
-        </tbody>
-    </table>
+            
+            <div class="event-card-info-row">
+                <div class="event-info-item">
+                    <i class="fa-regular fa-clock"></i>
+                    <span><?php echo $fecha . ' ' . $hora; ?></span>
+                </div>
+                <div class="event-info-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span><?php echo htmlspecialchars($lugar); ?></span>
+                </div>
+            </div>
+
+            <div class="event-card-footer">
+                <span class="badge-status <?php echo $estadoClass; ?>"><?php echo htmlspecialchars($evento['estado']); ?></span>
+                <?php if (!is_socio()): ?>
+                <div class="actions">
+                    <button class="btn-icon edit-btn" onclick="editEvento(<?php echo $evento['id_evento']; ?>)" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-icon delete-btn" onclick="deleteEvento(<?php echo $evento['id_evento']; ?>, '<?php echo addslashes($nombreEvento); ?>')" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="no-events-card">
+            <div class="event-card-icon" style="margin: 0 auto 15px auto;">
+                <i class="fa-solid fa-calendar-xmark"></i>
+            </div>
+            <h3>No hay eventos registrados</h3>
+            <p>No se encontraron eventos programados en esta gestión o no hay una gestión activa.</p>
+        </div>
+    <?php endif; ?>
 </div>
 
 <!-- Modal para Crear/Editar Evento -->
