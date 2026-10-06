@@ -1,5 +1,7 @@
 <?php
 // Controller/categorias_ingreso.controller.php
+require_once __DIR__ . '/../Config/permissions.php';
+require_permission('categorias_ingreso');
 require_once __DIR__ . '/../Config/database.php';
 require_once __DIR__ . '/../Model/mcategorias_ingreso.php';
 

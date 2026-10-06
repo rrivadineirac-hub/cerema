@@ -1,5 +1,7 @@
 <?php
 // Controller/socio.controller.php
+require_once __DIR__ . '/../Config/permissions.php';
+require_permission('socios');
 require_once __DIR__ . '/../Config/database.php';
 require_once __DIR__ . '/../Model/msocio.php';
 

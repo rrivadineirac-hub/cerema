@@ -201,11 +201,10 @@ include 'header.php';
                     <div class="form-group half">
                         <label for="rol_sistema">Rol en el Sistema <span class="required">*</span></label>
                         <select id="rol_sistema" name="rol_sistema" required>
-                            <option value="Socio">Socio</option>
-                            <option value="Administrador">Administrador</option>
+                            <option value="Super Usuario">Super Usuario (Infoser 76)</option>
                             <option value="Presidente">Presidente</option>
-                            <option value="Tesorero">Tesorero</option>
-                            <option value="Secretario">Secretario</option>
+                            <option value="Contador">Contador</option>
+                            <option value="Socio">Socio / Asociado</option>
                         </select>
                     </div>
 

@@ -31,12 +31,12 @@ elseif ($action == 'login') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
     
-    // TRUCO PARA DESARROLLO: Si la tabla de usuarios está vacía, se auto-crea un admin con 12345
+    // Auto-creación de Super Usuario (Infoser 76) si la tabla está vacía
     try {
-        $stmt = $db->query("SELECT count(*) FROM usuarios_sistema");
-        if ($stmt && $stmt->fetchColumn() == 0 && $username === 'admin' && $password === '12345') {
+        $stmtCount = $db->query("SELECT count(*) FROM usuarios_sistema");
+        if ($stmtCount && $stmtCount->fetchColumn() == 0 && (strcasecmp($username, 'Infoser 76') === 0 || strcasecmp($username, 'infoser76') === 0 || strcasecmp($username, 'admin') === 0) && $password === '12345') {
             $hash = password_hash('12345', PASSWORD_DEFAULT);
-            $db->query("INSERT INTO usuarios_sistema (username, password_hash, rol_sistema, activo) VALUES ('admin', '$hash', 'Administrador', 1)");
+            $db->query("INSERT INTO usuarios_sistema (username, password_hash, rol_sistema, activo) VALUES ('Infoser 76', '$hash', 'Super Usuario', 1)");
         }
     } catch(Exception $e) {}
 
@@ -63,12 +63,13 @@ elseif ($action == 'login') {
 
         // Establecer variables de sesión
         $_SESSION['user_id'] = $user['id_usuario'];
+        $_SESSION['id_socio'] = $user['id_socio'] ?? null;
         $_SESSION['username'] = $user['username'];
         $_SESSION['rol'] = $user['rol_sistema'];
         $_SESSION['last_activity'] = time(); // Guardar timestamp inicial
         
         // Si el usuario está vinculado a un socio, guardamos su nombre, sino, mostramos su rol o username
-        $_SESSION['nombre_usuario'] = !empty($user['nombre']) ? $user['nombre'] . ' ' . $user['ap_paterno'] : $user['username'];
+        $_SESSION['nombre_usuario'] = !empty($user['nombre']) ? trim($user['nombre'] . ' ' . $user['ap_paterno']) : $user['username'];
         
         echo json_encode(['success' => true, 'redirect' => '../View/dashboard.php']);
     } else {

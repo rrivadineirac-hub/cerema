@@ -1,5 +1,7 @@
 <?php
 // Controller/directiva.controller.php
+require_once __DIR__ . '/../Config/permissions.php';
+require_permission('directiva');
 require_once __DIR__ . '/../Config/database.php';
 require_once __DIR__ . '/../Model/mdirectiva.php';
 

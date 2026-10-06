@@ -13,8 +13,10 @@ ob_start();
 <link rel="stylesheet" href="../css/evento.css">
 
 <div class="content-header">
-    <h2>Eventos de la Gestión Actual</h2>
+    <h2>Eventos Institucionales CEREMA</h2>
+    <?php if (!is_socio()): ?>
     <button class="btn-primary" onclick="openEventoModal()">+ Registrar Evento</button>
+    <?php endif; ?>
 </div>
 
 <div class="table-container">
@@ -25,7 +27,9 @@ ob_start();
                 <th>Fecha y Hora</th>
                 <th>Lugar</th>
                 <th>Estado</th>
+                <?php if (!is_socio()): ?>
                 <th>Acciones</th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -52,15 +56,17 @@ ob_start();
                             ?>
                             <span class="badge-status <?php echo $estadoClass; ?>"><?php echo htmlspecialchars($evento['estado']); ?></span>
                         </td>
+                        <?php if (!is_socio()): ?>
                         <td class="actions">
                             <button class="btn-icon edit-btn" onclick="editEvento(<?php echo $evento['id_evento']; ?>)" title="Editar"><i class="fa-solid fa-pen"></i></button>
                             <button class="btn-icon delete-btn" onclick="deleteEvento(<?php echo $evento['id_evento']; ?>, '<?php echo addslashes($evento['tipo_evento']); ?>')" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                         </td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="6" style="text-align:center;">No hay eventos registrados en esta gestión o no hay gestión activa.</td>
+                    <td colspan="<?php echo is_socio() ? '4' : '5'; ?>" style="text-align:center;">No hay eventos registrados en esta gestión o no hay gestión activa.</td>
                 </tr>
             <?php endif; ?>
         </tbody>

@@ -4,8 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once __DIR__ . '/../Config/database.php';
-require_once __DIR__ . '/../Model/musuario.php';
+require_once __DIR__ . '/../Config/permissions.php';
+require_permission('usuarios');
 
 $database = new Database();
 $db = $database->getConnection();
@@ -38,7 +38,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') 
                 exit();
             }
 
-            $rolesValidos = ['Administrador', 'Presidente', 'Tesorero', 'Secretario', 'Socio'];
+            $rolesValidos = ['Super Usuario', 'Presidente', 'Contador', 'Socio', 'Administrador', 'Tesorero', 'Secretario'];
             if (!in_array($rol_sistema, $rolesValidos)) {
                 echo json_encode(["status" => "error", "message" => "Debe seleccionar un rol de sistema válido."]);
                 exit();

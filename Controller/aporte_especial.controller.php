@@ -4,9 +4,19 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once __DIR__ . '/../Config/permissions.php';
 require_once __DIR__ . '/../Config/database.php';
 require_once __DIR__ . '/../Model/maporte_especial.php';
 require_once __DIR__ . '/../Model/msocio.php';
+
+// Si es Socio, forzar id_socio de sesión
+if (is_socio()) {
+    if (empty($_SESSION['id_socio'])) {
+        header("Location: ../View/dashboard.php?error=socio_sin_id");
+        exit();
+    }
+    $_GET['id_socio'] = $_SESSION['id_socio'];
+}
 
 $database = new Database();
 $db = $database->getConnection();
@@ -33,7 +43,10 @@ if ($id_gestion_activa) {
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json');
+    if (is_socio()) {
+        echo json_encode(["status" => "error", "message" => "Los asociados no tienen permisos de modificación."]);
+        exit();
+    }
     
     try {
         if ($action == 'save') {

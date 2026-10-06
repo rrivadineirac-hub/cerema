@@ -111,6 +111,115 @@ $query_recientes = "SELECT * FROM eventos WHERE estado IN ('Realizado', 'Cancela
 $stmt = $db->prepare($query_recientes);
 $stmt->execute();
 $eventos_recientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if (is_socio()) {
+    $id_socio_log = $_SESSION['id_socio'] ?? 0;
+    
+    // Obtener datos del socio
+    $stmt_soc_info = $db->prepare("SELECT * FROM asociados WHERE id_socio = ?");
+    $stmt_soc_info->execute([$id_socio_log]);
+    $socio_datos = $stmt_soc_info->fetch(PDO::FETCH_ASSOC);
+
+    // Totales del socio
+    $stmt_m_soc = $db->prepare("SELECT COUNT(*) as pagadas, COALESCE(SUM(monto), 0) as total FROM mensualidad WHERE id_socio = ? AND estado = 'Pagado'");
+    $stmt_m_soc->execute([$id_socio_log]);
+    $res_m_soc = $stmt_m_soc->fetch(PDO::FETCH_ASSOC);
+
+    // Eventos próximos
+    $stmt_ev_soc = $db->prepare("SELECT COUNT(*) as total FROM eventos WHERE fecha_evento >= CURDATE()");
+    $stmt_ev_soc->execute();
+    $res_ev_soc = $stmt_ev_soc->fetch(PDO::FETCH_ASSOC);
+    ?>
+    <div style="background: linear-gradient(135deg, #00B300 0%, #008000 100%); color: #fff; padding: 25px 30px; border-radius: 14px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,179,0,0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <span style="background: rgba(255,255,255,0.2); font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 600; text-transform: uppercase;">
+                    Código de Asociado: ASC-<?php echo str_pad($id_socio_log, 3, '0', STR_PAD_LEFT); ?>
+                </span>
+                <h1 style="margin: 10px 0 5px 0; font-size: 26px; font-weight: 700;">Bienvenido, <?php echo htmlspecialchars($_SESSION['nombre_usuario']); ?></h1>
+                <p style="margin: 0; opacity: 0.9; font-size: 14px;">Centro de Residentes Mairaneños - Portal de Miembros</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.15); padding: 12px 20px; border-radius: 10px; backdrop-filter: blur(5px);">
+                <div style="font-size: 12px; opacity: 0.8;">Estado en la Institución</div>
+                <div style="font-size: 18px; font-weight: 700; color: #FFD700; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-check"></i> <?php echo htmlspecialchars($socio_datos['estado'] ?? 'Activo'); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(39, 174, 96, 0.1); color: #27AE60;">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+            </div>
+            <div class="stat-details">
+                <h3>Mensualidades Pagadas</h3>
+                <p class="stat-value"><?php echo $res_m_soc['pagadas']; ?> Cuotas</p>
+                <small style="color: #666;">Total: Bs. <?php echo number_format($res_m_soc['total'], 2); ?></small>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1); color: #3498db;">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div class="stat-details">
+                <h3>Próximos Eventos</h3>
+                <p class="stat-value"><?php echo $res_ev_soc['total']; ?> Eventos</p>
+                <small style="color: #666;">Organizados por CEREMA</small>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <h3 style="color: #333; margin-bottom: 15px; font-size: 18px; font-weight: 700;">Accesos Rápidos para el Asociado</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
+            <a href="../Controller/evento.controller.php" style="text-decoration: none; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 15px; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.08)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                <div style="width: 45px; height: 45px; border-radius: 10px; background: rgba(52, 152, 219, 0.1); color: #3498db; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <div>
+                    <div style="font-weight: 700; color: #2d3748; font-size: 15px;">Ver Eventos</div>
+                    <div style="font-size: 12px; color: #718096;">Actividades y reuniones</div>
+                </div>
+            </a>
+
+            <a href="../Controller/mensualidad.controller.php" style="text-decoration: none; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 15px; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.08)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                <div style="width: 45px; height: 45px; border-radius: 10px; background: rgba(39, 174, 96, 0.1); color: #27AE60; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                </div>
+                <div>
+                    <div style="font-weight: 700; color: #2d3748; font-size: 15px;">Mis Mensualidades</div>
+                    <div style="font-size: 12px; color: #718096;">Historial de aportes mensuales</div>
+                </div>
+            </a>
+
+            <a href="../Controller/aporte.controller.php" style="text-decoration: none; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 15px; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.08)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                <div style="width: 45px; height: 45px; border-radius: 10px; background: rgba(230, 126, 34, 0.1); color: #e67e22; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <div>
+                    <div style="font-weight: 700; color: #2d3748; font-size: 15px;">Mis Extraordinarios</div>
+                    <div style="font-size: 12px; color: #718096;">Aportes de mantenimiento</div>
+                </div>
+            </a>
+
+            <a href="../Controller/aporte_especial.controller.php" style="text-decoration: none; background: #fff; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 15px; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.08)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                <div style="width: 45px; height: 45px; border-radius: 10px; background: rgba(155, 89, 182, 0.1); color: #9b59b6; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                    <i class="fa-solid fa-star-of-life"></i>
+                </div>
+                <div>
+                    <div style="font-weight: 700; color: #2d3748; font-size: 15px;">Mis Especiales</div>
+                    <div style="font-size: 12px; color: #718096;">Aportes especiales asignados</div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <?php
+    include 'footer.php';
+    exit();
+}
 ?>
 
 <div class="dashboard-header">

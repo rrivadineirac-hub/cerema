@@ -3,6 +3,7 @@ date_default_timezone_set('America/La_Paz');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once __DIR__ . '/../Config/permissions.php';
 // Verificación de sesión y tiempo por inactividad (10 minutos = 300 segundos)
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../Controller/login.controller.php");
@@ -132,6 +133,7 @@ $_SESSION['last_activity'] = time();
                             <span class="nav-text">Inicio</span>
                         </a>
                     </li>
+                    <?php if (check_permission('socios')): ?>
                     <li class="nav-item has-submenu <?php echo ($is_socios || $is_mensualidad || $is_matriz_pagos || $is_aporte || $is_matriz_aportes || $is_aporte_especial || $is_cuota_inicial) ? 'active open' : ''; ?>">
                         <a href="#" class="nav-link">
                             <i class="fa-solid fa-users"></i>
@@ -148,30 +150,64 @@ $_SESSION['last_activity'] = time();
                             <li><a href="../Controller/cuota_inicial.controller.php" class="submenu-link <?php echo $is_cuota_inicial ? 'active' : ''; ?>">Cuota Inicial</a></li>
                         </ul>
                     </li>
+                    <?php elseif (is_socio()): ?>
+                    <li class="nav-item <?php echo ($is_mensualidad) ? 'active' : ''; ?>">
+                        <a href="../Controller/mensualidad.controller.php" class="nav-link">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                            <span class="nav-text">Mis Mensualidades</span>
+                        </a>
+                    </li>
+                    <li class="nav-item <?php echo ($is_aporte) ? 'active' : ''; ?>">
+                        <a href="../Controller/aporte.controller.php" class="nav-link">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                            <span class="nav-text">Mis Extraordinarios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item <?php echo ($is_aporte_especial) ? 'active' : ''; ?>">
+                        <a href="../Controller/aporte_especial.controller.php" class="nav-link">
+                            <i class="fa-solid fa-star-of-life"></i>
+                            <span class="nav-text">Mis Especiales</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+
+                    <?php if (check_permission('directiva')): ?>
                     <li class="nav-item <?php echo ($current_page == 'directiva.controller.php') ? 'active' : ''; ?>">
                         <a href="../Controller/directiva.controller.php" class="nav-link">
                             <i class="fa-solid fa-user-tie"></i>
                             <span class="nav-text">Directiva</span>
                         </a>
                     </li>
+                    <?php endif; ?>
+
+                    <?php if (check_permission('usuarios')): ?>
                     <li class="nav-item <?php echo ($is_usuario) ? 'active' : ''; ?>">
                         <a href="../Controller/usuario.controller.php" class="nav-link">
                             <i class="fa-solid fa-user-gear"></i>
                             <span class="nav-text">Usuarios</span>
                         </a>
                     </li>
+                    <?php endif; ?>
+
+                    <?php if (check_permission('eventos')): ?>
                     <li class="nav-item <?php echo ($is_evento) ? 'active' : ''; ?>">
                         <a href="../Controller/evento.controller.php" class="nav-link">
                             <i class="fa-solid fa-calendar-days"></i>
                             <span class="nav-text">Eventos</span>
                         </a>
                     </li>
+                    <?php endif; ?>
+
+                    <?php if (check_permission('activos')): ?>
                     <li class="nav-item <?php echo ($is_activo) ? 'active' : ''; ?>">
                         <a href="../Controller/activo.controller.php" class="nav-link">
                             <i class="fa-solid fa-boxes-stacked"></i>
                             <span class="nav-text">Activos</span>
                         </a>
                     </li>
+                    <?php endif; ?>
+
+                    <?php if (check_permission('categorias_ingreso')): ?>
                     <li class="nav-item has-submenu <?php echo ($is_categorias_ingreso || $is_otro_ingreso) ? 'active open' : ''; ?>">
                         <a href="#" class="nav-link">
                             <i class="fa-solid fa-money-bill-wave"></i>
@@ -183,6 +219,9 @@ $_SESSION['last_activity'] = time();
                             <li><a href="../Controller/otro_ingreso.controller.php" class="submenu-link <?php echo $is_otro_ingreso ? 'active' : ''; ?>">Otros Ingresos</a></li>
                         </ul>
                     </li>
+                    <?php endif; ?>
+
+                    <?php if (check_permission('sueldo')): ?>
                     <li class="nav-item has-submenu <?php echo ($is_servicio || $is_sueldo || $is_otro_gasto || $is_egreso_ext || $is_egreso_esp) ? 'active open' : ''; ?>">
                         <a href="#" class="nav-link">
                             <i class="fa-solid fa-money-bill-wave"></i>
@@ -197,6 +236,8 @@ $_SESSION['last_activity'] = time();
                             <li><a href="../Controller/otro_gasto.controller.php" class="submenu-link <?php echo $is_otro_gasto ? 'active' : ''; ?>">Otros Gastos</a></li>
                         </ul>
                     </li>
+                    <?php endif; ?>
+                    <?php if (check_permission('reportes')): ?>
                     <li class="nav-item has-submenu <?php echo ($is_reporte) ? 'active open' : ''; ?>">
                         <a href="#" class="nav-link">
                             <i class="fa-solid fa-chart-pie"></i>
@@ -245,6 +286,7 @@ $_SESSION['last_activity'] = time();
                             </li>
                         </ul>
                     </li>
+                    <?php endif; ?>
                 </ul>
             </nav>
 
@@ -322,8 +364,8 @@ $_SESSION['last_activity'] = time();
                     <div class="user-profile">
                         <img src="../img/avatar.png" alt="Perfil">
                         <div class="user-info">
-                            <span class="user-name"><?php echo isset($_SESSION['nombre_usuario']) ? htmlspecialchars($_SESSION['nombre_usuario']) : 'Admin (Desarrollo)'; ?></span>
-                            <span class="user-role"><?php echo isset($_SESSION['rol']) ? htmlspecialchars($_SESSION['rol']) : 'Presidente'; ?></span>
+                            <span class="user-name"><?php echo isset($_SESSION['nombre_usuario']) ? htmlspecialchars($_SESSION['nombre_usuario']) : 'Usuario'; ?></span>
+                            <span class="user-role"><?php echo htmlspecialchars(get_user_role()); ?></span>
                         </div>
                     </div>
                 </div>
