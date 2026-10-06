@@ -15,12 +15,11 @@ class Database {
         // Detectar si la aplicación se ejecuta en hosting remoto (ej: cerema.free.je / InfinityFree)
         $httpHost = $_SERVER['HTTP_HOST'] ?? '';
         if (strpos($httpHost, 'free.je') !== false || strpos($httpHost, 'infinityfree') !== false) {
-            // CREDENCIALES INFINITYFREE (Ajustar con tus datos de cPanel / MySQL Databases)
-            // Ejemplo: sql123.infinityfree.com / if0_12345678 / if0_12345678_cerema_db
-            $this->host = getenv('DB_HOST') ?: "sql123.infinityfree.com"; // Cambiar por tu MySQL Hostname de InfinityFree
-            $this->db_name = getenv('DB_NAME') ?: "if0_38400000_cerema_db"; // Cambiar por tu nombre de BD en cPanel
-            $this->username = getenv('DB_USER') ?: "if0_38400000";         // Cambiar por tu usuario MySQL
-            $this->password = getenv('DB_PASS') ?: "TuPasswordcPanel";      // Cambiar por tu contraseña de cPanel
+            // CREDENCIALES INFINITYFREE (cerema.free.je)
+            $this->host = getenv('DB_HOST') ?: "sql205.infinityfree.com";
+            $this->db_name = getenv('DB_NAME') ?: "if0_43068680_cerema_db";
+            $this->username = getenv('DB_USER') ?: "if0_43068680";
+            $this->password = getenv('DB_PASS') ?: "01Serinfo76";
         }
     }
 
