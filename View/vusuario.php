@@ -128,7 +128,7 @@ include 'header.php';
                     echo "<td><strong>#" . $row['id_usuario'] . "</strong></td>";
                     
                     echo "<td>";
-                    $rowAvatar = (strcasecmp($row['username'], 'Infoser76') === 0) ? '../img/circular.png' : '../img/avatar.png';
+                    $rowAvatar = (strcasecmp($row['username'], 'Infoser76') === 0) ? '../img/circular.png' : '../img/inicial.png';
                     echo "      <div class='user-avatar'><img src='{$rowAvatar}' alt='Avatar' style='width:100%;height:100%;border-radius:50%;object-fit:cover;'></div>";
                     echo "      <div class='user-details'>";
                     echo "          <span class='user-name'>" . htmlspecialchars($row['username']) . "</span>";

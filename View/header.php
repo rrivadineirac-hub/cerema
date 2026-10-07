@@ -364,7 +364,7 @@ $_SESSION['last_activity'] = time();
                     <div class="user-profile">
                         <?php 
                             $currUser = $_SESSION['username'] ?? $_SESSION['nombre_usuario'] ?? '';
-                            $userAvatar = (strcasecmp($currUser, 'Infoser76') === 0 || strcasecmp($_SESSION['username'] ?? '', 'Infoser76') === 0) ? '../img/circular.png' : '../img/avatar.png';
+                            $userAvatar = (strcasecmp($currUser, 'Infoser76') === 0 || strcasecmp($_SESSION['username'] ?? '', 'Infoser76') === 0) ? '../img/circular.png' : '../img/inicial.png';
                         ?>
                         <img src="<?php echo $userAvatar; ?>" alt="Perfil">
                         <div class="user-info">
