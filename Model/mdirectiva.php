@@ -24,6 +24,15 @@ class DirectivaModel {
 
     // Obtener lista de cargos para el select
     public function getCargos() {
+        // Asegurar que exista el cargo "Contador" (local y en producción)
+        try {
+            $chk = $this->conn->prepare("SELECT COUNT(*) FROM cargos WHERE LOWER(TRIM(nombre_cargo)) = 'contador'");
+            $chk->execute();
+            if ((int)$chk->fetchColumn() === 0) {
+                $this->conn->prepare("INSERT INTO cargos (nombre_cargo) VALUES ('Contador')")->execute();
+            }
+        } catch (Exception $e) { /* no bloquear la carga del select */ }
+
         $query = "SELECT * FROM cargos ORDER BY id_cargo ASC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
