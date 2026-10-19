@@ -110,6 +110,7 @@ function check_permission($module) {
             'matriz_aportes', 
             'aporte_especial', 
             'cuota_inicial', 
+            'valor_accion', 
             'categorias_ingreso', 
             'otros_ingresos', 
             'sueldo', 

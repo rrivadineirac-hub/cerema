@@ -1,0 +1,41 @@
+/* css/valor_accion.css */
+.va-label { font-weight: 700; color: #334155; font-size: 13.5px; margin-bottom: 8px; display: block; text-align: left; }
+.va-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+.va-header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.va-btn-link { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; }
+.va-stats { margin-bottom: 20px; }
+
+.va-ico-blue   { background-color: rgba(14, 165, 233, 0.1); color: #0284c7; }
+.va-ico-indigo { background-color: rgba(99, 102, 241, 0.1); color: #6366f1; }
+.va-ico-amber  { background-color: rgba(245, 158, 11, 0.12); color: #d97706; }
+.va-ico-green  { background-color: rgba(39, 174, 96, 0.1); color: #27ae60; }
+
+.va-center { text-align: center; }
+.va-right  { text-align: right; }
+.va-bold   { font-weight: 700; }
+.va-muted  { color: var(--text-muted, #94a3b8); font-size: 13px; }
+.va-valor  { font-weight: 700; color: #27ae60; font-size: 14px; }
+
+.va-row-empty { background: repeating-linear-gradient(45deg, #fafafa, #fafafa 8px, #f5f7fa 8px, #f5f7fa 16px); }
+#valorTable tbody tr { transition: background-color .2s ease, transform .15s ease; }
+#valorTable tbody tr:hover { background-color: rgba(0, 179, 0, 0.05); }
+
+.va-badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; letter-spacing: .3px; }
+.va-badge-ok   { background: #dcfce7; color: #166534; }
+.va-badge-pend { background: #fef3c7; color: #92400e; }
+
+.va-modal { max-width: 540px; animation: vaPop .25s ease; }
+.va-mb { margin-bottom: 15px; }
+@keyframes vaPop { from { transform: translateY(-12px) scale(.98); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.va-delete-modal { max-width: 450px; text-align: center; overflow: hidden; padding: 0; animation: vaPop .25s ease; }
+.va-delete-header { background-color: #e74c3c; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+.va-delete-header h3 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: 1px; }
+.va-delete-close { color: #fff; font-size: 24px; cursor: pointer; line-height: 1; }
+.va-delete-body { padding: 30px 20px; background: #fff; }
+.va-delete-body p { margin-bottom: 25px; font-size: 15px; color: #444; }
+.va-delete-body strong { font-size: 17px; color: #222; display: inline-block; margin-top: 8px; }
+.va-delete-actions { display: flex; justify-content: center; gap: 15px; }
+.va-btn-danger { background-color: #e74c3c !important; border-color: #e74c3c !important; }
+
+button[disabled] { opacity: .55; cursor: not-allowed; }

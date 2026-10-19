@@ -109,6 +109,7 @@ $_SESSION['last_activity'] = time();
                 $is_matriz_aportes = ($current_page == 'matriz_aportes.controller.php');
                 $is_aporte_especial = ($current_page == 'aporte_especial.controller.php');
                 $is_cuota_inicial = ($current_page == 'cuota_inicial.controller.php');
+                $is_valor_accion = ($current_page == 'valor_accion.controller.php');
                 $is_directiva = ($current_page == 'directiva.controller.php');
                 $is_usuario = ($current_page == 'usuario.controller.php');
                 $is_evento = ($current_page == 'evento.controller.php');
@@ -134,7 +135,7 @@ $_SESSION['last_activity'] = time();
                         </a>
                     </li>
                     <?php if (check_permission('socios')): ?>
-                    <li class="nav-item has-submenu <?php echo ($is_socios || $is_mensualidad || $is_matriz_pagos || $is_aporte || $is_matriz_aportes || $is_aporte_especial || $is_cuota_inicial) ? 'active open' : ''; ?>">
+                    <li class="nav-item has-submenu <?php echo ($is_socios || $is_mensualidad || $is_matriz_pagos || $is_aporte || $is_matriz_aportes || $is_aporte_especial || $is_cuota_inicial || $is_valor_accion) ? 'active open' : ''; ?>">
                         <a href="#" class="nav-link">
                             <i class="fa-solid fa-users"></i>
                             <span class="nav-text">Asociados</span>
@@ -148,6 +149,7 @@ $_SESSION['last_activity'] = time();
                             <li><a href="../Controller/matriz_aportes.controller.php" class="submenu-link <?php echo $is_matriz_aportes ? 'active' : ''; ?>">Matriz de Aportes Extraordinarios</a></li>
                             <li><a href="../Controller/aporte_especial.controller.php" class="submenu-link <?php echo $is_aporte_especial ? 'active' : ''; ?>">Aportes Especiales</a></li>
                             <li><a href="../Controller/cuota_inicial.controller.php" class="submenu-link <?php echo $is_cuota_inicial ? 'active' : ''; ?>">Cuota Inicial</a></li>
+                            <li><a href="../Controller/valor_accion.controller.php" class="submenu-link <?php echo $is_valor_accion ? 'active' : ''; ?>">Valor de la Acción</a></li>
                         </ul>
                     </li>
                     <?php elseif (is_socio()): ?>
