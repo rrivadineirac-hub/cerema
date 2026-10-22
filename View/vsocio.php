@@ -73,18 +73,20 @@ include 'header.php';
                     echo "<td style='white-space: nowrap;'><span class='badge-status {$estadoClass}'>" . htmlspecialchars($estadoTexto) . "</span></td>";
                     echo "<td style='white-space: nowrap; text-align: center;'>" . $acciones . "</td>";
 
+                    // Cuota inicial configurada + abonado
+                    $isComplete = ($metaTotal > 0 && $montoPagado >= $metaTotal);
+                    echo "<td style='white-space: nowrap; min-width: 170px; padding-right: 20px;'>";
+                    echo "<div style='font-weight: 700; color: #1e293b;'>Bs. " . number_format($cuotaAsignada, 2) . "</div>";
                     if ($montoPagado > 0) {
-                        $isComplete = ($metaTotal > 0 && $montoPagado >= $metaTotal);
-                        echo "<td style='font-weight: 700; color: #27ae60;' title='" . ($isComplete ? "Cuota Inicial completada en su totalidad" : "Monto pagado de Cuota Inicial") . "'>";
+                        echo "<div style='font-size: 12px; font-weight: 600; color: #27ae60;' title='Monto abonado de Cuota Inicial'>";
                         if ($isComplete) {
-                            echo "<i class='fa-solid fa-circle-check' style='font-size: 12px; margin-right: 4px; color: #22c55e;'></i>";
+                            echo "<i class='fa-solid fa-circle-check' style='margin-right: 4px; color: #22c55e;'></i>";
                         }
-                        echo "Bs. " . number_format($montoPagado, 2);
-                        echo "</td>";
+                        echo "Pagado: Bs. " . number_format($montoPagado, 2) . "</div>";
                     } else {
-                        // NO CANCELÓ NADA (0 abonos) -> Muestra '-'
-                        echo "<td style='text-align: center; color: #94a3b8; font-weight: 500;' title='Sin abonos registrados'>-</td>";
+                        echo "<div style='font-size: 12px; color: #94a3b8;'>Sin abonos</div>";
                     }
+                    echo "</td>";
                     $nombreCompletoDelete = htmlspecialchars($row['nombre'] . ' ' . $row['ap_paterno'] . ' ' . $row['ap_materno'], ENT_QUOTES);
                     echo "<td class='actions-col'>
                             <button class='btn-icon edit-btn' onclick='editSocio(" . $row['id_socio'] . ")' title='Editar'><i class='fa-solid fa-pen'></i></button>
