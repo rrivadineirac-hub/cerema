@@ -23,6 +23,27 @@
     letter-spacing: 0.5px;
 }
 
+/* Columna Opciones fija a la derecha (siempre visible) */
+.table-container .data-table th:last-child,
+.table-container .data-table td.actions-col {
+    position: sticky;
+    right: 0;
+    background-color: #fff;
+    z-index: 2;
+    text-align: center;
+    box-shadow: -6px 0 8px -6px rgba(0, 0, 0, 0.15);
+}
+.table-container .data-table th:last-child {
+    background-color: #f8fafc;
+    z-index: 3;
+}
+.table-container .data-table td.actions-col {
+    display: table-cell;
+}
+.table-container .data-table td.actions-col .btn-icon {
+    margin: 0 3px;
+}
+
 /* Estado Badges */
 .badge-status.inactivo {
     background-color: #ffebee !important;
