@@ -23,19 +23,17 @@
     letter-spacing: 0.5px;
 }
 
-/* Columna Opciones fija a la derecha (siempre visible) */
+/* Columna Opciones */
 .table-container .data-table th:last-child,
 .table-container .data-table td.actions-col {
-    position: sticky;
-    right: 0;
-    background-color: #fff;
-    z-index: 2;
     text-align: center;
-    box-shadow: -6px 0 8px -6px rgba(0, 0, 0, 0.15);
+    width: 1%;
 }
-.table-container .data-table th:last-child {
-    background-color: #f8fafc;
-    z-index: 3;
+/* Compactar celdas para que la tabla quepa */
+.table-container .data-table th,
+.table-container .data-table td {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
 }
 .table-container .data-table td.actions-col {
     display: table-cell !important;

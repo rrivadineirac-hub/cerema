@@ -40,14 +40,14 @@ include 'header.php';
     <table class="data-table">
         <thead>
             <tr>
-                <th style="min-width: 110px; white-space: nowrap;">ID</th>
-                <th style="min-width: 140px; white-space: nowrap;">CI</th>
-                <th style="min-width: 220px; white-space: nowrap;">Nombre Completo</th>
-                <th style="min-width: 120px; white-space: nowrap;">Teléfono</th>
-                <th style="min-width: 130px; white-space: nowrap;">Fecha Ingreso</th>
-                <th style="min-width: 110px; white-space: nowrap;">Estado</th>
-                <th style="min-width: 120px; white-space: nowrap; text-align: center;">Acciones (Cant.)</th>
-                <th style="min-width: 150px; white-space: nowrap;">Cuota Inicial (Bs.)</th>
+                <th style="white-space: nowrap;">ID</th>
+                <th style="white-space: nowrap;">CI</th>
+                <th style="white-space: nowrap;">Nombre Completo</th>
+                <th style="white-space: nowrap;">Teléfono</th>
+                <th style="white-space: nowrap;">F. Ingreso</th>
+                <th style="white-space: nowrap;">Estado</th>
+                <th style="white-space: nowrap; text-align: center;">Acc.</th>
+                <th style="white-space: nowrap; min-width: 150px;">Cuota Inicial (Bs.)</th>
                 <th style="min-width: 100px; white-space: nowrap; text-align: center;">Opciones</th>
             </tr>
         </thead>
@@ -75,7 +75,7 @@ include 'header.php';
 
                     // Cuota inicial configurada + abonado
                     $isComplete = ($metaTotal > 0 && $montoPagado >= $metaTotal);
-                    echo "<td style='white-space: nowrap; min-width: 170px; padding-right: 20px;'>";
+                    echo "<td style='white-space: nowrap; min-width: 150px;'>";
                     echo "<div style='font-weight: 700; color: #1e293b;'>Bs. " . number_format($cuotaAsignada, 2) . "</div>";
                     if ($montoPagado > 0) {
                         echo "<div style='font-size: 12px; font-weight: 600; color: #27ae60;' title='Monto abonado de Cuota Inicial'>";
