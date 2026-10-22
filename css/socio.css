@@ -38,9 +38,13 @@
     z-index: 3;
 }
 .table-container .data-table td.actions-col {
-    display: table-cell;
+    display: table-cell !important;
+    white-space: nowrap !important;
+    min-width: 100px;
 }
 .table-container .data-table td.actions-col .btn-icon {
+    display: inline-flex !important;
+    vertical-align: middle;
     margin: 0 3px;
 }
 
