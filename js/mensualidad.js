@@ -32,6 +32,10 @@ function openMensualidadModal() {
     document.getElementById('monto_unitario').value = defaultMonto;
 
     document.getElementById('mensualidadModal').style.display = 'block';
+    const modalBody = document.querySelector('#mensualidadModal .modal-body');
+    if (modalBody) {
+        modalBody.scrollTop = 0;
+    }
     
     // Cargar meses pagados mediante AJAX para el socio/acción/año actual
     loadPaidMonths();
@@ -263,6 +267,10 @@ function editMensualidad(id) {
         
         document.getElementById('modalTitle').innerText = 'Editar Pago de Mensualidad';
         document.getElementById('mensualidadModal').style.display = 'block';
+        const modalBody = document.querySelector('#mensualidadModal .modal-body');
+        if (modalBody) {
+            modalBody.scrollTop = 0;
+        }
     })
     .catch(error => {
         console.error('Error:', error);

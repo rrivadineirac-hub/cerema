@@ -909,16 +909,21 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
+    overflow-y: auto;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(3px);
 }
 
 .modal-content {
     background-color: var(--bg-panel);
-    margin: 5% auto;
+    margin: 4vh auto;
     border-radius: var(--radius-lg);
     width: 90%;
     max-width: 600px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     animation: slideDown 0.3s ease-out forwards;
 }
@@ -941,6 +946,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
+    background-color: var(--bg-panel);
 }
 
 .modal-header h2 {
@@ -962,14 +969,24 @@ body {
 
 .modal-body {
     padding: 25px;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    overscroll-behavior: contain;
 }
 
 .modal-footer {
-    padding: 20px 25px;
+    padding: 16px 25px;
     border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     gap: 15px;
+    flex-shrink: 0;
+    background-color: var(--bg-panel);
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
 }
 
 /* Form Styles */

@@ -482,10 +482,10 @@ include 'header.php';
 </div>
 
 <!-- Extra styles/scripts for Mensualidad view -->
-<link rel="stylesheet" href="../css/mensualidad.css">
+<link rel="stylesheet" href="../css/mensualidad.css?v=<?php echo filemtime(__DIR__ . '/../css/mensualidad.css'); ?>">
 <script>
     const MONTO_MENSUALIDAD_SUGERIDO = "<?php echo number_format($monto_mensualidad_sugerido ?? 50.00, 2, '.', ''); ?>";
 </script>
-<script src="../js/mensualidad.js"></script>
+<script src="../js/mensualidad.js?v=<?php echo filemtime(__DIR__ . '/../js/mensualidad.js'); ?>"></script>
 
 <?php include 'footer.php'; ?>
