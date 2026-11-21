@@ -114,6 +114,7 @@ $_SESSION['last_activity'] = time();
                 $is_usuario = ($current_page == 'usuario.controller.php');
                 $is_evento = ($current_page == 'evento.controller.php');
                 $is_categorias_ingreso = ($current_page == 'categorias_ingreso.controller.php');
+                $is_ingreso_venta_accion = ($current_page == 'ingreso_venta_accion.controller.php');
                 $is_otro_ingreso = ($current_page == 'otro_ingreso.controller.php');
                 $is_sueldo = ($current_page == 'sueldo.controller.php');
                 $is_servicio = ($current_page == 'servicio.controller.php');
@@ -209,8 +210,8 @@ $_SESSION['last_activity'] = time();
                     </li>
                     <?php endif; ?>
 
-                    <?php if (check_permission('categorias_ingreso')): ?>
-                    <li class="nav-item has-submenu <?php echo ($is_categorias_ingreso || $is_otro_ingreso) ? 'active open' : ''; ?>">
+                    <?php if (check_permission('categorias_ingreso') || check_permission('ingreso_venta_accion')): ?>
+                    <li class="nav-item has-submenu <?php echo ($is_categorias_ingreso || $is_ingreso_venta_accion || $is_otro_ingreso) ? 'active open' : ''; ?>">
                         <a href="#" class="nav-link">
                             <i class="fa-solid fa-money-bill-wave"></i>
                             <span class="nav-text">Ingresos</span>
@@ -218,6 +219,7 @@ $_SESSION['last_activity'] = time();
                         </a>
                         <ul class="nav-submenu">
                             <li><a href="../Controller/categorias_ingreso.controller.php" class="submenu-link <?php echo $is_categorias_ingreso ? 'active' : ''; ?>">Configurar Montos</a></li>
+                            <li><a href="../Controller/ingreso_venta_accion.controller.php" class="submenu-link <?php echo $is_ingreso_venta_accion ? 'active' : ''; ?>">Ingreso por venta de acciones</a></li>
                             <li><a href="../Controller/otro_ingreso.controller.php" class="submenu-link <?php echo $is_otro_ingreso ? 'active' : ''; ?>">Otros Ingresos</a></li>
                         </ul>
                     </li>

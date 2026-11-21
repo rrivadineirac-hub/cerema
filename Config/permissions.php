@@ -112,6 +112,7 @@ function check_permission($module) {
             'cuota_inicial', 
             'valor_accion', 
             'categorias_ingreso', 
+            'ingreso_venta_accion', 
             'otros_ingresos', 
             'sueldo', 
             'servicios', 

@@ -712,6 +712,32 @@ LOCK TABLES `usuarios_sistema` WRITE;
 INSERT INTO `usuarios_sistema` VALUES (2,NULL,'Infoser76','$2y$10$SoXbqzLOK3fuTuMQ1mIVd.vcw6sfPFeyMp4zshgN7W59vTXWjOMUe','Administrador',1,'2026-08-24 09:44:01');
 /*!40000 ALTER TABLE `usuarios_sistema` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `ingresos_venta_acciones`
+--
+
+CREATE TABLE IF NOT EXISTS `ingresos_venta_acciones` (
+  `id_venta_accion` INT AUTO_INCREMENT PRIMARY KEY,
+  `id_gestion` INT NOT NULL,
+  `id_socio` INT DEFAULT NULL,
+  `comprador` VARCHAR(150) NOT NULL,
+  `cantidad_acciones` INT NOT NULL DEFAULT 1,
+  `numero_accion` VARCHAR(100) DEFAULT NULL,
+  `precio_unitario` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `monto_total` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `fecha_venta` DATE NOT NULL,
+  `numero_recibo` VARCHAR(50) DEFAULT NULL,
+  `metodo_pago` ENUM('Efectivo','Transferencia','QR','Depósito','Otro') NOT NULL DEFAULT 'Efectivo',
+  `observaciones` TEXT DEFAULT NULL,
+  `estado` ENUM('Cobrado','Anulado') NOT NULL DEFAULT 'Cobrado',
+  `fecha_registro` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `fecha_edicion` DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  KEY `idx_gestion` (`id_gestion`),
+  KEY `idx_socio` (`id_socio`),
+  CONSTRAINT `fk_venta_accion_socio` FOREIGN KEY (`id_socio`) REFERENCES `asociados` (`id_socio`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
