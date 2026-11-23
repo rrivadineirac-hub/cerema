@@ -162,7 +162,7 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
             <thead>
                 <tr>
                     <th style="width: 45px; text-align: center;">N°</th>
-                    <th style="width: 100px;">N° Recibo</th>
+                    <th style="width: 140px; min-width: 140px; white-space: nowrap;">N° Recibo</th>
                     <th style="width: 100px;">C.I.</th>
                     <th style="white-space: nowrap;">Nombre Completo</th>
                     <th style="width: 70px; text-align: center;">Acción</th>
@@ -184,7 +184,7 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                 ?>
                     <tr data-id-socio="<?php echo $row['id_socio']; ?>" data-paterno="<?php echo htmlspecialchars($row['ap_paterno']); ?>" data-materno="<?php echo htmlspecialchars($row['ap_materno']); ?>" data-nombre="<?php echo htmlspecialchars($row['nombre']); ?>" data-mes="<?php echo htmlspecialchars($rowMes); ?>" data-anio="<?php echo htmlspecialchars($rowAnio); ?>">
                         <td style="text-align: center; font-weight: 500;"><?php echo $count++; ?></td>
-                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; color: var(--primary);"><?php echo !empty($row['numero_recibo']) ? htmlspecialchars($row['numero_recibo']) : '-'; ?></td>
+                        <td style="font-weight: 600; font-family: monospace; font-size: 13px; color: var(--primary); white-space: nowrap;"><?php echo !empty($row['numero_recibo']) ? htmlspecialchars($row['numero_recibo']) : '-'; ?></td>
                         <td style="font-weight: 600; font-family: monospace; font-size: 13px; white-space: nowrap;"><?php echo !empty($row['ci']) ? htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')) : '-'; ?></td>
                         <td style="font-weight: 600; color: var(--text-main); white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                         <td style="text-align: center; font-weight: 700; color: var(--text-main);"><?php echo htmlspecialchars($row['numero_accion'] ?? 1); ?></td>
@@ -237,7 +237,7 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                 <thead>
                     <tr>
                         <th style="width: 38px; text-align: center;">N°</th>
-                        <th style="width: 85px;">N° Recibo</th>
+                        <th style="width: 115px; white-space: nowrap;">N° Recibo</th>
                         <th style="width: 90px;">C.I.</th>
                         <th style="white-space: nowrap;">Nombre Completo</th>
                         <th style="width: 55px; text-align: center;">Acción</th>
@@ -256,7 +256,7 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                     ?>
                         <tr>
                             <td style="text-align: center; font-weight: 500;"><?php echo $globalCount; ?></td>
-                            <td style="font-weight: 600; font-family: monospace; font-size: 11px;"><?php echo !empty($row['numero_recibo']) ? htmlspecialchars($row['numero_recibo']) : '-'; ?></td>
+                            <td style="font-weight: 600; font-family: monospace; font-size: 11px; white-space: nowrap;"><?php echo !empty($row['numero_recibo']) ? htmlspecialchars($row['numero_recibo']) : '-'; ?></td>
                             <td style="font-weight: 600; font-family: monospace; font-size: 11px; white-space: nowrap;"><?php echo !empty($row['ci']) ? htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')) : '-'; ?></td>
                             <td style="font-weight: 600; color: #000; white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
                             <td style="text-align: center; font-weight: 700; color: #000;"><?php echo htmlspecialchars($row['numero_accion'] ?? 1); ?></td>
