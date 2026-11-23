@@ -2,18 +2,11 @@
 // View/vreporte_pagos.php
 require_once __DIR__ . '/header.php';
 
-// Obtener todos los registros en array para el chunking de impresión
+// Obtener todos los registros en array para el filtrado en pantalla
 $pagos_rows = [];
 if (isset($pagos) && $pagos->rowCount() > 0) {
     $pagos_rows = $pagos->fetchAll(PDO::FETCH_ASSOC);
 }
-$filter_socio_get = $_GET['id_socio'] ?? 'all';
-if ($filter_socio_get !== 'all') {
-    $records_per_print_page = max(count($pagos_rows), 1);
-} else {
-    $records_per_print_page = 45;
-}
-$chunks = array_chunk($pagos_rows, $records_per_print_page);
 $categoria_nombre = $pago_categoria ?? 'Pagos';
 
 $btn_planilla_label = "Imprimir Planilla Anual Mensualidades";
@@ -172,6 +165,12 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                 </tr>
             </thead>
             <tbody>
+                <tr id="emptyReportRow">
+                    <td colspan="8" style="text-align: center; padding: 50px 20px; color: var(--text-muted);">
+                        <i class="fa-solid fa-receipt" style="font-size: 44px; margin-bottom: 12px; display: block; opacity: 0.25;"></i>
+                        <span id="emptyReportText" style="font-size: 14px; font-weight: 500;">Seleccione los filtros deseados y presione "Buscar" para consultar los registros.</span>
+                    </td>
+                </tr>
                 <?php 
                 if (count($pagos_rows) > 0): 
                     $count = 1;
@@ -182,7 +181,7 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                         $rowAnio = !empty($row['anio']) ? $row['anio'] : (!empty($row['fecha_pago']) ? date('Y', strtotime($row['fecha_pago'])) : '');
                         $rowMes = !empty($row['mes']) ? $row['mes'] : '';
                 ?>
-                    <tr data-id-socio="<?php echo $row['id_socio']; ?>" data-paterno="<?php echo htmlspecialchars($row['ap_paterno']); ?>" data-materno="<?php echo htmlspecialchars($row['ap_materno']); ?>" data-nombre="<?php echo htmlspecialchars($row['nombre']); ?>" data-mes="<?php echo htmlspecialchars($rowMes); ?>" data-anio="<?php echo htmlspecialchars($rowAnio); ?>">
+                    <tr class="reporte-pago-row" style="display: none;" data-id-socio="<?php echo $row['id_socio']; ?>" data-paterno="<?php echo htmlspecialchars($row['ap_paterno']); ?>" data-materno="<?php echo htmlspecialchars($row['ap_materno']); ?>" data-nombre="<?php echo htmlspecialchars($row['nombre']); ?>" data-mes="<?php echo htmlspecialchars($rowMes); ?>" data-anio="<?php echo htmlspecialchars($rowAnio); ?>">
                         <td style="text-align: center; font-weight: 500;"><?php echo $count++; ?></td>
                         <td style="font-weight: 600; font-family: monospace; font-size: 13px; color: var(--primary); white-space: nowrap;"><?php echo !empty($row['numero_recibo']) ? htmlspecialchars($row['numero_recibo']) : '-'; ?></td>
                         <td style="font-weight: 600; font-family: monospace; font-size: 13px; white-space: nowrap;"><?php echo !empty($row['ci']) ? htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')) : '-'; ?></td>
@@ -196,12 +195,6 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
                     endforeach;
                 endif;
                 ?>
-                <tr id="emptyReportRow">
-                    <td colspan="8" style="text-align: center; padding: 50px 20px; color: var(--text-muted);">
-                        <i class="fa-solid fa-receipt" style="font-size: 44px; margin-bottom: 12px; display: block; opacity: 0.25;"></i>
-                        <span id="emptyReportText" style="font-size: 14px; font-weight: 500;">Seleccione los filtros deseados y presione "Buscar" para consultar los registros.</span>
-                    </td>
-                </tr>
             </tbody>
         </table>
     </div>
@@ -209,70 +202,8 @@ if (stripos($categoria_nombre, 'Extraordinario') !== false) {
     <!-- Controles de Paginación Eliminados -->
 </div>
 
-<!-- ESTRUCTURA EXCLUSIVA PARA IMPRESIÓN (EXACTAMENTE 40 REGISTROS POR HOJA EXTENDIDOS HASTA ABAJO) -->
-<div id="printReportView">
-    <?php 
-    if (count($chunks) > 0):
-        foreach ($chunks as $chunkIdx => $chunk):
-    ?>
-        <div class="print-page-block <?php echo ($chunkIdx < count($chunks) - 1) ? 'page-break' : ''; ?>">
-            <!-- ENCABEZADO INSTITUCIONAL EN CADA HOJA -->
-            <div class="print-header">
-                <div class="print-header-top">
-                    <img src="../imagenes/institucinal/logo.png" alt="CEREMA Logo" class="print-logo">
-                    <div class="print-title-group" style="text-align: center; flex-grow: 1;">
-                        <h2>CENTRO DE RESIDENTES MAIRANEÑOS - CEREMA</h2>
-                        <h3><?php echo htmlspecialchars($titulo_reporte ?? 'REPORTE OFICIAL DE PAGOS'); ?></h3>
-                    </div>
-                    <div style="width: 60px;"></div>
-                </div>
-                <div class="print-meta">
-                    <span><strong>Fecha de Generación:</strong> <?php echo date('d/m/Y H:i:s'); ?></span>
-                    <span><strong>Total Registros:</strong> <?php echo number_format($stats['total_registros'] ?? 0); ?> | <strong>Total Recaudado:</strong> Bs. <?php echo number_format($stats['total_recaudado'] ?? 0, 2); ?></span>
-                </div>
-            </div>
-
-            <!-- TABLA DE IMPRESIÓN AJUSTADA PARA 40 REGISTROS EXTENDIDOS -->
-            <table class="data-table print-table">
-                <thead>
-                    <tr>
-                        <th style="width: 38px; text-align: center;">N°</th>
-                        <th style="width: 115px; white-space: nowrap;">N° Recibo</th>
-                        <th style="width: 90px;">C.I.</th>
-                        <th style="white-space: nowrap;">Nombre Completo</th>
-                        <th style="width: 55px; text-align: center;">Acción</th>
-                        <th>Detalle / Concepto</th>
-                        <th style="width: 90px; text-align: right;">Monto (Bs.)</th>
-                        <th style="width: 95px; text-align: center;">Fecha Pago</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php 
-                    foreach ($chunk as $rowIdx => $row):
-                        $globalCount = ($chunkIdx * $records_per_print_page) + $rowIdx + 1;
-                        $nombreCompleto = htmlspecialchars($row['ap_paterno'] . ' ' . $row['ap_materno'] . ', ' . $row['nombre']);
-                        $fechaPago = !empty($row['fecha_pago']) ? date('d/m/Y', strtotime($row['fecha_pago'])) : '-';
-                        $detalle = isset($row['mes']) ? htmlspecialchars($row['mes'] . ' ' . $row['anio']) : htmlspecialchars($row['motivo'] ?? '-');
-                    ?>
-                        <tr>
-                            <td style="text-align: center; font-weight: 500;"><?php echo $globalCount; ?></td>
-                            <td style="font-weight: 600; font-family: monospace; font-size: 11px; white-space: nowrap;"><?php echo !empty($row['numero_recibo']) ? htmlspecialchars($row['numero_recibo']) : '-'; ?></td>
-                            <td style="font-weight: 600; font-family: monospace; font-size: 11px; white-space: nowrap;"><?php echo !empty($row['ci']) ? htmlspecialchars($row['ci'] . (!empty($row['complemento']) ? '-' . $row['complemento'] : '')) : '-'; ?></td>
-                            <td style="font-weight: 600; color: #000; white-space: nowrap;"><?php echo $nombreCompleto; ?></td>
-                            <td style="text-align: center; font-weight: 700; color: #000;"><?php echo htmlspecialchars($row['numero_accion'] ?? 1); ?></td>
-                            <td style="font-size: 10.5px;"><?php echo $detalle; ?></td>
-                            <td style="text-align: right; font-weight: 600; color: #000;"><?php echo number_format($row['monto'], 2); ?></td>
-                            <td style="text-align: center; font-size: 10.5px; white-space: nowrap;"><?php echo $fechaPago; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    <?php 
-        endforeach;
-    endif;
-    ?>
-</div>
+<!-- ESTRUCTURA EXCLUSIVA PARA IMPRESIÓN (GENERADA DINÁMICAMENTE POR JS) -->
+<div id="printReportView"></div>
 
 <link rel="stylesheet" href="../css/reporte.css">
 <script src="../js/reporte.js"></script>

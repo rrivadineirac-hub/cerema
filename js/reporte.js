@@ -136,7 +136,10 @@ function renderTablePagination() {
             } else {
                 updateFilteredRows();
                 allRows.forEach(r => r.style.display = 'none');
-                filteredRows.forEach(r => r.style.display = '');
+                filteredRows.forEach((r, idx) => {
+                    if (r.cells && r.cells[0]) r.cells[0].innerText = idx + 1;
+                    r.style.display = '';
+                });
                 if (emptyRow) {
                     if (filteredRows.length === 0) {
                         emptyRow.style.display = '';
