@@ -29,7 +29,7 @@ $gestion_activa = $stmt_g->fetch(PDO::FETCH_ASSOC);
 $id_gestion_activa = $gestion_activa ? $gestion_activa['id_gestion'] : null;
 
 // Obtener todas las gestiones para filtros
-$query_all_g = "SELECT id_gestion, gestion, estado FROM gestiones ORDER BY anio_inicio DESC, id_gestion DESC";
+$query_all_g = "SELECT id_gestion, gestion, estado FROM gestiones ORDER BY gestion DESC, id_gestion DESC";
 $stmt_all_g = $db->prepare($query_all_g);
 $stmt_all_g->execute();
 $todas_gestiones = $stmt_all_g->fetchAll(PDO::FETCH_ASSOC);
@@ -37,7 +37,7 @@ $todas_gestiones = $stmt_all_g->fetchAll(PDO::FETCH_ASSOC);
 $action = $_REQUEST['action'] ?? '';
 
 // Operaciones POST (AJAX)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
 
     try {
@@ -136,7 +136,8 @@ $ventas = $ventaModel->getAll($filtro_gestion === 'all' ? null : $filtro_gestion
 $estadisticas = $ventaModel->getEstadisticas($filtro_gestion === 'all' ? null : $filtro_gestion);
 
 // Obtener lista completa de socios para el selector del modal
-$sociosList = $socioModel->getAllSocios();
+$sociosList = $socioModel->getAll()->fetchAll(PDO::FETCH_ASSOC);
 
 include __DIR__ . '/../View/vingreso_venta_accion.php';
 ?>
+
